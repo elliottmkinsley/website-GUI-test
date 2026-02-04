@@ -1,2 +1,2 @@
-# Nano.nau.edu
+# radiant.nau.edu
 
