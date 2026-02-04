@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Equipment - NAU Semiconductor Metrology Lab</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        nau: {
+                            blue: '#003466',       // Official NAU Blue
+                            darkNav: '#0f172a',    // Dark navy for navbar
+                            gold: '#ffcd00',       // Official NAU Gold
+                            goldHover: '#e6b800',  
+                            green: '#43692d',      // Standard green
+                            deepGreen: '#004e38',  // Dark green for Location section
+                            orange: '#d45d00',     // Orange for Request Info button
+                            offWhite: '#f4f1ed',   
+                            white: '#ffffff'       
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Barlow', 'sans-serif'],            
+                        heading: ['Barlow Condensed', 'sans-serif'], 
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-sans text-gray-800 antialiased bg-nau-offWhite relative flex flex-col min-h-screen">
+
+    <!-- Top Bar -->
+    <div class="bg-nau-blue text-white w-full border-b border-blue-900 hidden md:block">
+        <div class="max-w-[1400px] mx-auto px-4 lg:px-8">
+            <div class="flex justify-between h-[50px] items-center">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="flex items-center">
+                        <img src="NAU.png" 
+                             alt="Northern Arizona University" 
+                             class="h-10 w-auto object-contain">
+                    </a>
+                </div>
+
+                <div class="flex items-center gap-6 font-sans text-[15px] font-medium tracking-wide">
+                    <a href="#" class="hover:text-nau-gold transition-colors">Research</a>
+                    <a href="#" class="hover:text-nau-gold transition-colors">Athletics</a>
+                    <a href="#" class="hover:text-nau-gold transition-colors">Alumni</a>
+                    <a href="#" class="hover:text-nau-gold transition-colors">Giving</a>
+                    
+                    <div class="flex items-center gap-2 ml-4 text-gray-300">
+                        <i class="fas fa-moon"></i>
+                        <div class="w-10 h-5 bg-blue-400 rounded-full relative cursor-pointer">
+                            <div class="absolute right-1 top-1 w-3 h-3 bg-white rounded-full shadow-md"></div>
+                        </div>
+                        <i class="fas fa-sun text-white"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation -->
+    <nav class="bg-nau-darkNav text-white sticky top-0 z-40 shadow-xl border-b border-gray-800">
+        <div class="max-w-[1400px] mx-auto px-4 lg:px-8">
+            <div class="flex justify-between h-[70px] items-center">
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 items-center font-sans text-[17px] font-normal tracking-wide h-full">
+                    <a href="Index.html" class="h-full flex items-center border-b-4 border-transparent hover:border-nau-gold hover:text-nau-gold transition-all">
+                        Home
+                    </a>
+                    <a href="index.html#education" class="h-full flex items-center border-b-4 border-transparent hover:border-nau-gold hover:text-nau-gold transition-all">
+                        Get Started
+                    </a>
+                    <a href="index.html#capabilities" class="h-full flex items-center border-b-4 border-transparent hover:border-nau-gold hover:text-nau-gold transition-all">
+                        Equipments
+                    </a>
+                    <a href="index.html#about" class="h-full flex items-center border-b-4 border-transparent hover:border-nau-gold hover:text-nau-gold transition-all">
+                        About
+                    </a>
+                    <a href="index.html#contact" class="h-full flex items-center border-b-4 border-transparent hover:border-nau-gold hover:text-nau-gold transition-all">
+                        Billing
+                    </a>
+                </div>
+
+                <!-- Desktop Actions -->
+                <div class="hidden md:flex items-center gap-4">
+                    <button class="text-white hover:text-nau-gold transition-colors mr-2">
+                        <i class="fas fa-search text-xl"></i>
+                    </button>
+
+                    <a href="index.html#contact" class="bg-nau-green hover:bg-green-800 text-white px-5 py-2 rounded-sm font-medium transition-colors text-base shadow-sm">
+                        Contact Lab
+                    </a>
+
+                    <!-- Active state for Book Equipment -->
+                    <a href="#" class="bg-nau-gold text-nau-darkNav px-5 py-2 rounded-sm font-bold shadow-sm flex items-center gap-2 cursor-default">
+                        Book Equipment <i class="fas fa-check text-xs"></i>
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-white hover:text-nau-gold focus:outline-none">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-nau-darkNav border-t border-gray-700">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 font-sans text-lg">
+                <a href="index.html" class="block px-3 py-2 rounded-md font-medium hover:bg-gray-800 hover:text-nau-gold text-white">Home</a>
+                <a href="index.html#education" class="block px-3 py-2 rounded-md font-medium hover:bg-gray-800 hover:text-nau-gold text-white">Get Started</a>
+                <a href="index.html#capabilities" class="block px-3 py-2 rounded-md font-medium hover:bg-gray-800 hover:text-nau-gold text-white">Equipments</a>
+                <a href="index.html#about" class="block px-3 py-2 rounded-md font-medium hover:bg-gray-800 hover:text-nau-gold text-white">About</a>
+                <a href="index.html#contact" class="block px-3 py-2 rounded-md font-medium hover:bg-gray-800 hover:text-nau-gold text-white">Billing</a>
+                <a href="#" class="block w-full text-left px-3 py-2 rounded-md font-bold bg-nau-gold text-nau-darkNav mt-4">Book Equipment</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow">
+        <!-- Page Header -->
+        <div class="bg-white border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="md:flex md:items-center md:justify-between">
+                    <div class="flex-1 min-w-0">
+                        <a href="index.html" class="text-nau-blue hover:text-nau-gold font-bold text-sm uppercase tracking-wide mb-2 inline-flex items-center transition-colors">
+                            <i class="fas fa-arrow-left mr-2"></i> Back to Lab Home
+                        </a>
+                        <h1 class="font-heading text-4xl font-extrabold text-nau-blue uppercase tracking-tight sm:text-5xl sm:truncate">
+                            Equipment Reservation
+                        </h1>
+                        <p class="mt-2 text-lg text-gray-600">Secure your time on our advanced metrology systems. Please review all safety protocols before booking.</p>
+                    </div>
+                    <div class="mt-4 flex md:mt-0 md:ml-4">
+                        <button onclick="window.print()" type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-sm shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none">
+                            <i class="fas fa-print mr-2 text-gray-500"></i> Print Schedule
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- LEFT SIDEBAR: Guidelines & Info -->
+                <div class="lg:col-span-1 space-y-6">
+                    
+                    <!-- Prerequisites Card -->
+                    <div class="bg-white rounded-sm shadow-md border-t-4 border-nau-gold overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-100 bg-gray-50">
+                            <h3 class="text-lg font-bold text-nau-blue font-heading uppercase tracking-wide">
+                                <i class="fas fa-exclamation-circle mr-2 text-nau-gold"></i> Before You Book
+                            </h3>
+                        </div>
+                        <div class="p-6">
+                            <ul class="space-y-4 text-sm text-gray-700">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-600 mt-1 mr-3 flex-shrink-0"></i>
+                                    <span><strong>Safety Training:</strong> You must have completed the <a href="#" class="text-nau-blue hover:underline">EHS Basic Lab Safety</a> module within the last 12 months.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-600 mt-1 mr-3 flex-shrink-0"></i>
+                                    <span><strong>Gowning Protocol:</strong> Proper cleanroom attire (bunny suit, hair net) is required for Bay 1 & 2 access.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-600 mt-1 mr-3 flex-shrink-0"></i>
+                                    <span><strong>Certification:</strong> Only authorized users may book the JEOL TEM and Keyence VHX. Contact staff for training.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Policies Card -->
+                    <div class="bg-white rounded-sm shadow-md border-t-4 border-nau-blue overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-100 bg-gray-50">
+                            <h3 class="text-lg font-bold text-nau-blue font-heading uppercase tracking-wide">
+                                <i class="fas fa-book mr-2 text-nau-blue"></i> Lab Policies
+                            </h3>
+                        </div>
+                        <div class="p-6 text-sm text-gray-700 space-y-3">
+                            <p><strong>Cancellation:</strong> Must cancel at least 24 hours in advance to avoid a "No-Show" fee.</p>
+                            <p><strong>Late Arrival:</strong> Reservations are forfeited after 15 minutes. Equipment will be released to walk-in users.</p>
+                            <p><strong>Data Storage:</strong> Users are responsible for backing up their data. Local drives are wiped weekly.</p>
+                            <div class="mt-4 pt-4 border-t border-gray-100">
+                                <a href="#" class="text-nau-blue font-bold hover:text-nau-gold flex items-center">
+                                    Read Full SOPs <i class="fas fa-file-pdf ml-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Support Card -->
+                    <div class="bg-nau-blue text-white rounded-sm shadow-md overflow-hidden">
+                        <div class="p-6">
+                            <h3 class="text-xl font-heading font-bold uppercase tracking-wide text-nau-gold mb-2">Need Assistance?</h3>
+                            <p class="text-blue-100 text-sm mb-4">If equipment is malfunctioning or you need access help.</p>
+                            <div class="space-y-2">
+                                <div class="flex items-center">
+                                    <i class="fas fa-phone-alt w-6 text-nau-gold"></i>
+                                    <span class="font-medium">928-523-0000 (Lab Mgr)</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-envelope w-6 text-nau-gold"></i>
+                                    <a href="mailto:semicon.lab@nau.edu" class="hover:text-nau-gold transition-colors">semicon.lab@nau.edu</a>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-map-marker-alt w-6 text-nau-gold"></i>
+                                    <span>Bldg 69, Room 102</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- RIGHT COLUMN: Direct Link Call to Action -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-sm shadow-lg border border-gray-200 overflow-hidden h-full flex flex-col items-center justify-center p-12 text-center">
+                        
+                        <div class="w-24 h-24 bg-nau-offWhite rounded-full flex items-center justify-center mb-6">
+                            <i class="far fa-calendar-check text-5xl text-nau-blue"></i>
+                        </div>
+
+                        <h2 class="text-3xl font-heading font-bold text-nau-blue mb-4">Open Microsoft Bookings</h2>
+                        
+                        <p class="text-gray-600 max-w-lg mb-8 text-lg">
+                            Our reservation system is hosted securely on Microsoft Bookings. Click the button below to open the calendar in a new tab, select your equipment, and choose your preferred time slot.
+                        </p>
+
+                        <a href="https://outlook.office365.com/owa/calendar/MetrologyLab@bookings.nau.edu/bookings/" 
+                           target="_blank" 
+                           class="inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-bold rounded-sm text-nau-blue bg-nau-gold hover:bg-nau-goldHover shadow-md transition-transform transform hover:-translate-y-1 uppercase tracking-wide">
+                            Launch Booking System <i class="fas fa-external-link-alt ml-3"></i>
+                        </a>
+
+                        <p class="mt-6 text-sm text-gray-500">
+                            <i class="fas fa-lock mr-1"></i> You may need to sign in with your NAU credentials.
+                        </p>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-nau-blue text-white pt-16 pb-8 border-t-8 border-nau-gold mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+                <div>
+                    <h4 class="font-heading font-bold text-lg mb-4 text-nau-gold uppercase tracking-widest">Contact Us</h4>
+                    <p class="mb-2 text-blue-100"><i class="fas fa-map-marker-alt w-6 text-center mr-2 text-nau-gold"></i>Engineering Building 69, Room 102</p>
+                    <p class="mb-2 text-blue-100"><i class="fas fa-university w-6 text-center mr-2 text-nau-gold"></i>Northern Arizona University</p>
+                    <p class="mb-2 text-blue-100"><i class="fas fa-envelope w-6 text-center mr-2 text-nau-gold"></i>semicon.lab@nau.edu</p>
+                    <p class="text-blue-100"><i class="fas fa-phone w-6 text-center mr-2 text-nau-gold"></i>(928) 523-0000</p>
+                </div>
+
+                <div>
+                    <h4 class="font-heading font-bold text-lg mb-4 text-nau-gold uppercase tracking-widest">Quick Links</h4>
+                    <ul class="space-y-2 text-blue-100 font-medium">
+                        <li><a href="#" class="hover:text-nau-gold transition-colors">College of Engineering</a></li>
+                        <li><a href="#" class="hover:text-nau-gold transition-colors">Department of Applied Physics</a></li>
+                        <li><a href="#" class="hover:text-nau-gold transition-colors">Campus Map</a></li>
+                        <li><a href="#" class="hover:text-nau-gold transition-colors">Lab Safety Protocols</a></li>
+                    </ul>
+                </div>
+
+                <div class="flex flex-col items-start md:items-end">
+                     <div class="font-heading font-extrabold text-4xl text-white mb-2 tracking-tighter">NAU</div>
+                     <p class="text-sm text-blue-200 text-left md:text-right font-medium">
+                         Northern Arizona University<br>
+                         Flagstaff, AZ 86011
+                     </p>
+                     <div class="mt-6 flex space-x-4">
+                         <a href="#" class="text-white hover:text-nau-gold transition-colors"><i class="fab fa-facebook-f text-xl"></i></a>
+                         <a href="#" class="text-white hover:text-nau-gold transition-colors"><i class="fab fa-twitter text-xl"></i></a>
+                         <a href="#" class="text-white hover:text-nau-gold transition-colors"><i class="fab fa-linkedin-in text-xl"></i></a>
+                         <a href="#" class="text-white hover:text-nau-gold transition-colors"><i class="fab fa-instagram text-xl"></i></a>
+                     </div>
+                </div>
+            </div>
+
+            <div class="border-t border-blue-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-blue-300 font-medium">
+                <p>&copy; 2024 Northern Arizona University. All Rights Reserved.</p>
+                <div class="flex space-x-6 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-white transition-colors">Accessibility</a>
+                    <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>

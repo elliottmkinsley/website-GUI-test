@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | NAU Nano Core Facility</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="CSS/style.css">
+</head>
+
+<body>
+
+    <!-- Header (Shared) -->
+    <site-header></site-header>
+
+    <main>
+        <!-- Page Header -->
+        <section class="section-padding bg-gray-50 text-center">
+            <div class="container">
+                <h1 class="text-blue mb-10">HOW CAN WE HELP YOU?</h1>
+                <p class="text-muted page-subtitle">Select a category
+                    below to route your inquiry to the correct department.</p>
+            </div>
+        </section>
+
+        <!-- Main Gateway Grid -->
+        <section class="section-padding pt-20">
+            <div class="container">
+                <!-- Grid of Options -->
+                <div class="grid grid-4 gap-md" id="gatewayGrid">
+
+                    <!-- Equipment -->
+                    <div class="gateway-card" onclick="selectCategory('equipment', this)">
+                        <i class="fas fa-microscope"></i>
+                        <h3 class="gateway-title">Equipment Access</h3>
+                        <p class="gateway-desc">Reservations, technical capabilities, and instrument status.</p>
+                    </div>
+
+                    <!-- Research -->
+                    <div class="gateway-card" onclick="selectCategory('research', this)">
+                        <i class="fas fa-atom"></i>
+                        <h3 class="gateway-title">Collaborations</h3>
+                        <p class="gateway-desc">Joint research proposals, grants, and industry partnerships.</p>
+                    </div>
+
+                    <!-- Billing -->
+                    <div class="gateway-card" onclick="selectCategory('billing', this)">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <h3 class="gateway-title">Billing & Invoices</h3>
+                        <p class="gateway-desc">Purchase orders, service quotes, and payment inquiries.</p>
+                    </div>
+
+                    <!-- Training -->
+                    <div class="gateway-card" onclick="selectCategory('training', this)">
+                        <i class="fas fa-user-graduate"></i>
+                        <h3 class="gateway-title">Training</h3>
+                        <p class="gateway-desc">Safety certification, tool training, and badge access.</p>
+                    </div>
+
+                    <!-- Courses -->
+                    <div class="gateway-card" onclick="selectCategory('courses', this)">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <h3 class="gateway-title">Courses</h3>
+                        <p class="gateway-desc">Undergraduate labs, curriculum support, and student access.</p>
+                    </div>
+
+                    <!-- Tour -->
+                    <div class="gateway-card" onclick="selectCategory('tour', this)">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <h3 class="gateway-title">Facility Tour</h3>
+                        <p class="gateway-desc">Request a guided tour for groups, schools, or VIPs.</p>
+                    </div>
+
+                    <!-- Sales -->
+                    <div class="gateway-card" onclick="selectCategory('sales', this)">
+                        <i class="fas fa-truck-loading"></i>
+                        <h3 class="gateway-title">Vendor / Sales</h3>
+                        <p class="gateway-desc">Product demos, supply deliveries, and vendor registration.</p>
+                    </div>
+
+                    <!-- Other -->
+                    <div class="gateway-card" onclick="selectCategory('other', this)">
+                        <i class="fas fa-comment-dots"></i>
+                        <h3 class="gateway-title">General / Other</h3>
+                        <p class="gateway-desc">Website issues, feedback, or general questions.</p>
+                    </div>
+                </div>
+
+                <!-- Dynamic Form Container -->
+                <div id="formContainer" class="hidden form-wrapper">
+                    <div class="section-header form-header-line">
+                        <div style="width: 100%;">
+                            <h2 id="formTitle" class="text-blue mb-5">Contact Details</h2>
+                            <p id="formDesc" class="text-muted">Please fill out the information below.</p>
+                        </div>
+                    </div>
+
+                    <form id="contactForm" onsubmit="handleFormSubmit(event)">
+                        <!-- Common Fields -->
+                        <div class="grid grid-2 gap-lg" style="margin-bottom: 25px;">
+                            <div>
+                                <label class="block font-bold mb-1 required">First Name</label>
+                                <input type="text" class="form-control" placeholder="Jane" required>
+                            </div>
+                            <div>
+                                <label class="block font-bold mb-1 required">Last Name</label>
+                                <input type="text" class="form-control" placeholder="Doe" required>
+                            </div>
+                            <div>
+                                <label class="block font-bold mb-1 required">Email</label>
+                                <input type="email" class="form-control" placeholder="jane.doe@example.com" required>
+                            </div>
+                            <div>
+                                <label class="block font-bold mb-1">Phone</label>
+                                <input type="tel" class="form-control" placeholder="(555) 123-4567">
+                            </div>
+                            <div class="col-span-2">
+                                <label class="block font-bold mb-1 required">Organization / Affiliation</label>
+                                <input type="text" class="form-control" placeholder="University Name or Company"
+                                    required>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Fields Injection Point -->
+                        <div id="dynamicFields" class="separator-top">
+                            <!-- JS Inject -->
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="d-flex justify-between align-center">
+                            <button type="button" onclick="resetSelection()" class="btn btn-outline btn-outline-gray">
+                                Cancel
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                Submit Request
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer (Shared) -->
+    <site-footer></site-footer>
+
+    <!-- Shared Script -->
+    <script src="JS/layout.js"></script>
+    <script src="JS/script.js"></script>
+
+</body>
+
+</html>
