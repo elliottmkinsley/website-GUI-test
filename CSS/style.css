@@ -1161,18 +1161,14 @@ ul {
 }
 
 .equipment-img {
-    width: 170px;
-    height: 170px;
-    border-radius: 50%;
+    width: 190px;
+    height: 240px;
+    border-radius: 14px;
     object-fit: cover;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #888;
-    font-weight: 500;
-    font-size: 12px;
-    text-align: center;
+    object-position: 50% 20%;   
+    display: block;
     border: 1px solid var(--gray-300);
+    background: var(--gray-50);
 }
 
 .specs {
