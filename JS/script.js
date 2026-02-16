@@ -31,17 +31,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Sticky Header Logic
     // Toggles 'scrolled' class based on scroll position for glassmorphism effect.
     // -------------------------------------------------------------------------
-    const header = document.getElementById('mainHeader');
-    if (header) {
-        window.addEventListener('scroll', () => {
-            // Optimization: Simple check avoids frequent layout thrashing
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
+    document.querySelectorAll('.nav-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const targetId = btn.dataset.target;
+          const container = document.getElementById(targetId);
+          if (!container) return;
+      
+          const amount = btn.classList.contains('left') ? -350 : 350;
+          container.scrollBy({ left: amount, behavior: 'smooth' });
         });
-    }
+      });
 
     // -------------------------------------------------------------------------
     // Hero Slider Component

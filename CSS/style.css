@@ -628,7 +628,7 @@ ul {
 
 .card-title {
     font-size: 1.4rem;
-    margin-bottom: var(--space-sm);
+    margin-bottom: 4px;
     color: var(--nau-blue);
     font-weight: 700;
 }
@@ -1065,16 +1065,17 @@ ul {
  * Uses CSS Scroll Snap API for native-like touch interaction.
  */
 .carousel-section {
-    padding: var(--space-3xl) 0;
+    padding: var(--space-1xl) 0;
     background-color: var(--gray-50);
 }
 
 .carousel-wrapper {
     position: relative;
-    padding: 0 10px;
+    padding: 0 5px;
 }
 
 .card-wrapper {
+
     display: flex;
     gap: 24px;
     overflow-x: auto;
@@ -1082,19 +1083,52 @@ ul {
     padding: 10px 0 40px 0;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-}
+  }
+  
+  /* Mobile: stack cards vertically */
+  @media (max-width: 768px) {
+    .card-wrapper {
+      flex-direction: column;
+      align-items: center;              /* centers cards horizontally */
+      gap: clamp(12px, 4vw, 18px);
+      padding: clamp(12px, 5vw, 24px) 0;
+    }
+  }
 
 .card-wrapper::-webkit-scrollbar {
     display: none;
 }
 
+.card-wrapper-leadership {
+    display: flex;
+    justify-content: center;
+  
+    /* dynamic spacing */
+    gap: clamp(12px, 2vw, 24px);
+    padding: clamp(12px, 3vw, 32px) 0;
+  
+    /* no horizontal scrolling */
+    overflow-x: visible;
+    scroll-snap-type: none;
+  }
+  
+  /* Mobile: stack cards vertically */
+  @media (max-width: 768px) {
+    .card-wrapper-leadership {
+      flex-direction: column;
+      align-items: center;              /* centers cards horizontally */
+      gap: clamp(12px, 4vw, 18px);
+      padding: clamp(12px, 5vw, 24px) 0;
+    }
+  }
+
 .equipment-card {
+    height:auto;
     background: var(--white);
     min-width: 300px;
     max-width: 300px;
-    height: 500px;
     border-radius: var(--radius-md);
-    padding: 24px;
+    padding: 10px;
     box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;
@@ -1173,7 +1207,7 @@ ul {
 
 /* Card Elements */
 .image-container {
-    flex-grow: 1;
+    flex-grow: 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1181,8 +1215,8 @@ ul {
 }
 
 .equipment-img {
-    width: 190px;
-    height: 240px;
+    width: 160px;
+    height: 200px;
     border-radius: 14px;
     object-fit: cover;
     object-position: 50% 20%;   
@@ -1217,7 +1251,7 @@ ul {
 .action-btn {
     font-family: var(--font-display);
     border: none;
-    padding: 10px 0;
+    padding: 4px 0;
     border-radius: var(--radius-full);
     font-size: 0.9rem;
     font-weight: 600;
@@ -1332,11 +1366,11 @@ ul {
 }
 
 .metrics-panel {
-    background: var(--white);
+    background: var(--nau-blue);
     padding: var(--space-xl);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-md);
-    border-top: 4px solid var(--nau-blue);
+    border-top: 4px solid var(--nau-gold);
 }
 
 .metrics-grid {
@@ -1364,7 +1398,7 @@ ul {
     font-family: var(--font-display);
     font-size: 2.8rem;
     font-weight: 700;
-    color: var(--nau-blue);
+    color: var(--white);
     line-height: 1;
 }
 
@@ -1373,7 +1407,7 @@ ul {
     font-family: var(--font-display);
     font-size: 1rem;
     font-weight: 600;
-    color: var(--black);
+    color: var(--white);
     margin: 6px 0;
 }
 
@@ -1609,8 +1643,8 @@ ul {
 
 .partner-logo {
     width: auto;
-    max-width: 85%;
-    height: 50px;
+    max-width: 100%;
+    height: 65px;
     /* Fixed height for perfect alignment */
     object-fit: contain;
     margin-bottom: 0px;
@@ -2297,13 +2331,12 @@ ul {
 }
 
 .partners-title {
-    color: var(--nau-blue);
+    color: white;
     margin-bottom: 20px;
     font-size: 1.2rem;
     display: flex;
     align-items: center;
     gap: 10px;
-    display: none;
 }
 
 .icon-gold {

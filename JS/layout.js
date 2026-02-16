@@ -42,6 +42,8 @@ class SiteHeader extends HTMLElement {
                     <div class="nav-item"><a href="${basePath}About_Us.html" class="nav-link">Capabilities</a></div>
                     
                     <div class="nav-item"><a href="${basePath}Contact_Us.html" class="nav-link" data-path="Contact_Us.html">Contact Us</a></div>
+
+                    <div class="nav-item"><a href="${basePath}altLandingPage.html" class="nav-link" data-path="altLandingPage.html">Alt</a></div>
                     
                     <!-- COMMENTED OUT FOR NOW <div class="nav-item"><a href="https://outlook.office.com/book/iMPaCTNanoLab@bookings.nau.edu/?ismsaljsauthenabled" target="_blank" class="btn btn-sm btn-gold">Reserve Equipment</a></div> -->
                 </nav>
