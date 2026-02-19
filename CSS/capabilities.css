@@ -1,0 +1,260 @@
+/* CSS/capabilities.css
+ * --------------------------------------
+ * Capabilities page styling (simple, page-scoped).
+ */
+
+.cap-page {
+  padding: var(--space-3xl) 0;
+  /* "Radiant" look: gold shine from the top into dark-sky NAU blue */
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--nau-gold) 46%, transparent) 0%,
+      color-mix(in srgb, var(--nau-gold) 28%, transparent) 30%,
+      transparent 74%
+    ),
+    /* subtle sun rays */
+    repeating-linear-gradient(
+      115deg,
+      color-mix(in srgb, var(--nau-gold) 14%, transparent) 0px,
+      color-mix(in srgb, var(--nau-gold) 14%, transparent) 18px,
+      transparent 18px,
+      transparent 54px
+    ),
+    radial-gradient(1600px 900px at 50% 0%,
+      color-mix(in srgb, var(--nau-gold) 30%, transparent) 0%,
+      transparent 62%),
+    radial-gradient(1200px 700px at 12% 6%,
+      color-mix(in srgb, var(--nau-gold) 22%, transparent) 0%,
+      transparent 66%),
+    radial-gradient(1100px 640px at 78% 22%,
+      color-mix(in srgb, var(--nau-gold) 30%, transparent) 0%,
+      transparent 60%),
+    radial-gradient(1200px 760px at 15% 88%,
+      color-mix(in srgb, var(--nau-blue-light) 22%, transparent) 0%,
+      transparent 65%),
+    linear-gradient(135deg, var(--nau-blue-dark) 0%, var(--nau-blue) 55%, #000814 120%);
+}
+
+.cap-hero {
+  margin-bottom: var(--space-2xl);
+}
+
+.cap-hero .kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  color: var(--gray-700);
+}
+
+.cap-hero .kicker .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--nau-gold);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--nau-gold) 25%, transparent);
+}
+
+.cap-hero h1 {
+  margin-top: 12px;
+  margin-bottom: 10px;
+  color: var(--white);
+}
+
+.cap-hero p {
+  margin-bottom: 0;
+  color: rgba(255, 255, 255, 0.78);
+  max-width: 85ch;
+}
+
+.cap-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.cap-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--gray-200);
+  background: color-mix(in srgb, var(--nau-blue) 6%, var(--white));
+}
+
+.cap-card-header h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  color: var(--nau-blue);
+}
+
+.cap-card-body {
+  padding: 20px;
+}
+
+/* Section header (simple) */
+.cap-section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding-bottom: var(--space-sm);
+  margin-bottom: var(--space-lg);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.cap-section-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--white);
+}
+
+.cap-section-header p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 600;
+}
+
+/* Labs grid: lab → what it does */
+.lab-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-lg);
+}
+
+.lab-cap-card {
+  position: relative;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+}
+
+.lab-cap-head {
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--gray-200);
+  background: color-mix(in srgb, var(--nau-blue) 6%, var(--white));
+  position: relative;
+  z-index: 1;
+}
+
+.lab-cap-name {
+  margin: 0 0 4px 0;
+  color: var(--nau-blue);
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.15rem;
+}
+
+.lab-cap-loc {
+  margin: 0;
+  color: var(--gray-700);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.lab-cap-body {
+  padding: 18px;
+  display: grid;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+  background: transparent;
+}
+
+.lab-cap-label {
+  margin: 0;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gray-600);
+  font-family: var(--font-display);
+  font-weight: 900;
+}
+
+.lab-cap-text {
+  margin: 0;
+  color: var(--gray-700);
+  font-size: 0.98rem;
+  line-height: 1.6;
+}
+
+.lab-cap-tags {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.lab-cap-tags li {
+  border: 1px solid var(--gray-200);
+  background: var(--gray-50);
+  color: var(--gray-700);
+  border-radius: 999px;
+  padding: 7px 10px;
+  font-weight: 700;
+  font-size: 0.82rem;
+}
+
+.lab-cap-actions {
+  margin-top: 6px;
+}
+
+/* Make the per-lab CTA feel consistent and not oversized */
+.lab-cap-actions .btn {
+  padding: 10px 16px;
+  font-size: 0.95rem;
+}
+
+.cap-cta {
+  margin-top: var(--space-xl);
+  padding: 18px 20px;
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in srgb, var(--nau-blue) 18%, var(--gray-200));
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--nau-blue) 7%, var(--white)) 0%,
+    var(--white) 55%,
+    color-mix(in srgb, var(--nau-gold) 12%, var(--white)) 100%
+  );
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.cap-cta h3 {
+  margin: 0 0 6px 0;
+  color: var(--nau-blue);
+  font-size: 1.2rem;
+}
+
+.cap-cta p {
+  margin: 0;
+  color: var(--gray-700);
+  max-width: 70ch;
+}
+
+@media (max-width: 950px) {
+  .cap-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .lab-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us | NAU Nano Core Facility</title>
+    <title>Contact Us | NAU Radiant Center</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,11 +12,9 @@
         href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap"
         rel="stylesheet">
 
-    <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <!-- Custom CSS -->
     <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="CSS/contact.css">
 </head>
 
 <body>
@@ -25,135 +23,94 @@
     <site-header></site-header>
 
     <main>
-        <!-- Page Header -->
-        <section class="section-padding bg-gray-50 text-center">
+        <section class="contact-page">
             <div class="container">
-                <h1 class="text-blue mb-10">HOW CAN WE HELP YOU?</h1>
-                <p class="text-muted page-subtitle">Select a category
-                    below to route your inquiry to the correct department.</p>
-            </div>
-        </section>
+                <header class="contact-hero">
+                    <h1>Contact Us</h1>
+                    <p>Reach the Radiant Center for Remote Sensing team, or visit us on campus in Flagstaff.</p>
+                </header>
 
-        <!-- Main Gateway Grid -->
-        <section class="section-padding pt-20">
-            <div class="container">
-                <!-- Grid of Options -->
-                <div class="grid grid-4 gap-md" id="gatewayGrid">
-
-                    <!-- Equipment -->
-                    <div class="gateway-card" onclick="selectCategory('equipment', this)">
-                        <i class="fas fa-microscope"></i>
-                        <h3 class="gateway-title">Equipment Access</h3>
-                        <p class="gateway-desc">Reservations, technical capabilities, and instrument status.</p>
-                    </div>
-
-                    <!-- Research -->
-                    <div class="gateway-card" onclick="selectCategory('research', this)">
-                        <i class="fas fa-atom"></i>
-                        <h3 class="gateway-title">Collaborations</h3>
-                        <p class="gateway-desc">Joint research proposals, grants, and industry partnerships.</p>
-                    </div>
-
-                    <!-- Billing -->
-                    <div class="gateway-card" onclick="selectCategory('billing', this)">
-                        <i class="fas fa-file-invoice-dollar"></i>
-                        <h3 class="gateway-title">Billing & Invoices</h3>
-                        <p class="gateway-desc">Purchase orders, service quotes, and payment inquiries.</p>
-                    </div>
-
-                    <!-- Training -->
-                    <div class="gateway-card" onclick="selectCategory('training', this)">
-                        <i class="fas fa-user-graduate"></i>
-                        <h3 class="gateway-title">Training</h3>
-                        <p class="gateway-desc">Safety certification, tool training, and badge access.</p>
-                    </div>
-
-                    <!-- Courses -->
-                    <div class="gateway-card" onclick="selectCategory('courses', this)">
-                        <i class="fas fa-chalkboard-teacher"></i>
-                        <h3 class="gateway-title">Courses</h3>
-                        <p class="gateway-desc">Undergraduate labs, curriculum support, and student access.</p>
-                    </div>
-
-                    <!-- Tour -->
-                    <div class="gateway-card" onclick="selectCategory('tour', this)">
-                        <i class="fas fa-map-marked-alt"></i>
-                        <h3 class="gateway-title">Facility Tour</h3>
-                        <p class="gateway-desc">Request a guided tour for groups, schools, or VIPs.</p>
-                    </div>
-
-                    <!-- Sales -->
-                    <div class="gateway-card" onclick="selectCategory('sales', this)">
-                        <i class="fas fa-truck-loading"></i>
-                        <h3 class="gateway-title">Vendor / Sales</h3>
-                        <p class="gateway-desc">Product demos, supply deliveries, and vendor registration.</p>
-                    </div>
-
-                    <!-- Other -->
-                    <div class="gateway-card" onclick="selectCategory('other', this)">
-                        <i class="fas fa-comment-dots"></i>
-                        <h3 class="gateway-title">General / Other</h3>
-                        <p class="gateway-desc">Website issues, feedback, or general questions.</p>
-                    </div>
-                </div>
-
-                <!-- Dynamic Form Container -->
-                <div id="formContainer" class="hidden form-wrapper">
-                    <div class="section-header form-header-line">
-                        <div style="width: 100%;">
-                            <h2 id="formTitle" class="text-blue mb-5">Contact Details</h2>
-                            <p id="formDesc" class="text-muted">Please fill out the information below.</p>
+                <div class="contact-grid">
+                    <!-- Contact details -->
+                    <section class="contact-card" aria-label="Contact information">
+                        <div class="contact-card-header">
+                            <h2>Get in touch</h2>
                         </div>
-                    </div>
+                        <div class="contact-card-body">
+                            <div class="contact-items">
+                                <div class="contact-item">
+                                    <div class="contact-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24">
+                                            <path
+                                                d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="label">Email</div>
+                                        <p class="value"><a href="mailto:radiant@nau.edu">radiant@nau.edu</a></p>
+                                        <div class="hint">General inquiries and referrals to the right lab contact.</div>
+                                    </div>
+                                </div>
 
-                    <form id="contactForm" onsubmit="handleFormSubmit(event)">
-                        <!-- Common Fields -->
-                        <div class="grid grid-2 gap-lg" style="margin-bottom: 25px;">
-                            <div>
-                                <label class="block font-bold mb-1 required">First Name</label>
-                                <input type="text" class="form-control" placeholder="Jane" required>
+                                <div class="contact-item">
+                                    <div class="contact-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24">
+                                            <path
+                                                d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="label">Phone</div>
+                                        <p class="value"><a href="tel:+19285230000">928-523-0000</a></p>
+                                        <div class="hint">Weekdays during business hours.</div>
+                                    </div>
+                                </div>
+
+                                <div class="contact-item">
+                                    <div class="contact-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24">
+                                            <path
+                                                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="label">Location</div>
+                                        <p class="value">Northern Arizona University</p>
+                                        <div class="hint">
+                                            525 S. Beaver St., 4th Floor • Flagstaff, AZ
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <label class="block font-bold mb-1 required">Last Name</label>
-                                <input type="text" class="form-control" placeholder="Doe" required>
-                            </div>
-                            <div>
-                                <label class="block font-bold mb-1 required">Email</label>
-                                <input type="email" class="form-control" placeholder="jane.doe@example.com" required>
-                            </div>
-                            <div>
-                                <label class="block font-bold mb-1">Phone</label>
-                                <input type="tel" class="form-control" placeholder="(555) 123-4567">
-                            </div>
-                            <div class="col-span-2">
-                                <label class="block font-bold mb-1 required">Organization / Affiliation</label>
-                                <input type="text" class="form-control" placeholder="University Name or Company"
-                                    required>
+
+                            <div class="contact-actions">
+                                <a class="btn btn-primary" href="mailto:radiant@nau.edu">Email Us</a>
+                                <a class="btn btn-outline btn-outline-blue"
+                                    href="https://maps.google.com/?q=525%20S.%20Beaver%20St.,%204th%20Floor%20Flagstaff%20AZ"
+                                    target="_blank" rel="noopener">Open in Maps</a>
                             </div>
                         </div>
+                    </section>
 
-                        <!-- Dynamic Fields Injection Point -->
-                        <div id="dynamicFields" class="separator-top">
-                            <!-- JS Inject -->
+                    <!-- Map -->
+                    <section class="contact-card" aria-label="Map">
+                        <div class="contact-card-header">
+                            <h2>Find us</h2>
                         </div>
-
-                        <!-- Actions -->
-                        <div class="d-flex justify-between align-center">
-                            <button type="button" onclick="resetSelection()" class="btn btn-outline btn-outline-gray">
-                                Cancel
-                            </button>
-                            <button type="submit" class="btn btn-primary">
-                                Submit Request
-                            </button>
+                        <div class="map-wrap">
+                            <iframe class="map-frame" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                                src="https://maps.google.com/maps?width=100%25&amp;height=100%25&amp;hl=en&amp;q=525%20S.%20Beaver%20St.,%204th%20Floor%20Flagstaff%20AZ+(NAU%20Radiant%20Center)&amp;t=&amp;z=15&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
+                                title="Map to NAU Radiant Center">
+                            </iframe>
                         </div>
-                    </form>
+                        <div class="map-footer">
+                            <strong>Tip:</strong> Visitor parking rules can vary by lot—check NAU parking signage on arrival.
+                        </div>
+                    </section>
                 </div>
             </div>
         </section>
     </main>
-
-    <!-- Footer (Shared) -->
-    <site-footer></site-footer>
 
     <!-- Shared Script -->
     <script src="JS/layout.js"></script>

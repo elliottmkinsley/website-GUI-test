@@ -19,6 +19,7 @@
     --nau-gold-light: #fdd054;
     --nau-green: #007a33;
     --nau-red: #bb0000;
+    --nau-monsoon: #C3B8B2;
 
     /* Neutrals */
     --white: #ffffff;
@@ -888,7 +889,7 @@ ul {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to top, rgba(0, 36, 84, 0.9) 0%, rgba(0, 36, 84, 0.3) 60%, rgba(0, 36, 84, 0.1) 100%);
+    /*background: linear-gradient(to top, rgba(0, 36, 84, 0.9) 0%, rgba(0, 36, 84, 0.3) 60%, rgba(0, 36, 84, 0.1) 100%);*/
     z-index: 1;
 }
 
@@ -998,7 +999,18 @@ ul {
  * High-priority user entry points. Flex/Grid hybrid layout for responsive adaptation.
  */
 .quick-actions {
-    background-color: var(--nau-blue);
+    /* Radiant theme banner: gold → soft white → blue */
+    background:
+        radial-gradient(1400px 720px at 18% 0%,
+            color-mix(in srgb, var(--nau-gold) 65%, transparent) 0%,
+            transparent 62%),
+        radial-gradient(900px 300px at 55% 0%,
+            color-mix(in srgb, var(--white) 18%, transparent) 0%,
+            transparent 65%),
+        linear-gradient(135deg,
+            color-mix(in srgb, var(--nau-gold) 18%, var(--nau-blue)) 0%,
+            color-mix(in srgb, var(--white) 10%, var(--nau-blue)) 42%,
+            var(--nau-blue-dark) 100%);
     padding: var(--space-2xl) 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -1054,7 +1066,12 @@ ul {
  * ========================================== 
  */
 .about-section {
-    background-color: var(--white);
+    /* Monsoon → soft Gold tint */
+    background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--nau-monsoon) 22%, var(--white)) 0%,
+        color-mix(in srgb, var(--nau-gold) 10%, var(--white)) 100%
+    );
     padding: var(--space-3xl) 0;
 }
 
@@ -1066,7 +1083,13 @@ ul {
  */
 .carousel-section {
     padding: var(--space-1xl) 0;
-    background-color: var(--gray-50);
+    /* Seamless stack: Gold tint at top AND bottom, Monsoon in the middle */
+    background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--nau-gold) 10%, var(--white)) 0%,
+        color-mix(in srgb, var(--nau-monsoon) 22%, var(--white)) 55%,
+        color-mix(in srgb, var(--nau-gold) 10%, var(--white)) 100%
+    );
 }
 
 .carousel-wrapper {
@@ -1089,7 +1112,7 @@ ul {
   @media (max-width: 768px) {
     .card-wrapper {
       flex-direction: column;
-      align-items: center;              /* centers cards horizontally */
+      align-items: center;
       gap: clamp(12px, 4vw, 18px);
       padding: clamp(12px, 5vw, 24px) 0;
     }
@@ -1116,7 +1139,7 @@ ul {
   @media (max-width: 768px) {
     .card-wrapper-leadership {
       flex-direction: column;
-      align-items: center;              /* centers cards horizontally */
+      align-items: center; 
       gap: clamp(12px, 4vw, 18px);
       padding: clamp(12px, 5vw, 24px) 0;
     }
@@ -1612,9 +1635,13 @@ ul {
 }
 
 .about-section {
+    /* Ensure About section uses Monsoon theme background */
     padding: var(--space-4xl) 0;
-    background: transparent;
-    /* Let body flow through */
+    background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--nau-monsoon) 22%, var(--white)) 0%,
+        color-mix(in srgb, var(--nau-gold) 10%, var(--white)) 100%
+    );
     position: relative;
 }
 

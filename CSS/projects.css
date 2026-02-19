@@ -1,0 +1,157 @@
+/* CSS/projects.css
+ * --------------------------------------
+ * Projects / News page styling (simple, big cards).
+ */
+
+.projects-page {
+  padding: var(--space-3xl) 0;
+}
+
+.projects-hero {
+  margin-bottom: var(--space-2xl);
+}
+
+.projects-hero h1 {
+  margin-bottom: 10px;
+  color: var(--nau-blue);
+}
+
+.projects-hero p {
+  margin: 0;
+  color: var(--gray-600);
+  max-width: 85ch;
+}
+
+.project-grid {
+  display: grid;
+  gap: var(--space-xl);
+}
+
+.project-card {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--gray-200);
+  background: var(--white);
+  box-shadow: var(--shadow-lg);
+}
+
+.project-media {
+  position: relative;
+  min-height: 320px;
+  background: var(--gray-50);
+}
+
+.project-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.project-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.50) 0%,
+    rgba(0, 0, 0, 0.05) 55%,
+    rgba(0, 0, 0, 0.00) 100%
+  );
+}
+
+.project-badge {
+  position: absolute;
+  left: 18px;
+  top: 18px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: var(--nau-blue);
+  background: var(--nau-gold);
+  border: 1px solid color-mix(in srgb, var(--nau-gold) 70%, var(--white));
+}
+
+.project-content {
+  padding: clamp(16px, 3vw, 26px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.project-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  color: var(--gray-600);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.source-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--gray-200);
+  background: var(--gray-50);
+  color: var(--gray-700);
+  font-weight: 800;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+}
+
+.project-title {
+  margin: 0;
+  color: var(--nau-blue);
+  font-size: clamp(1.35rem, 2.2vw, 2rem);
+  line-height: 1.15;
+}
+
+.project-desc {
+  margin: 0;
+  color: var(--gray-700);
+  max-width: 70ch;
+}
+
+.project-impact {
+  margin-top: 6px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--gray-200);
+  background: color-mix(in srgb, var(--nau-blue) 4%, var(--white));
+  color: var(--gray-700);
+  font-size: 0.95rem;
+}
+
+.project-actions {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.project-actions .btn {
+  padding: 10px 18px;
+}
+
+@media (max-width: 950px) {
+  .project-card {
+    grid-template-columns: 1fr;
+  }
+
+  .project-media {
+    min-height: 240px;
+  }
+}
+
