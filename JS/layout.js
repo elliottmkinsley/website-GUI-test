@@ -39,7 +39,6 @@ class SiteHeader extends HTMLElement {
                     
                     <div class="nav-item"><a href="${basePath}Projects.html" class="nav-link" data-path="Projects.html">Projects</a></div>
                     
-                    <div class="nav-item"><a href="${basePath}Capabilities.html" class="nav-link" data-path="Capabilities.html">Capabilities</a></div>
                     
                     <div class="nav-item"><a href="${basePath}Contact_Us.html" class="nav-link" data-path="Contact_Us.html">Contact Us</a></div>
 
