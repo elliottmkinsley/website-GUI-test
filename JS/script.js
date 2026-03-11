@@ -66,19 +66,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // -------------------------------------------------------------------------
-    // Sticky Header Logic
-    // Toggles 'scrolled' class based on scroll position for glassmorphism effect.
+    // Carousel Arrow Buttons (Homepage sections)
+    // Scrolls by exactly one card at a time.
     // -------------------------------------------------------------------------
-    document.querySelectorAll('.nav-btn').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const targetId = btn.dataset.target;
-          const container = document.getElementById(targetId);
-          if (!container) return;
-      
-          const amount = btn.classList.contains('left') ? -350 : 350;
-          container.scrollBy({ left: amount, behavior: 'smooth' });
-        });
-      });
+    const getCarouselStep = (container) => {
+        const card = container.querySelector('.equipment-card');
+        if (!card) return 350;
+
+        const cardWidth = card.getBoundingClientRect().width || 350;
+        const styles = window.getComputedStyle(container);
+        const gapValue = styles.gap || styles.columnGap || '0';
+        const gap = Number.parseFloat(gapValue) || 0;
+
+        return Math.max(1, Math.round(cardWidth + gap));
+    };
 
     // -------------------------------------------------------------------------
     // Hero Slider Component
@@ -171,7 +172,8 @@ document.addEventListener('DOMContentLoaded', () => {
           const container = document.getElementById(targetId);
           if (!container) return;
       
-          const amount = btn.classList.contains('left') ? -350 : 350;
+          const step = getCarouselStep(container);
+          const amount = btn.classList.contains('left') ? -step : step;
           container.scrollBy({ left: amount, behavior: 'smooth' });
         });
       });

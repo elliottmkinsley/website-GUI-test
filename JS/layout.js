@@ -68,27 +68,91 @@ class SiteHeader extends HTMLElement {
         const mobileBtn = this.querySelector('.mobile-toggle');
         const navMenu = this.querySelector('.nav-menu');
 
-        if (mobileBtn) {
-            mobileBtn.addEventListener('click', () => {
-                const isHidden = window.getComputedStyle(navMenu).display === 'none';
-                if (isHidden) {
-                    Object.assign(navMenu.style, {
-                        display: 'flex',
-                        flexDirection: 'column',
-                        position: 'absolute',
-                        top: '100%',
-                        left: '0',
-                        width: '100%',
-                        background: 'var(--nau-blue)',
-                        padding: '20px',
-                        zIndex: '1000'
-                    });
-                } else {
-                    navMenu.style.display = 'none';
-                    if (window.innerWidth > 1024) navMenu.style.display = '';
-                }
+        if (!mobileBtn || !navMenu) return;
+
+        const closeMenu = () => {
+            navMenu.classList.remove('open');
+            if (window.innerWidth > 1024) {
+                navMenu.style.display = '';
+            } else {
+                navMenu.style.display = 'none';
+            }
+            mobileBtn.setAttribute('aria-expanded', 'false');
+        };
+
+        const openMenu = () => {
+            const isPhone = window.innerWidth <= 600;
+            mobileBtn.setAttribute('aria-expanded', 'true');
+
+            if (isPhone) {
+                navMenu.style.display = '';
+                navMenu.classList.add('open');
+                return;
+            }
+
+            navMenu.classList.remove('open');
+            Object.assign(navMenu.style, {
+                display: 'flex',
+                flexDirection: 'column',
+                position: 'absolute',
+                top: '100%',
+                left: '0',
+                width: '100%',
+                background: 'var(--nau-blue)',
+                borderTop: '1px solid rgba(255, 255, 255, 0.12)',
+                borderBottomLeftRadius: '18px',
+                borderBottomRightRadius: '18px',
+                boxShadow: '0 18px 55px rgba(0, 0, 0, 0.30)',
+                padding: '20px',
+                maxHeight: 'min(55vh, 420px)',
+                overflow: 'auto',
+                zIndex: '1000'
             });
-        }
+        };
+
+        // Start closed
+        mobileBtn.setAttribute('aria-expanded', 'false');
+        closeMenu();
+
+        mobileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = navMenu.classList.contains('open') || window.getComputedStyle(navMenu).display !== 'none';
+            if (isOpen) closeMenu();
+            else openMenu();
+        });
+
+        // Close when selecting a link (mobile UX)
+        navMenu.addEventListener('click', (e) => {
+            const link = e.target.closest('a');
+            if (!link) return;
+            closeMenu();
+        });
+
+        // Close on outside tap/click
+        document.addEventListener('click', (e) => {
+            const isOpen = navMenu.classList.contains('open') || window.getComputedStyle(navMenu).display !== 'none';
+            if (!isOpen) return;
+            if (navMenu.contains(e.target) || mobileBtn.contains(e.target)) return;
+            closeMenu();
+        });
+
+        // Close on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key !== 'Escape') return;
+            const isOpen = navMenu.classList.contains('open') || window.getComputedStyle(navMenu).display !== 'none';
+            if (isOpen) closeMenu();
+        });
+
+        // If viewport changes, ensure we don't leave an overlay stuck open
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 1024) {
+                navMenu.classList.remove('open');
+                navMenu.style.display = '';
+                mobileBtn.setAttribute('aria-expanded', 'false');
+                return;
+            }
+            closeMenu();
+        });
     }
 }
 

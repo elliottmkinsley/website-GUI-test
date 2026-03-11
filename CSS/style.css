@@ -403,6 +403,34 @@ ul {
     gap: 5px;
 }
 
+@media (max-width: 768px) {
+    /* Mobile: center "Meet The Team" + make link feel like a button */
+    .carousel-section .section-header {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        text-align: center;
+    }
+
+    .carousel-section .section-header h2 {
+        width: 100%;
+        text-align: center;
+    }
+
+    .carousel-section .section-header .see-all {
+        display: none;
+        justify-content: center;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.88);
+        border: 1px solid color-mix(in srgb, var(--nau-gold) 45%, rgba(255, 255, 255, 0.35));
+        box-shadow:
+            0 0 0 1px color-mix(in srgb, var(--nau-gold) 18%, transparent),
+            0 10px 22px rgba(0, 0, 0, 0.12);
+    }
+}
+
 .sub-section-header {
 
     display: flex;
@@ -819,6 +847,10 @@ ul {
 
 /* Mobile Responsive */
 @media (max-width: 1024px) {
+    .main-nav-container {
+        position: relative;
+    }
+
     .nav-menu {
         display: none;
         /* JS toggles this */
@@ -834,6 +866,109 @@ ul {
 
     .brand-text .dept {
         font-size: 0.9rem;
+    }
+}
+
+/* Phone: NAU logo only (hide title + nav) */
+@media (max-width: 600px) {
+    .site-header {
+        padding: 10px 0;
+    }
+
+    .main-nav-container {
+        justify-content: center;
+        position: relative;
+    }
+
+    .brand-logo {
+        justify-content: center;
+        gap: 0;
+    }
+
+    .header-logo {
+        height: 44px;
+    }
+
+    .brand-text,
+    .brand-divider {
+        display: none !important;
+    }
+
+    /* Hide the quick-actions bar on phones (use hamburger tiles instead) */
+    .quick-actions {
+        display: none;
+    }
+
+    /* Hamburger button: top-left */
+    .mobile-toggle {
+        display: grid !important;
+        place-items: center;
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.12);
+    }
+
+    /* Tile-style mobile menu (JS toggles display) */
+    .nav-menu {
+        display: none;
+        position: absolute;
+        top: calc(100% + 10px);
+        left: 12px;
+        right: 12px;
+        width: auto;
+        padding: 14px;
+        background: rgba(0, 36, 84, 0.96);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 18px;
+        box-shadow: 0 18px 55px rgba(0, 0, 0, 0.30);
+        backdrop-filter: blur(14px) saturate(140%);
+        -webkit-backdrop-filter: blur(14px) saturate(140%);
+        max-height: min(42vh, 320px);
+        overflow: auto;
+    }
+
+    .nav-menu.open {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        animation: mobileMenuDrop 160ms ease-out;
+    }
+
+    .nav-menu .nav-item {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid color-mix(in srgb, var(--nau-gold) 35%, rgba(255, 255, 255, 0.18));
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow:
+            0 0 0 1px color-mix(in srgb, var(--nau-gold) 14%, transparent),
+            0 12px 30px rgba(0, 0, 0, 0.18);
+    }
+
+    .nav-menu .nav-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 14px 12px;
+        width: 100%;
+        color: var(--white);
+        font-weight: 800;
+        letter-spacing: 0.02em;
+    }
+
+    .nav-menu .nav-link::after {
+        display: none;
+    }
+
+    @keyframes mobileMenuDrop {
+        from { opacity: 0; transform: translateY(-6px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 }
 
@@ -1100,7 +1235,41 @@ ul {
 
 @media (max-width: 768px) {
     .action-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: none;
+        grid-auto-flow: column;
+        /* Show ~2 cards + a peek of the 3rd */
+        grid-auto-columns: clamp(140px, 42vw, 175px);
+        gap: 12px;
+        max-width: 100%;
+        margin: 0;
+        padding: 0 14px 6px;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .action-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .action-grid {
+        scrollbar-width: none;
+    }
+
+    .action-item {
+        scroll-snap-align: start;
+        min-height: 118px;
+        padding: 18px 14px;
+    }
+
+    .action-icon {
+        width: 44px;
+        height: 44px;
+    }
+
+    .action-text {
+        font-size: 1.02rem;
     }
 }
 
@@ -1143,10 +1312,21 @@ ul {
   /* Mobile: stack cards vertically */
   @media (max-width: 768px) {
     .card-wrapper {
-      flex-direction: column;
-      align-items: center;
-      gap: clamp(12px, 4vw, 18px);
-      padding: clamp(12px, 5vw, 24px) 0;
+      /* Mobile: one-card-at-a-time carousel */
+      flex-direction: row;
+      align-items: stretch;
+      gap: 14px;
+      padding: 8px 18px 22px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-padding: 18px;
+    }
+
+    .card-wrapper > .equipment-card {
+      flex: 0 0 100%;
+      min-width: 100%;
+      max-width: 100%;
+      scroll-snap-align: center;
     }
   }
 
@@ -1170,10 +1350,22 @@ ul {
   /* Mobile: stack cards vertically */
   @media (max-width: 768px) {
     .card-wrapper-leadership {
-      flex-direction: column;
-      align-items: center; 
-      gap: clamp(12px, 4vw, 18px);
-      padding: clamp(12px, 5vw, 24px) 0;
+      /* Mobile: one-card-at-a-time carousel */
+      justify-content: flex-start;
+      flex-direction: row;
+      align-items: stretch;
+      gap: 14px;
+      padding: 8px 18px 22px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-padding: 18px;
+    }
+
+    .card-wrapper-leadership > .equipment-card {
+      flex: 0 0 100%;
+      min-width: 100%;
+      max-width: 100%;
+      scroll-snap-align: center;
     }
   }
 
@@ -1306,6 +1498,11 @@ ul {
     margin-bottom: 12px;
 }
 
+/* Center the role/department line on cards */
+.equipment-card .specs {
+    text-align: center;
+}
+
 .specs .small {
     color: var(--gray-600);
     font-size: 13px;
@@ -1401,6 +1598,21 @@ ul {
 
 .nav-btn.right {
     right: -15px;
+}
+
+@media (max-width: 768px) {
+    .nav-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    .nav-btn.left {
+        left: 6px;
+    }
+
+    .nav-btn.right {
+        right: 6px;
+    }
 }
 
 /**
@@ -1504,7 +1716,33 @@ ul {
 
 @media (max-width: 768px) {
     .metrics-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: var(--space-md);
+    }
+
+    .metrics-panel {
+        padding: var(--space-lg);
+    }
+
+    .metric-box {
+        padding: 12px 10px;
+    }
+
+    .metric-value {
+        font-size: clamp(1.55rem, 6.4vw, 2.1rem);
+    }
+
+    .metric-label {
+        font-size: 0.86rem;
+        line-height: 1.15;
+        margin: 5px 0 4px;
+    }
+
+    .metric-sub {
+        font-size: 0.72rem;
+        line-height: 1.2;
+        opacity: 0.9;
     }
 }
 
@@ -1701,6 +1939,13 @@ ul {
     padding: var(--space-4xl) 0;
     background: var(--gray-50);
     position: relative;
+}
+
+@media (max-width: 768px) {
+    .about-section {
+        /* Image is hidden on mobile; reduce dead space */
+        padding: var(--space-2xl) 0 var(--space-xl);
+    }
 }
 
 /* Partner Grid */
@@ -2257,6 +2502,12 @@ ul {
     height: 400px;
     display: flex;
     align-items: center;
+}
+
+@media (max-width: 768px) {
+    .about-image-col {
+        display: none;
+    }
 }
 
 .about-image {
@@ -3008,6 +3259,7 @@ ul {
     font-size: 0.9rem;
     color: var(--gray-600);
     flex-grow: 1; /* Pushes action buttons to the far right */
+    text-align: left;
 }
 
 .card-wrapper.list-view .action-row {
