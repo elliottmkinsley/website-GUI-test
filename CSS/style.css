@@ -967,8 +967,10 @@ ul {
 .slider-controls {
     position: absolute;
     bottom: var(--space-lg);
-    right: var(--space-lg);
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
+    align-items: center;
     gap: 12px;
     z-index: 10;
 }
@@ -991,6 +993,39 @@ ul {
     background: var(--nau-gold);
     color: var(--nau-blue);
     border-color: var(--nau-gold);
+}
+
+.slider-dots {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 6px;
+}
+
+.slider-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    background: rgba(255, 255, 255, 0.22);
+    cursor: pointer;
+    padding: 0;
+    transition: transform var(--trans-fast), background var(--trans-fast), border-color var(--trans-fast);
+}
+
+.slider-dot:hover {
+    transform: scale(1.15);
+    background: rgba(255, 255, 255, 0.38);
+}
+
+.slider-dot.active {
+    background: var(--nau-gold);
+    border-color: var(--nau-gold);
+}
+
+.slider-dot:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--nau-gold) 70%, transparent);
+    outline-offset: 4px;
 }
 
 /**
@@ -1177,6 +1212,11 @@ ul {
         0 18px 50px rgba(0, 36, 84, 0.14),
         0 0 34px rgba(250, 192, 26, 0.28);
     filter: saturate(1.03);
+}
+
+.equipment-card:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--nau-gold) 70%, transparent);
+    outline-offset: 4px;
 }
 
 /* Tags & Badges */

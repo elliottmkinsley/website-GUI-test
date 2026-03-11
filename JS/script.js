@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let currentSlide = 0;
         const totalSlides = slides.length;
         let slideInterval;
+        let dotButtons = [];
 
         function showSlide(index) {
             if (index >= totalSlides) index = 0;
@@ -63,6 +64,14 @@ document.addEventListener('DOMContentLoaded', () => {
             slides[currentSlide].classList.remove('active');
             currentSlide = index;
             slides[currentSlide].classList.add('active');
+
+            if (dotButtons.length) {
+                dotButtons.forEach((btn, i) => {
+                    const isActive = i === currentSlide;
+                    btn.classList.toggle('active', isActive);
+                    btn.setAttribute('aria-current', isActive ? 'true' : 'false');
+                });
+            }
         }
 
         // Navigation Wrappers
@@ -77,6 +86,37 @@ document.addEventListener('DOMContentLoaded', () => {
         // Auto-advance logic
         function startInterval() { slideInterval = setInterval(nextSlide, 6000); }
         function resetInterval() { clearInterval(slideInterval); startInterval(); }
+
+        // Dot indicators (click to jump)
+        const sliderControls = document.querySelector('#heroSlider .slider-controls');
+        if (sliderControls) {
+            const dotsWrap = document.createElement('div');
+            dotsWrap.className = 'slider-dots';
+            dotsWrap.setAttribute('role', 'tablist');
+            dotsWrap.setAttribute('aria-label', 'Hero slider navigation');
+
+            dotButtons = Array.from({ length: totalSlides }, (_, i) => {
+                const dot = document.createElement('button');
+                dot.type = 'button';
+                dot.className = 'slider-dot';
+                dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+                dot.setAttribute('aria-current', i === currentSlide ? 'true' : 'false');
+                dot.addEventListener('click', () => {
+                    showSlide(i);
+                    resetInterval();
+                });
+                dotsWrap.appendChild(dot);
+                return dot;
+            });
+
+            dotButtons[currentSlide]?.classList.add('active');
+            const nextButton = sliderControls.querySelector('#nextSlide');
+            if (nextButton) {
+                sliderControls.insertBefore(dotsWrap, nextButton);
+            } else {
+                sliderControls.appendChild(dotsWrap);
+            }
+        }
 
         // Init Slider
         startInterval();
@@ -97,6 +137,34 @@ document.addEventListener('DOMContentLoaded', () => {
           container.scrollBy({ left: amount, behavior: 'smooth' });
         });
       });
+
+    // -------------------------------------------------------------------------
+    // Make homepage team cards clickable (entire card)
+    // Clicking anywhere on a card navigates to its About link.
+    // -------------------------------------------------------------------------
+    document.querySelectorAll('.equipment-card').forEach((card) => {
+        const aboutLink = card.querySelector('a.about-btn[href]');
+        if (!aboutLink) return;
+
+        const title = card.querySelector('.card-title')?.textContent?.trim();
+        card.tabIndex = 0;
+        card.setAttribute('role', 'link');
+        if (title) card.setAttribute('aria-label', `About ${title}`);
+
+        const go = () => { window.location.href = aboutLink.href; };
+
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('a, button')) return;
+            go();
+        });
+
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                go();
+            }
+        });
+    });
 
     // Integrated Education Paths Carousel
     // -------------------------------------------------------------------------

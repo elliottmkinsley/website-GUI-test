@@ -67,7 +67,7 @@
   left: 18px;
   top: 18px;
   z-index: 2;
-  display: inline-flex;
+  display: none;
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
@@ -139,10 +139,16 @@
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  justify-content: center;
+  width: 100%;
 }
 
 .project-actions .btn {
-  padding: 10px 18px;
+  width: 100%;
+  max-width: 420px;
+  justify-content: center;
+  padding: 14px 18px;
+  font-size: 1.05rem;
 }
 
 @media (max-width: 950px) {
