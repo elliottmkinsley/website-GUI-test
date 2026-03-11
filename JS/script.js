@@ -27,6 +27,44 @@ function scrollCatalog(amount) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    const slugify = (value) => {
+        return String(value || '')
+            .toLowerCase()
+            .replace(/['"]/g, '')
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+    };
+
+    // Key format: firstName + lastInitial (e.g. "christopher-e")
+    const personKeyFromName = (fullName) => {
+        const cleaned = String(fullName || '').replace(/\s+/g, ' ').trim();
+        if (!cleaned) return null;
+
+        const parts = cleaned
+            .split(' ')
+            .map(p => p.replace(/[^a-zA-Z0-9-]/g, ''))
+            .filter(Boolean);
+        if (parts.length < 2) return null;
+
+        const firstName = parts[0];
+        const lastName = parts[parts.length - 1];
+        const lastInitial = lastName?.[0];
+        if (!lastInitial) return null;
+
+        return `${slugify(firstName)}-${slugify(lastInitial)}`;
+    };
+
+    // Auto-assign anchor ids on Our Team page
+    if (document.querySelector('.team-page')) {
+        document.querySelectorAll('.person-feature').forEach((card) => {
+            if (card.id) return;
+            const name = card.querySelector('.person-name')?.textContent;
+            const key = personKeyFromName(name);
+            if (!key) return;
+            card.id = key;
+        });
+    }
+
     // -------------------------------------------------------------------------
     // Sticky Header Logic
     // Toggles 'scrolled' class based on scroll position for glassmorphism effect.
@@ -139,29 +177,27 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
     // -------------------------------------------------------------------------
-    // Make homepage team cards clickable (entire card)
-    // Clicking anywhere on a card navigates to its About link.
+    // Homepage "About" buttons -> Our Team sections
+    // Ensures all About buttons in carousels navigate consistently.
     // -------------------------------------------------------------------------
     document.querySelectorAll('.equipment-card').forEach((card) => {
-        const aboutLink = card.querySelector('a.about-btn[href]');
-        if (!aboutLink) return;
+        const title = card.querySelector('.card-title')?.textContent;
+        const key = personKeyFromName(title);
+        if (!key) return;
 
-        const title = card.querySelector('.card-title')?.textContent?.trim();
-        card.tabIndex = 0;
-        card.setAttribute('role', 'link');
-        if (title) card.setAttribute('aria-label', `About ${title}`);
+        const href = `Our_Team.html#${key}`;
 
-        const go = () => { window.location.href = aboutLink.href; };
+        card.querySelectorAll('.about-btn').forEach((el) => {
+            const tag = el.tagName.toLowerCase();
+            if (tag === 'a') {
+                el.setAttribute('href', href);
+                el.removeAttribute('target');
+                el.removeAttribute('rel');
+                return;
+            }
 
-        card.addEventListener('click', (e) => {
-            if (e.target.closest('a, button')) return;
-            go();
-        });
-
-        card.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                go();
+            if (tag === 'button') {
+                el.addEventListener('click', () => { window.location.href = href; });
             }
         });
     });

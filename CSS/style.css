@@ -1042,8 +1042,10 @@ ul {
 
 .action-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 32px;
+    max-width: 1320px;
+    margin: 0 auto;
 }
 
 .action-item {
@@ -1053,7 +1055,7 @@ ul {
         0 0 0 1px color-mix(in srgb, var(--nau-gold) 18%, transparent),
         0 10px 30px rgba(0, 0, 0, 0.18),
         0 0 22px rgba(250, 192, 26, 0.12);
-    padding: var(--space-lg);
+    padding: var(--space-xl) var(--space-lg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1062,6 +1064,7 @@ ul {
     transition: all 0.3s;
     cursor: pointer;
     height: 100%;
+    min-height: 150px;
     border-radius: var(--radius-md);
     text-decoration: none;
 }
@@ -1082,8 +1085,8 @@ ul {
 }
 
 .action-icon {
-    width: 42px;
-    height: 42px;
+    width: 52px;
+    height: 52px;
     margin-bottom: var(--space-sm);
     fill: var(--nau-gold);
 }
@@ -1092,7 +1095,7 @@ ul {
     color: var(--white);
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: 1.05rem;
+    font-size: 1.15rem;
 }
 
 @media (max-width: 768px) {
@@ -1212,11 +1215,6 @@ ul {
         0 18px 50px rgba(0, 36, 84, 0.14),
         0 0 34px rgba(250, 192, 26, 0.28);
     filter: saturate(1.03);
-}
-
-.equipment-card:focus-visible {
-    outline: 3px solid color-mix(in srgb, var(--nau-gold) 70%, transparent);
-    outline-offset: 4px;
 }
 
 /* Tags & Badges */

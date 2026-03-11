@@ -27,6 +27,14 @@
   margin-bottom: var(--space-2xl);
 }
 
+.team-section {
+  margin-top: var(--space-2xl);
+}
+
+.team-hero + .team-section {
+  margin-top: 0;
+}
+
 .team-hero .kicker {
   display: inline-flex;
   align-items: center;
@@ -91,6 +99,7 @@
 /* Featured person card (single sample) */
 .person-feature {
   position: relative;
+  scroll-margin-top: 110px;
   background: linear-gradient(
     135deg,
     color-mix(in srgb, var(--nau-blue) 10%, var(--white)) 0%,
