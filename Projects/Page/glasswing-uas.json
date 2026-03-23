@@ -1,0 +1,13 @@
+{
+  "tag": "News",
+  "title": "Glasswing UAS Takes Flight",
+  "description": "NAU's autonomous drone navigates dense forests.",
+  "imageSrc": "Images/News/forest.jpg",
+  "imageAlt": "Glasswing UAS Takes Flight",
+  "buttonLabel": "Read Full Story",
+  "linkUrl": "https://news.nau.edu/glasswing/?utm_medium=%20email&utm_source=02/10/26&utm_campaign=NAUNews&utm_term=internal&utm_content=Glasswing",
+  "badge": "Featured Story",
+  "source": "NAU News",
+  "meta": "UAS • Under canopy mapping",
+  "impact": "Radiant is pushing the boundaries of remote sensing by enabling data collection in environments where satellites and traditional drones fail. Through autonomous navigation and advanced sensing, Radiant is unlocking new visibility in complex terrains—improving wildfire response, environmental monitoring, and mission-critical decision-making."
+}

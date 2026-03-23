@@ -1,0 +1,11 @@
+{
+  "name": "Scott Goetz",
+  "role": "Regents' Professor",
+  "type": "Professor",
+  "school": "School of Informatics, Computing, Cyber Systems",
+  "affiliation": "Northern Arizona University",
+  "focus": "Earth observation • Climate-driven ecosystem change • Carbon and biodiversity monitoring",
+  "bio": "Scott J. Goetz is a Regents’ Professor of Earth Observation and Ecological Informatics at Northern Arizona University, where he conducts research on global environmental change, ecosystem dynamics, and remote sensing. With over three decades of experience, his work focuses on understanding how climate change, disturbance events such as wildfire and deforestation, and land use impact terrestrial ecosystems, including forests and tundra. Dr. Goetz leads the Global Earth Observation and Dynamics of Ecosystems (GEODE) Lab, where he integrates satellite and UAV remote sensing, field data, and machine learning to analyze ecosystem structure, carbon cycling, and biodiversity at multiple scales. He has played key roles in major NASA programs, including serving as Science Lead for the Arctic Boreal Vulnerability Experiment and Deputy Principal Investigator for the Global Ecosystem Dynamics Investigation mission. A highly cited researcher, his work has significantly advanced understanding of how ecosystems respond to climate change and has contributed to international efforts such as the Intergovernmental Panel on Climate Change and global carbon monitoring initiatives.",
+  "profileUrl": "https://directory.nau.edu/?person=sjg326",
+  "imageSrc": "Images/People/scott_g.jpg"
+}

@@ -151,6 +151,16 @@
   font-size: 1.05rem;
 }
 
+.project-data-error {
+  margin: 0;
+  padding: 18px 20px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--gray-200);
+  background: var(--white);
+  color: var(--gray-700);
+  font-weight: 600;
+}
+
 @media (max-width: 950px) {
   .project-card {
     grid-template-columns: 1fr;

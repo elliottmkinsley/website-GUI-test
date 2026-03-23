@@ -1,0 +1,53 @@
+{
+  "leadership": [
+    "People/Leadership/christopher-edwards.json",
+    "People/Leadership/temuulen-teki-sankey.json",
+    "People/Leadership/michael-shafer.json",
+    "People/Leadership/courtney-giauque.json"
+  ],
+  "faculty": [
+    "People/Core Researchers/alexander-shenkin.json",
+    "People/Core Researchers/alicia-rutledge.json",
+    "People/Core Researchers/ben-lucas.json",
+    "People/Core Researchers/bridget-smith-konter.json",
+    "People/Core Researchers/cheng-ye.json",
+    "People/Core Researchers/chris-haberle.json",
+    "People/Core Researchers/haley-sapers.json",
+    "People/Core Researchers/jean-francois-smekens.json",
+    "People/Core Researchers/kaitlyn-davis.json",
+    "People/Core Researchers/keith-nowicki.json",
+    "People/Core Researchers/kristen-bennett.json",
+    "People/Core Researchers/luke-auld-thomas.json",
+    "People/Core Researchers/mark-salvatore.json",
+    "People/Core Researchers/patrick-jantz.json",
+    "People/Core Researchers/scott-goetz.json"
+  ],
+  "staff": [
+    "People/Staff/jagoda-janiszewska.json",
+    "People/Staff/darryl-colebank.json",
+    "People/Staff/christopher-rose.json",
+    "People/Staff/charles-saluski.json",
+    "People/Staff/nathan-smith.json"
+  ],
+  "postdocs": [
+    "People/Postdoctoral Scholars/ivan-garzon.json",
+    "People/Postdoctoral Scholars/emily-mason.json",
+    "People/Postdoctoral Scholars/benjamin-mckeeby.json",
+    "People/Postdoctoral Scholars/matteo-redana.json",
+    "People/Postdoctoral Scholars/julia-tatum.json",
+    "People/Postdoctoral Scholars/christopher-wolfe.json"
+  ],
+  "graduate": [
+    "People/Graduate Students & Assistants/amelia-ascione.json",
+    "People/Graduate Students & Assistants/candice-anda.json",
+    "People/Graduate Students & Assistants/tyler-cox.json",
+    "People/Graduate Students & Assistants/daphne-chapline.json",
+    "People/Graduate Students & Assistants/emily-kriner.json",
+    "People/Graduate Students & Assistants/gavin-moriarty.json",
+    "People/Graduate Students & Assistants/ian-marrs.json",
+    "People/Graduate Students & Assistants/margaret-berestyuk.json",
+    "People/Graduate Students & Assistants/margo-moceyunas.json",
+    "People/Graduate Students & Assistants/michael-strane.json",
+    "People/Graduate Students & Assistants/sam-lockhart.json"
+  ]
+}

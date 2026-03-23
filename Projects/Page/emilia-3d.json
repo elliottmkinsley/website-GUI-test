@@ -1,0 +1,13 @@
+{
+  "tag": "News",
+  "title": "NAU Students Build a Camera Headed to Mars",
+  "description": "A student-led team at NAU designed and built a dual-wavelength camera that will orbit Mars, capturing both visible and infrared data to unlock new insights about the planet.",
+  "imageSrc": "Images/News/mars_lab.jpg",
+  "imageAlt": "Three New Investigations Headed to the Moon",
+  "buttonLabel": "Read Full Story",
+  "linkUrl": "https://news.nau.edu/mars-visions-camera/",
+  "badge": "Featured Story",
+  "source": "NASA",
+  "meta": "Mars Exploration • Student Innovation • Space Technology",
+  "impact": "Radiant empowers students to work on real NASA missions, bridging education and industry by turning hands-on research into space-ready technology. Through projects like VISIONS, Radiant is accelerating innovation in remote sensing while preparing the next generation of engineers and scientists for planetary exploration."
+}

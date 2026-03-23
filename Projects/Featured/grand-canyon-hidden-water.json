@@ -1,0 +1,13 @@
+{
+  "tag": "News",
+  "title": "Mapping the Grand Canyon’s Hidden Water",
+  "description": "NAU researchers are using lidar and cave mapping to trace how snowmelt travels through underground systems to sustain vital springs in the Grand Canyon.",
+  "imageSrc": "Images/News/GC-Water.jpg",
+  "imageAlt": "Mapping the Grand Canyon's Hidden Water",
+  "buttonLabel": "Read Full Story",
+  "linkUrl": "https://news.nau.edu/lasala-canyon-springs/?utm_medium=%20email&utm_source=02/05/26&utm_campaign=NAUNews&utm_term=internal&utm_content=Grand_Canyon",
+  "badge": "Featured Story",
+  "source": "NAU News",
+  "meta": "LiDAR • Caves • Springs",
+  "impact": "Radiant advances our understanding of complex natural systems by combining remote sensing with field exploration in extreme environments. By mapping hidden water pathways, Radiant is helping protect critical water sources, inform infrastructure decisions, and improve resilience in the face of climate change."
+}

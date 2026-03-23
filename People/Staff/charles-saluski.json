@@ -1,0 +1,11 @@
+{
+  "name": "Charles Saluski",
+  "role": "Research Computing Systems Administrator, Intermediate",
+  "type": "Staff",
+  "school": "Radiant Center Research Center",
+  "affiliation": "Northern Arizona University",
+  "focus": "Research computing • Linux systems • Computer vision and data analysis",
+  "bio": "Charles Saluski is a Research Computing System Administrator at Northern Arizona University, where he supports advanced computational infrastructure for research and data-driven projects. With over a decade of experience spanning software engineering, machine learning, and systems administration, he specializes in designing, deploying, and maintaining scalable computing environments for academic use. Within NAU’s Planetary Instrumentation eXperimentation and Exploration Laboratory (PIXEL), he manages Linux systems and networking infrastructure while developing tools for image processing, computer vision, and data analysis. His work focuses on optimizing performance and reliability of computational platforms used in planetary science and remote sensing research. Saluski holds a Bachelor of Science in Computer Science from Northern Arizona University and is pursuing a Master’s degree in Computer Science at Arizona State University.",
+  "profileUrl": "https://directory.nau.edu/?person=cs3293",
+  "imageSrc": "Images/People/charles_s.jpg"
+}

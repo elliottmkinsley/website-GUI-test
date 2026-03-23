@@ -1,0 +1,12 @@
+{
+  "featured": [
+    "Projects/featured/mars-camera.json",
+    "Projects/featured/grand-canyon-hidden-water.json",
+    "Projects/featured/glasswing-uas.json"
+  ],
+  "page": [
+    "Projects/page/emilia-3d.json",
+    "Projects/page/grand-canyon-hidden-water.json",
+    "Projects/page/glasswing-uas.json"
+  ]
+}

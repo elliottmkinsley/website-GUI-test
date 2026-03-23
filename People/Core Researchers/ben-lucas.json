@@ -1,0 +1,11 @@
+{
+  "name": "Ben Lucas",
+  "role": "Assistant Professor",
+  "type": "Professor",
+  "school": "Department of Mathematics and Statistics",
+  "affiliation": "Northern Arizona University",
+  "focus": "Machine learning • Spatiotemporal modeling • Environmental data science",
+  "bio": "Benjamin Lucas is an Assistant Professor in the Department of Mathematics and Statistics at Northern Arizona University, where his research focuses on data science, machine learning, and environmental data analysis. His work centers on developing advanced computational methods—particularly in deep learning, time series analysis, and spatiotemporal modeling—to better understand complex environmental and geospatial systems. Dr. Lucas applies these techniques to a range of real-world challenges, including satellite image analysis, carbon and climate data modeling, and ecosystem monitoring. His research also includes applications in public health forecasting, such as modeling COVID-19 trends using machine learning approaches. As part of interdisciplinary collaborations, he contributes to projects that integrate artificial intelligence with Earth and environmental sciences, helping improve large-scale data interpretation and predictive modeling. Dr. Lucas has published research on topics including time series classification, domain adaptation, and remote sensing, and his work has been widely cited within the data science and environmental research communities.",
+  "profileUrl": "https://directory.nau.edu/?search=Ben%20Lucas&person=bml438",
+  "imageSrc": "Images/People/ben_l.jpg"
+}

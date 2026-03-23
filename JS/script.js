@@ -26,7 +26,7 @@ function scrollCatalog(amount) {
     scrollGrid(amount);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const slugify = (value) => {
         return String(value || '')
             .toLowerCase()
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Key format: firstName + lastInitial (e.g. "christopher-e")
-    const personKeyFromName = (fullName) => {
+    const personKeyFromName = window.TeamData?.personKeyFromName || ((fullName) => {
         const cleaned = String(fullName || '').replace(/\s+/g, ' ').trim();
         if (!cleaned) return null;
 
@@ -52,7 +52,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!lastInitial) return null;
 
         return `${slugify(firstName)}-${slugify(lastInitial)}`;
-    };
+    });
+
+    const dataRenderTasks = [];
+    if (window.TeamData?.renderPageData) {
+        dataRenderTasks.push(window.TeamData.renderPageData());
+    }
+    if (window.ProjectData?.renderPageData) {
+        dataRenderTasks.push(window.ProjectData.renderPageData());
+    }
+    if (dataRenderTasks.length) {
+        await Promise.all(dataRenderTasks);
+    }
 
     // Auto-assign anchor ids on Our Team page
     if (document.querySelector('.team-page')) {
@@ -63,6 +74,22 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!key) return;
             card.id = key;
         });
+
+        const scrollToTeamHashTarget = () => {
+            const rawHash = window.location.hash;
+            if (!rawHash || rawHash.length < 2) return;
+
+            const targetId = decodeURIComponent(rawHash.slice(1));
+            const target = document.getElementById(targetId);
+            if (!target) return;
+
+            requestAnimationFrame(() => {
+                target.scrollIntoView({ behavior: 'auto', block: 'start' });
+            });
+        };
+
+        scrollToTeamHashTarget();
+        window.addEventListener('hashchange', scrollToTeamHashTarget);
     }
 
     // -------------------------------------------------------------------------
@@ -178,30 +205,31 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
 
+    // Hide carousel arrows when content doesn't overflow (all cards visible)
     // -------------------------------------------------------------------------
-    // Homepage "About" buttons -> Our Team sections
-    // Ensures all About buttons in carousels navigate consistently.
-    // -------------------------------------------------------------------------
-    document.querySelectorAll('.equipment-card').forEach((card) => {
-        const title = card.querySelector('.card-title')?.textContent;
-        const key = personKeyFromName(title);
-        if (!key) return;
+    const updateCarouselArrows = () => {
+        document.querySelectorAll('.carousel-wrapper').forEach((wrapper) => {
+            const btns = wrapper.querySelectorAll('.nav-btn');
+            const targetId = btns[0]?.dataset?.target;
+            const container = targetId ? document.getElementById(targetId) : null;
+            if (!container || !btns.length) return;
 
-        const href = `Our_Team.html#${key}`;
-
-        card.querySelectorAll('.about-btn').forEach((el) => {
-            const tag = el.tagName.toLowerCase();
-            if (tag === 'a') {
-                el.setAttribute('href', href);
-                el.removeAttribute('target');
-                el.removeAttribute('rel');
-                return;
-            }
-
-            if (tag === 'button') {
-                el.addEventListener('click', () => { window.location.href = href; });
-            }
+            const hasOverflow = container.scrollWidth > container.clientWidth;
+            btns.forEach((b) => {
+                b.style.display = hasOverflow ? '' : 'none';
+            });
         });
+    };
+
+    updateCarouselArrows();
+    window.addEventListener('resize', updateCarouselArrows);
+
+    document.querySelectorAll('.carousel-wrapper').forEach((wrapper) => {
+        const targetId = wrapper.querySelector('.nav-btn')?.dataset?.target;
+        const container = targetId ? document.getElementById(targetId) : null;
+        if (container && typeof ResizeObserver !== 'undefined') {
+            new ResizeObserver(updateCarouselArrows).observe(container);
+        }
     });
 
     // Integrated Education Paths Carousel
@@ -221,41 +249,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // -------------------------------------------------------------------------
-    // Mobile Navigation Toggle
-    // Handles the mobile menu overlay state.
-    // -------------------------------------------------------------------------
-    const mobileBtn = document.querySelector('.mobile-toggle');
-    const navMenu = document.querySelector('.nav-menu');
-
-    if (mobileBtn && navMenu) {
-        mobileBtn.addEventListener('click', () => {
-            const isHidden = window.getComputedStyle(navMenu).display === 'none';
-            if (isHidden) {
-                // Force flex display for mobile overlay
-                Object.assign(navMenu.style, {
-                    display: 'flex',
-                    flexDirection: 'column',
-                    position: 'absolute',
-                    top: '100%',
-                    left: '0',
-                    width: '100%',
-                    background: 'var(--nau-blue)',
-                    padding: '20px',
-                    zIndex: '1000'
-                });
-            } else {
-                navMenu.style.display = 'none';
-                // Reset inline style if viewport resized
-                if (window.innerWidth > 1024) navMenu.style.display = '';
-            }
-        });
-    }
-
-    // -------------------------------------------------------------------------
     // Scroll Animation Observer (Progressive Enhancement)
     // Uses IntersectionObserverAPI to trigger '.fade-in' animations.
     // -------------------------------------------------------------------------
-    const cards = document.querySelectorAll('.card, .featured-story, .player-card, .metric-box');
+    const cards = document.querySelectorAll('.card, .featured-story, .player-card, .metric-box, .project-card');
 
     // Fallback: If JS fails or Observer not supported, force reveal after delay
     setTimeout(() => {
