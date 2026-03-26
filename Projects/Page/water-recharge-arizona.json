@@ -1,0 +1,13 @@
+{
+  "tag": "News",
+  "title": "Enhancing Water Recharge in Arizona",
+  "description": "NAU researchers joined a tri-university effort to identify where Arizona can capture more water, strengthen recharge, and improve long-term resilience.",
+  "imageSrc": "Images/News/water-recharge-arizona.jpg",
+  "imageAlt": "A lake surrounded by forested Arizona landscape",
+  "buttonLabel": "Read Full Story",
+  "linkUrl": "https://news.nau.edu/got-water-nau-researchers-a-part-of-a-tri-university-collaboration-to-enhance-water-recharge-in-arizona/",
+  "badge": "Research Story",
+  "source": "NAU Review",
+  "meta": "Water recharge • Arizona • Remote sensing",
+  "impact": "Radiant connects geospatial analysis, forest monitoring, and hydrologic science to help identify where land management can improve water recharge. This work supports more resilient aquifers, healthier forests, and better long-term water planning across Arizona."
+}

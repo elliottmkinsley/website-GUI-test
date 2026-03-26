@@ -1,0 +1,13 @@
+{
+  "tag": "News",
+  "title": "Welcome to the Space Cam!",
+  "description": "NAU students are designing, building, and testing a dual-wavelength camera system that could support future interplanetary NASA missions.",
+  "imageSrc": "Images/News/visions-spaceflight-hardware.jpg",
+  "imageAlt": "People in cleanroom gear work on space technology",
+  "buttonLabel": "Read Full Story",
+  "linkUrl": "https://news.nau.edu/visions-spaceflight-hardware/",
+  "badge": "Research Story",
+  "source": "NAU Review",
+  "meta": "VISIONS • Spaceflight hardware • Mars",
+  "impact": "Radiant helps train the next generation of planetary scientists and engineers by giving students hands-on experience building real spaceflight hardware. Projects like VISIONS connect classroom learning with mission-ready instrumentation for future Mars and deep-space exploration."
+}

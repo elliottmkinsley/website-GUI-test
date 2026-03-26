@@ -1,11 +1,17 @@
 {
   "featured": [
-    "Projects/Featured/mars-camera.json",
+    "Projects/Featured/emilia-3d.json",
+    "Projects/Featured/mars-organic-material.json",
     "Projects/Featured/grand-canyon-hidden-water.json",
     "Projects/Featured/glasswing-uas.json"
   ],
   "page": [
     "Projects/Page/emilia-3d.json",
+    "Projects/Page/mars-organic-material.json",
+    "Projects/Page/goetz-tropical-forests.json",
+    "Projects/Page/water-recharge-arizona.json",
+    "Projects/Page/visions-spaceflight-hardware.json",
+    "Projects/Page/permafrost-carbon-wildfires.json",
     "Projects/Page/grand-canyon-hidden-water.json",
     "Projects/Page/glasswing-uas.json"
   ]

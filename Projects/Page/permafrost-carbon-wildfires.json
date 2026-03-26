@@ -1,0 +1,13 @@
+{
+  "tag": "News",
+  "title": "Permafrost, Carbon, and Northern Wildfires",
+  "description": "NAU researchers helped show how northern wildfires can trigger long-term climate impacts by accelerating permafrost thaw and carbon release.",
+  "imageSrc": "Images/News/permafrost-carbon-wildfires.jpg",
+  "imageAlt": "Emergency helicopter flying above a forest fire and billowing smoke",
+  "buttonLabel": "Read Full Story",
+  "linkUrl": "https://news.nau.edu/permafrost-carbon-wildfires/",
+  "badge": "Research Story",
+  "source": "NAU Review",
+  "meta": "Permafrost • Wildfires • Climate",
+  "impact": "Radiant's remote sensing and climate analysis work helps reveal how fire reshapes high-latitude ecosystems and carbon storage over time. By connecting satellite data, fire records, and environmental modeling, NAU researchers are improving how we understand and respond to climate-driven landscape change."
+}

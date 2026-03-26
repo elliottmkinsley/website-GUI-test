@@ -1,0 +1,13 @@
+{
+  "tag": "News",
+  "title": "Protecting the Last Tropical Forests",
+  "description": "NAU scientists helped map the world's highest-quality tropical forests, showing how urgently they need protection to support climate resilience and human well-being.",
+  "imageSrc": "Images/News/goetz-tropical-forests.jpg",
+  "imageAlt": "Scott Goetz teaching a class",
+  "buttonLabel": "Read Full Story",
+  "linkUrl": "https://news.nau.edu/goetz-tropical-forests/",
+  "badge": "Research Story",
+  "source": "NAU Review",
+  "meta": "Forests • Climate • Earth observation",
+  "impact": "Radiant's earth observation work helps translate satellite and structural forest data into practical conservation strategy. By identifying where the highest-integrity tropical forests remain, NAU researchers are helping guide protection, restoration, and climate-focused decision-making at a global scale."
+}

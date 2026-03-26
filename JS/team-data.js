@@ -74,6 +74,20 @@
     return Boolean(profileUrl && profileUrl.trim() && profileUrl.trim() !== "#");
   }
 
+  function getImageStyle(person) {
+    const parts = [];
+
+    if (person?.imageFit) {
+      parts.push(`object-fit: ${escapeHtml(person.imageFit)}`);
+    }
+
+    if (person?.imagePosition) {
+      parts.push(`object-position: ${escapeHtml(person.imagePosition)}`);
+    }
+
+    return parts.length ? ` style="${parts.join("; ")}"` : "";
+  }
+
   async function fetchJson(path) {
     if (personCache.has(path)) {
       return personCache.get(path);
@@ -135,9 +149,39 @@
     return shuffled;
   }
 
+  function markLowResolutionHeadshots() {
+    const images = document.querySelectorAll(".equipment-img, .person-photo-frame img");
+
+    images.forEach((img) => {
+      const evaluate = () => {
+        const renderedWidth = Math.round(img.clientWidth);
+        const renderedHeight = Math.round(img.clientHeight);
+        const naturalWidth = img.naturalWidth || 0;
+        const naturalHeight = img.naturalHeight || 0;
+
+        if (!renderedWidth || !renderedHeight || !naturalWidth || !naturalHeight) {
+          return;
+        }
+
+        const isLowRes =
+          naturalWidth < renderedWidth * 1.1 ||
+          naturalHeight < renderedHeight * 1.1;
+
+        img.classList.toggle("is-low-res", isLowRes);
+      };
+
+      if (img.complete) {
+        evaluate();
+      } else {
+        img.addEventListener("load", evaluate, { once: true });
+      }
+    });
+  }
+
   function renderHomepageCard(person) {
     const anchorKey = personKeyFromName(person.name);
     const aboutHref = anchorKey ? `Our_Team.html#${anchorKey}` : "Our_Team.html";
+    const imageStyle = getImageStyle(person);
 
     return `
       <div class="equipment-card">
@@ -149,6 +193,7 @@
             src="${escapeHtml(person.imageSrc)}"
             class="equipment-img"
             alt="${escapeHtml(person.name)} headshot"
+            ${imageStyle}
             onerror="this.src='https://via.placeholder.com/150'"
           >
         </div>
@@ -168,6 +213,7 @@
     const profile = getProfileAttributes(person.profileUrl);
     const anchorKey = personKeyFromName(person.name);
     const roleAndType = formatRoleAndType(person);
+    const imageStyle = getImageStyle(person);
     const quickFactsActionMarkup = hasUsableProfileUrl(person.profileUrl)
       ? `
             <div class="person-actions" aria-label="Profile actions">
@@ -186,6 +232,7 @@
               <img
                 src="${escapeHtml(person.imageSrc)}"
                 alt="${escapeHtml(person.name)} headshot"
+                ${imageStyle}
                 onerror="this.src='https://via.placeholder.com/600x750?text=Headshot'"
               />
             </div>
@@ -282,6 +329,8 @@ ${quickFactsActionMarkup}
       }
 
       await Promise.all(tasks);
+      markLowResolutionHeadshots();
+      window.addEventListener("resize", markLowResolutionHeadshots);
     } catch (error) {
       console.error("Team data rendering failed.", error);
       renderDataLoadError();

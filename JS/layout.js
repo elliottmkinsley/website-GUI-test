@@ -23,17 +23,17 @@ class SiteHeader extends HTMLElement {
                     <img src="${basePath}Images/NAU.png" alt="Northern Arizona University" class="header-logo">
                     <div class="brand-divider"></div>
                     <div class="brand-text">
-                        <span class="dept">RADIANT CENTER for Remote Sensing</span>
+                        <span class="dept">NAU Radiant Center for Remote Sensing</span>
                     </div>
                 </a>
 
-                <button class="mobile-toggle" aria-label="Open Menu">
+                <button type="button" class="mobile-toggle" aria-label="Open Menu" aria-expanded="false" aria-controls="site-nav-menu">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 12h18M3 6h18M3 18h18" />
                     </svg>
                 </button>
 
-                <nav class="nav-menu">
+                <nav class="nav-menu" id="site-nav-menu">
                     <div class="nav-item"><a href="${basePath}index.html" class="nav-link" data-path="index.html">Home</a></div>
                     <div class="nav-item"><a href="${basePath}Our_Team.html" class="nav-link" data-path="Our_Team.html">Our Team</a></div>
                     
@@ -67,57 +67,50 @@ class SiteHeader extends HTMLElement {
     initMobileMenu() {
         const mobileBtn = this.querySelector('.mobile-toggle');
         const navMenu = this.querySelector('.nav-menu');
+        const mobileLayout = window.matchMedia('(max-width: 1024px)');
 
         if (!mobileBtn || !navMenu) return;
 
-        const closeMenu = () => {
-            navMenu.classList.remove('open');
-            if (window.innerWidth > 1024) {
-                navMenu.style.display = '';
-            } else {
-                navMenu.style.display = 'none';
-            }
-            mobileBtn.setAttribute('aria-expanded', 'false');
-        };
+        let isMenuOpen = false;
 
-        const openMenu = () => {
-            const isPhone = window.innerWidth <= 600;
-            mobileBtn.setAttribute('aria-expanded', 'true');
+        const syncMenuState = () => {
+            const isMobileLayout = mobileLayout.matches;
 
-            if (isPhone) {
-                navMenu.style.display = '';
-                navMenu.classList.add('open');
+            if (!isMobileLayout) {
+                isMenuOpen = false;
+                navMenu.hidden = false;
+                navMenu.classList.remove('open');
+                mobileBtn.setAttribute('aria-expanded', 'false');
+                mobileBtn.setAttribute('aria-label', 'Open Menu');
                 return;
             }
 
-            navMenu.classList.remove('open');
-            Object.assign(navMenu.style, {
-                display: 'flex',
-                flexDirection: 'column',
-                position: 'absolute',
-                top: '100%',
-                left: '0',
-                width: '100%',
-                background: 'var(--nau-blue)',
-                borderTop: '1px solid rgba(255, 255, 255, 0.12)',
-                borderBottomLeftRadius: '18px',
-                borderBottomRightRadius: '18px',
-                boxShadow: '0 18px 55px rgba(0, 0, 0, 0.30)',
-                padding: '20px',
-                maxHeight: 'min(55vh, 420px)',
-                overflow: 'auto',
-                zIndex: '1000'
-            });
+            navMenu.hidden = !isMenuOpen;
+            navMenu.classList.toggle('open', isMenuOpen);
+            mobileBtn.setAttribute('aria-expanded', String(isMenuOpen));
+            mobileBtn.setAttribute('aria-label', isMenuOpen ? 'Close Menu' : 'Open Menu');
+        };
+
+        const closeMenu = () => {
+            if (!mobileLayout.matches) return;
+            isMenuOpen = false;
+            syncMenuState();
+        };
+
+        const openMenu = () => {
+            if (!mobileLayout.matches) return;
+            isMenuOpen = true;
+            syncMenuState();
         };
 
         // Start closed
-        mobileBtn.setAttribute('aria-expanded', 'false');
-        closeMenu();
+        syncMenuState();
 
         mobileBtn.addEventListener('click', (e) => {
+            e.preventDefault();
             e.stopPropagation();
-            const isOpen = navMenu.classList.contains('open') || window.getComputedStyle(navMenu).display !== 'none';
-            if (isOpen) closeMenu();
+            if (!mobileLayout.matches) return;
+            if (isMenuOpen) closeMenu();
             else openMenu();
         });
 
@@ -129,9 +122,8 @@ class SiteHeader extends HTMLElement {
         });
 
         // Close on outside tap/click
-        document.addEventListener('click', (e) => {
-            const isOpen = navMenu.classList.contains('open') || window.getComputedStyle(navMenu).display !== 'none';
-            if (!isOpen) return;
+        document.addEventListener('pointerdown', (e) => {
+            if (!mobileLayout.matches || !isMenuOpen) return;
             if (navMenu.contains(e.target) || mobileBtn.contains(e.target)) return;
             closeMenu();
         });
@@ -139,20 +131,14 @@ class SiteHeader extends HTMLElement {
         // Close on Escape
         document.addEventListener('keydown', (e) => {
             if (e.key !== 'Escape') return;
-            const isOpen = navMenu.classList.contains('open') || window.getComputedStyle(navMenu).display !== 'none';
-            if (isOpen) closeMenu();
+            if (isMenuOpen) closeMenu();
         });
 
-        // If viewport changes, ensure we don't leave an overlay stuck open
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 1024) {
-                navMenu.classList.remove('open');
-                navMenu.style.display = '';
-                mobileBtn.setAttribute('aria-expanded', 'false');
-                return;
-            }
-            closeMenu();
-        });
+        if (typeof mobileLayout.addEventListener === 'function') {
+            mobileLayout.addEventListener('change', syncMenuState);
+        } else if (typeof mobileLayout.addListener === 'function') {
+            mobileLayout.addListener(syncMenuState);
+        }
     }
 }
 
