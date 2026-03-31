@@ -22,17 +22,42 @@
       <section class="team-hero" aria-label="Team introduction">
         <h1>Meet the Radiant Center</h1>
         <p>
-          A cross campus network of researchers and staff advancing remote sensing. From planetary surfaces and
-          atmospheres to wildfire science, ecology, and hydrology.
+          An interdisciplinary network of researchers, instrument & data engineers, professional staff and graduate students advancing remote sensing technologies, data collection, and instrumentation.
         </p>
       </section>
+
+      <section class="team-tools" aria-label="Team search and filters">
+        <div class="team-tool-field">
+          <label for="teamSearch">Search team</label>
+          <input
+            id="teamSearch"
+            type="search"
+            placeholder="Search by name, focus, school, or affiliation"
+            autocomplete="off"
+          />
+        </div>
+        <div class="team-tool-field team-tool-field-select">
+          <label for="teamSectionFilter">Filter by group</label>
+          <select id="teamSectionFilter">
+            <option value="all">All groups</option>
+            <option value="leadership">Leadership</option>
+            <option value="faculty">Faculty</option>
+            <option value="staff">Staff</option>
+            <option value="postdocs">Postdoctoral Scholars</option>
+            <option value="graduate">Graduate Students &amp; Assistants</option>
+          </select>
+        </div>
+      </section>
+
+      <p class="team-filter-empty" id="teamFilterEmpty" hidden>
+        No team members match your current search and filter.
+      </p>
 
       <!-- SAMPLE SECTION (start with one person so you can iterate) -->
       <section class="team-section" id="leadership" aria-label="Leadership">
         <div class="team-section-header">
           <div>
             <h2>Leadership</h2>
-            <p class="section-note">Core leads and contacts.</p>
           </div>
         </div>
 
@@ -43,7 +68,6 @@
         <div class="team-section-header">
           <div>
             <h2>Faculty</h2>
-            <p class="section-note">Faculty members affiliated with Radiant.</p>
           </div>
         </div>
 
@@ -54,7 +78,6 @@
         <div class="team-section-header">
           <div>
             <h2>Staff</h2>
-            <p class="section-note">Staff supporting Radiant operations and projects.</p>
           </div>
         </div>
 
@@ -65,7 +88,6 @@
         <div class="team-section-header">
           <div>
             <h2>Postdoctoral Scholars</h2>
-            <p class="section-note">Postdoctoral scholars affiliated with Radiant.</p>
           </div>
         </div>
 
@@ -76,7 +98,6 @@
         <div class="team-section-header">
           <div>
             <h2>Graduate Students &amp; Assistants</h2>
-            <p class="section-note">Graduate students and assistants contributing to Radiant research and operations.</p>
           </div>
         </div>
 

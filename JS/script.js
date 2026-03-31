@@ -7,7 +7,7 @@
  */
 
 /**
- * Horizontal scroll handler for equipment cards.
+ * Horizontal scroll handler for card lists.
  * Uses native smooth scroll API for better performance than custom animation loops.
  * @param {number} amount - Pixel value to scroll (positive=right, negative=left)
  */
@@ -16,14 +16,6 @@ function scrollGrid(amount) {
     if (container) {
         container.scrollBy({ left: amount, behavior: 'smooth' });
     }
-}
-
-/**
- * Equipment Catalog Scroll Alias
- * Provides a semantic alias for the catalog page while reusing the same underlying logic.
- */
-function scrollCatalog(amount) {
-    scrollGrid(amount);
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -97,7 +89,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Scrolls by exactly one card at a time.
     // -------------------------------------------------------------------------
     const getCarouselStep = (container) => {
-        const card = container.querySelector('.equipment-card');
+        const card = container.querySelector('.profile-card');
         if (!card) return 350;
 
         const cardWidth = card.getBoundingClientRect().width || 350;
@@ -136,6 +128,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const isActive = i === currentSlide;
                     btn.classList.toggle('active', isActive);
                     btn.setAttribute('aria-current', isActive ? 'true' : 'false');
+                    btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
                 });
             }
         }
@@ -158,7 +151,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (sliderControls) {
             const dotsWrap = document.createElement('div');
             dotsWrap.className = 'slider-dots';
-            dotsWrap.setAttribute('role', 'tablist');
+            dotsWrap.setAttribute('role', 'group');
             dotsWrap.setAttribute('aria-label', 'Hero slider navigation');
 
             dotButtons = Array.from({ length: totalSlides }, (_, i) => {
@@ -167,6 +160,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 dot.className = 'slider-dot';
                 dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
                 dot.setAttribute('aria-current', i === currentSlide ? 'true' : 'false');
+                dot.setAttribute('aria-pressed', i === currentSlide ? 'true' : 'false');
                 dot.addEventListener('click', () => {
                     showSlide(i);
                     resetInterval();
@@ -188,7 +182,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         startInterval();
     }
 
-    // Featured Equipment Carousel (Homepage)
+    // Homepage card carousel controls
     // Connects the Left/Right arrows to the scroll logic
     // -------------------------------------------------------------------------
     document.querySelectorAll('.nav-btn').forEach((btn) => {
@@ -343,390 +337,4 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // -------------------------------------------------------------------------
-    // Equipment Catalog Logic: Filtering & View Layout
-    // -------------------------------------------------------------------------
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    const searchInput = document.getElementById('searchInput');
-    const eqCards = document.querySelectorAll('.equipment-card');
-
-    // View Switcher Elements
-    const gridBtn = document.getElementById('gridViewBtn');
-    const listBtn = document.getElementById('listViewBtn');
-    const container = document.getElementById('cardContainer');
-    const arrows = document.querySelectorAll('.nav-btn');
-
-    if (filterBtns.length > 0) {
-
-        // A. View Toggle Logic (Grid vs List)
-        if (gridBtn && listBtn && container) {
-            // Switch to List View
-            listBtn.addEventListener('click', () => {
-                container.classList.add('list-view');
-                listBtn.classList.add('active');
-                gridBtn.classList.remove('active');
-                // Hide arrows in list view (vertical layout)
-                arrows.forEach(arrow => arrow.style.display = 'none');
-            });
-
-            // Switch to Grid View
-            gridBtn.addEventListener('click', () => {
-                container.classList.remove('list-view');
-                gridBtn.classList.add('active');
-                listBtn.classList.remove('active');
-                // Show arrows in grid view (carousel layout)
-                arrows.forEach(arrow => arrow.style.display = 'flex');
-            });
-        }
-
-        // B. Filtering Logic
-        const filterItems = () => {
-            const term = searchInput ? searchInput.value.toLowerCase() : '';
-            const activeBtn = document.querySelector('.filter-btn.active');
-            const activeCategory = activeBtn ? activeBtn.dataset.filter : 'all';
-
-            eqCards.forEach(card => {
-                const title = card.dataset.title ? card.dataset.title.toLowerCase() : '';
-                const categories = card.dataset.category ? card.dataset.category.toLowerCase() : '';
-
-                const matchesSearch = title.includes(term);
-                // Use includes() to support multi-tagged items
-                const matchesCategory = activeCategory === 'all' || categories.includes(activeCategory);
-
-                if (matchesSearch && matchesCategory) {
-                    card.style.display = '';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        };
-
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                filterItems();
-            });
-        });
-
-        if (searchInput) {
-            searchInput.addEventListener('input', filterItems);
-        }
-
-        // Check URL Params for direct category linking
-        const urlParams = new URLSearchParams(window.location.search);
-        const categoryParam = urlParams.get('category');
-        if (categoryParam) {
-            const targetBtn = document.querySelector(`.filter-btn[data-filter="${categoryParam}"]`);
-            if (targetBtn) {
-                targetBtn.click();
-            }
-        }
-    }
 });
-
-/**
- * Contact Page Logic (Contact_Us.html)
- * Data structure and functions for dynamic form generation.
- * -------------------------------------------------------------------------
- */
-const fieldData = {
-    'equipment': {
-        title: "Equipment Inquiry",
-        desc: "Check availability or request specs for specific tools.",
-        fields: `
-            <div class="grid grid-2 gap-lg">
-                <div>
-                    <label class="block font-bold mb-1 required">Equipment of Interest</label>
-                    <select class="form-control">
-                        <option>-- Select Tool --</option>
-                        <option>Keyence VHX-7000</option>
-                        <option>B-2 AFM</option>
-                        <option>JEOL TEM</option>
-                        <option>Mask Aligner</option>
-                        <option>Other / Unsure</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block font-bold mb-1">Intended Usage</label>
-                    <select class="form-control">
-                        <option>Self-Use (I need training)</option>
-                        <option>Service (Staff runs samples)</option>
-                    </select>
-                </div>
-                <div class="col-span-2">
-                    <label class="block font-bold mb-1 required">Technical Requirements</label>
-                    <textarea rows="3" class="form-control" placeholder="Describe sample type, size, and measurement goals..."></textarea>
-                </div>
-            </div>
-        `
-    },
-    'research': {
-        title: "Research Collaboration",
-        desc: "Propose a joint project or grant partnership.",
-        fields: `
-            <div class="form-stack">
-                <div>
-                    <label class="block font-bold mb-1 required">Project Title / Topic</label>
-                    <input type="text" class="form-control" placeholder="e.g. Novel Dielectric Characterization">
-                </div>
-                <div class="grid grid-2 gap-lg">
-                    <div>
-                        <label class="block font-bold mb-1">Funding Agency</label>
-                        <input type="text" class="form-control" placeholder="NSF, DOE, Industry...">
-                    </div>
-                    <div>
-                        <label class="block font-bold mb-1">Timeline</label>
-                        <select class="form-control">
-                            <option>Short Term (< 3 months)</option>
-                            <option>Long Term (1+ year)</option>
-                            <option>Grant Proposal Phase</option>
-                        </select>
-                    </div>
-                </div>
-                <div>
-                    <label class="block font-bold mb-1 required">Project Abstract</label>
-                    <textarea rows="5" class="form-control" placeholder="Provide a brief summary of the research goals..."></textarea>
-                </div>
-            </div>
-        `
-    },
-    'billing': {
-        title: "Billing & Invoicing",
-        desc: "Resolve payment issues or request quotes.",
-        fields: `
-            <div class="grid grid-2 gap-lg">
-                <div>
-                    <label class="block font-bold mb-1 required">Reference Number</label>
-                    <input type="text" class="form-control" placeholder="Invoice # or PO #">
-                </div>
-                <div>
-                    <label class="block font-bold mb-1 required">Billing Contact Person</label>
-                    <input type="text" class="form-control">
-                </div>
-                <div class="col-span-2">
-                    <label class="block font-bold mb-1">Billing Address</label>
-                    <textarea rows="2" class="form-control"></textarea>
-                </div>
-                <div class="col-span-2">
-                    <label class="block font-bold mb-1">Issue Description</label>
-                    <textarea rows="3" class="form-control" placeholder="Describe the billing discrepancy or request..."></textarea>
-                </div>
-            </div>
-        `
-    },
-    'training': {
-        title: "Safety & Training",
-        desc: "Register for safety courses or equipment authorization.",
-        fields: `
-            <div class="grid grid-2 gap-lg">
-                <div>
-                    <label class="block font-bold mb-1 required">Current Status</label>
-                    <select class="form-control">
-                        <option>New User (No Access)</option>
-                        <option>Active User (Adding Tool)</option>
-                        <option>Expired Access (Renewal)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block font-bold mb-1 required">Requested Training</label>
-                    <select class="form-control">
-                        <option>EHS Basic Safety (Mandatory)</option>
-                        <option>Cleanroom Gowning</option>
-                        <option>Chemical Safety</option>
-                        <option>Specific Tool Authorization</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block font-bold mb-1">NAU ID</label>
-                    <input type="text" class="form-control" placeholder="1234567">
-                </div>
-                <div>
-                    <label class="block font-bold mb-1">PI / Supervisor Name</label>
-                    <input type="text" class="form-control">
-                </div>
-            </div>
-        `
-    },
-    'courses': {
-        title: "Course Support",
-        desc: "Inquiries regarding lab classes or curriculum.",
-        fields: `
-            <div class="grid grid-2 gap-lg">
-                <div>
-                    <label class="block font-bold mb-1 required">Course Number</label>
-                    <input type="text" class="form-control" placeholder="e.g. EE400">
-                </div>
-                <div>
-                    <label class="block font-bold mb-1">Semester</label>
-                    <select class="form-control">
-                        <option>Fall 2025</option>
-                        <option>Spring 2026</option>
-                        <option>Summer 2026</option>
-                    </select>
-                </div>
-                <div class="col-span-2">
-                    <label class="block font-bold mb-1 required">Inquiry</label>
-                    <textarea rows="3" class="form-control" placeholder="Question about lab schedule, materials, or enrollment..."></textarea>
-                </div>
-            </div>
-        `
-    },
-    'tour': {
-        title: "Schedule a Tour",
-        desc: "Visit the facility.",
-        fields: `
-            <div class="grid grid-2 gap-lg">
-                <div>
-                    <label class="block font-bold mb-1 required">Group Size</label>
-                    <input type="number" class="form-control" placeholder="Approx number of people">
-                </div>
-                <div>
-                    <label class="block font-bold mb-1 required">Group Type</label>
-                    <select class="form-control">
-                        <option>K-12 School</option>
-                        <option>Prospective Students</option>
-                        <option>Industry Partners</option>
-                        <option>Academic Guests</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block font-bold mb-1 required">Preferred Date</label>
-                    <input type="date" class="form-control">
-                </div>
-                <div>
-                    <label class="block font-bold mb-1">Alternative Date</label>
-                    <input type="date" class="form-control">
-                </div>
-            </div>
-        `
-    },
-    'sales': {
-        title: "Vendor / Sales",
-        desc: "Product demonstrations and supply chain.",
-        fields: `
-            <div class="form-stack">
-                <div>
-                    <label class="block font-bold mb-1 required">Product Category</label>
-                    <input type="text" class="form-control" placeholder="e.g. Chemicals, Metrology Equipment, PPE">
-                </div>
-                <div>
-                    <label class="block font-bold mb-1 required">Message</label>
-                    <textarea rows="4" class="form-control" placeholder="Describe your product or reason for contact..."></textarea>
-                </div>
-            </div>
-        `
-    },
-    'other': {
-        title: "General Inquiry",
-        desc: "How can we help you?",
-        fields: `
-            <div>
-                <label class="block font-bold mb-1 required">Message</label>
-                <textarea rows="5" class="form-control" placeholder="Please describe your question or issue..."></textarea>
-            </div>
-        `
-    }
-};
-
-function selectCategory(category, element) {
-    // Highlighting Logic
-    document.querySelectorAll('.gateway-card').forEach(card => card.classList.remove('selected'));
-    element.classList.add('selected');
-
-    // Data Injection
-    const data = fieldData[category];
-    const formContainer = document.getElementById('formContainer');
-    const dynamicFields = document.getElementById('dynamicFields');
-    const formTitle = document.getElementById('formTitle');
-    const formDesc = document.getElementById('formDesc');
-
-    if (data) {
-        formTitle.textContent = data.title;
-        formDesc.textContent = data.desc;
-        dynamicFields.innerHTML = data.fields;
-        dynamicFields.className = 'fade-in';
-
-        // Show Form
-        formContainer.classList.remove('hidden');
-        void formContainer.offsetWidth;
-        formContainer.classList.add('fade-in');
-
-        // Smooth Scroll
-        setTimeout(() => {
-            formContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
-    }
-}
-
-function resetSelection() {
-    document.querySelectorAll('.gateway-card').forEach(card => card.classList.remove('selected'));
-    document.getElementById('formContainer').classList.add('hidden');
-    document.getElementById('formContainer').classList.remove('fade-in');
-    document.getElementById('gatewayGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function handleFormSubmit(e) {
-    e.preventDefault();
-    alert("Thank you! Your inquiry has been routed to the appropriate team.");
-    resetSelection();
-    document.getElementById('contactForm').reset();
-}
-
-// Global Exports
-window.fieldData = fieldData;
-window.selectCategory = selectCategory;
-window.resetSelection = resetSelection;
-window.handleFormSubmit = handleFormSubmit;
-
-
-// -------------------------------------------------------------------------
-// EQUIPMENT CATALOG LOGIC
-// Handles Grid/List toggle and Category Filtering
-// -------------------------------------------------------------------------
-const container = document.getElementById('equipmentContainer');
-const gridBtn = document.getElementById('gridViewBtn');
-const listBtn = document.getElementById('listViewBtn');
-const filterBtns = document.querySelectorAll('.filter-btn');
-const cards = document.querySelectorAll('.tech-card');
-
-// 1. VIEW SWITCHER (Grid vs List)
-if (container && gridBtn && listBtn) {
-    gridBtn.addEventListener('click', () => {
-        container.classList.remove('list-layout');
-        container.classList.add('grid-layout');
-        gridBtn.classList.add('active');
-        listBtn.classList.remove('active');
-    });
-
-    listBtn.addEventListener('click', () => {
-        container.classList.remove('grid-layout');
-        container.classList.add('list-layout');
-        listBtn.classList.add('active');
-        gridBtn.classList.remove('active');
-    });
-}
-
-// 2. FILTERING LOGIC
-if (filterBtns.length > 0) {
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Remove active class from all buttons
-            filterBtns.forEach(b => b.classList.remove('active'));
-            // Add active to clicked button
-            btn.classList.add('active');
-
-            const filterValue = btn.getAttribute('data-filter');
-
-            cards.forEach(card => {
-                const category = card.getAttribute('data-category');
-
-                if (filterValue === 'all' || category === filterValue) {
-                    card.style.display = 'flex'; // Show
-                } else {
-                    card.style.display = 'none'; // Hide
-                }
-            });
-        });
-    });
-}

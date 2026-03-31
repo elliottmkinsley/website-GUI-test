@@ -1,4 +1,4 @@
-# NAU Nano - JavaScript Developer Guide
+# NAU Radiant - JavaScript Developer Guide
 
 This document describes the structure and functionality of `script.js`. The script is designed to handle interactivity for the main page and can be extended for sub-pages.
 
@@ -39,7 +39,7 @@ This document describes the structure and functionality of `script.js`. The scri
 ## 3. API & Functions
 
 ### `scrollGrid(amount)`
-- **Purpose**: Horizontal scrolling for the Equipment Carousel.
+- **Purpose**: Horizontal scrolling for homepage card carousels.
 - **Usage**: Called by the left/right navigation buttons in HTML.
 - **Params**: `amount` (pixels). Positive for right, negative for left.
 
@@ -78,9 +78,5 @@ Instead of copying the full HTML for the header and footer, simply use:
 ### Modifying Layout
 To change a menu link or update the footer address, edit `layout.js` directly. The changes will propagate to all pages using these tags.
 
-## 7. Contact Form Logic
-Located in `script.js` (lines ~210+), this logic handles the dynamic category selection on the Contact Us page.
-- **`fieldData` Object**: Contains the configuration (Title, Description, HTML Fields) for each category key (e.g., 'equipment', 'research').
-- **`selectCategory(category, element)`**: Injects the HTML from `fieldData` into the DOM and triggers animations.
-- **`resetSelection()`**: Hides the form and resets grid selection.
-- **`handleFormSubmit(e)`**: Intercepts submission for demo purposes.
+## 7. Contact Page
+`Contact_Us.html` currently uses a static contact layout with shared navigation/footer behavior from `layout.js` and general page interactions from `script.js`.

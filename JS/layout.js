@@ -11,10 +11,7 @@ class SiteHeader extends HTMLElement {
     }
 
     connectedCallback() {
-        // DYNAMIC PATH LOGIC
-       
-        const isInSubfolder = window.location.pathname.includes('/About_Equipment/');
-        const basePath = isInSubfolder ? '../' : './';
+        const basePath = './';
 
         this.innerHTML = `
         <header class="site-header" id="mainHeader">
@@ -42,8 +39,6 @@ class SiteHeader extends HTMLElement {
                     
                     <div class="nav-item"><a href="${basePath}Contact_Us.html" class="nav-link" data-path="Contact_Us.html">Contact Us</a></div>
 
-                    
-                    <!-- COMMENTED OUT FOR NOW <div class="nav-item"><a href="https://outlook.office.com/book/iMPaCTNanoLab@bookings.nau.edu/?ismsaljsauthenabled" target="_blank" class="btn btn-sm btn-gold">Reserve Equipment</a></div> -->
                 </nav>
             </div>
         </header>
@@ -148,9 +143,7 @@ class SiteFooter extends HTMLElement {
     }
 
     connectedCallback() {
-        // Re-use dynamic path logic for the footer images/links
-        const isInSubfolder = window.location.pathname.includes('/About_Equipment/');
-        const basePath = isInSubfolder ? '../' : './';
+        const basePath = './';
 
         this.innerHTML = `
         <footer class="site-footer">
@@ -159,10 +152,7 @@ class SiteFooter extends HTMLElement {
                     <div class="footer-brand">
                         <img src="${basePath}Images/NAU.png" class="footer-logo" alt="NAU Logo"
                             onerror="this.style.display='none'">
-                        <p style="color: rgba(255,255,255,0.7); max-width: 300px; margin-bottom: 25px;">The Microelectronics
-                            Processing,
-                            Characterization, and Testing Lab is dedicated to advancing semiconductor education and
-                            research.</p>
+                        <p style="color: rgba(255,255,255,0.7); max-width: 300px; margin-bottom: 25px;">The NAU Radiant Center for Remote Sensing advances remote sensing research, instrumentation, and real-world impact through interdisciplinary collaboration.</p>
                         <div class="social-row">
                              <a href="https://twitter.com/NAU" target="_blank" class="social-icon" aria-label="X (Twitter)">
                                 <svg viewBox="0 0 24 24">
@@ -190,23 +180,21 @@ class SiteFooter extends HTMLElement {
                     </div>
 
                     <div class="footer-col">
-                        <h4>User Portal</h4>
+                        <h4>Explore</h4>
                         <ul class="footer-links">
-                            <li><a href="${basePath}Booking1.html">Book Equipment</a></li>
-                            <li><a href="#">Report an Issue</a></li>
-                            <li><a href="#">Safety Training</a></li>
-                            <li><a href="#">SDS Database</a></li>
-                            <li><a href="#">Lab Policies</a></li>
+                            <li><a href="${basePath}index.html">Home</a></li>
+                            <li><a href="${basePath}Projects.html">Projects</a></li>
+                            <li><a href="${basePath}Our_Team.html">Our Team</a></li>
+                            <li><a href="${basePath}Capabilities.html">Capabilities</a></li>
                         </ul>
                     </div>
 
                     <div class="footer-col">
-                        <h4>Academics</h4>
+                        <h4>Research</h4>
                         <ul class="footer-links">
-                            <li><a href="#">Undergraduate Courses</a></li>
-                            <li><a href="#">Graduate Research</a></li>
-                            <li><a href="#">Certificate Programs</a></li>
-                            <li><a href="#">Student Projects</a></li>
+                            <li><a href="${basePath}Projects.html">Featured Stories</a></li>
+                            <li><a href="${basePath}Capabilities.html">Labs & Services</a></li>
+                            <li><a href="https://directory.nau.edu/departments?id=11305" target="_blank" rel="noopener">NAU Directory</a></li>
                         </ul>
                     </div>
 
@@ -214,9 +202,8 @@ class SiteFooter extends HTMLElement {
                         <h4>Connect</h4>
                         <ul class="footer-links">
                             <li><a href="${basePath}Contact_Us.html">Contact Us</a></li>
-                            <li><a href="#">Partner With Us</a></li>
-                            <li><a href="#">Alumni Network</a></li>
-                            <li><a href="#">Support NAU Nano</a></li>
+                            <li><a href="mailto:radiant@nau.edu">Email Radiant</a></li>
+                            <li><a href="https://maps.google.com/?q=525%20S.%20Beaver%20St.,%204th%20Floor%20Flagstaff%20AZ" target="_blank" rel="noopener">Visit Campus</a></li>
                         </ul>
                     </div>
                 </div>

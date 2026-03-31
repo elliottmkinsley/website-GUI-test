@@ -1,6 +1,6 @@
-# NAU Nano - CSS Developer Guide
+# NAU Radiant - CSS Developer Guide
 
-This document provides a comprehensive guide to the **CSS Design System** used in the NAU Nano website. The system follows a **Mobile-First, Utility-Enhanced Component** architecture.
+This document provides a comprehensive guide to the **CSS Design System** used in the NAU Radiant website. The system follows a **Mobile-First, Utility-Enhanced Component** architecture.
 
 ## 1. Core Architecture
 - **File**: `style.css`

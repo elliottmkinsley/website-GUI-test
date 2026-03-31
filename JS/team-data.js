@@ -74,6 +74,17 @@
     return Boolean(profileUrl && profileUrl.trim() && profileUrl.trim() !== "#");
   }
 
+  function renderHomepageInlineMarkup(value) {
+    return escapeHtml(value).replace(/\r?\n/g, "<br>");
+  }
+
+  function renderHomepageSchoolMarkup(person) {
+    const schools = [person.school, person.secondarySchool].filter(Boolean);
+    return schools
+      .map((school) => `<div class="card-school">${escapeHtml(school)}</div>`)
+      .join("");
+  }
+
   function getImageStyle(person) {
     const parts = [];
 
@@ -150,7 +161,7 @@
   }
 
   function markLowResolutionHeadshots() {
-    const images = document.querySelectorAll(".equipment-img, .person-photo-frame img");
+    const images = document.querySelectorAll(".profile-image, .person-photo-frame img");
 
     images.forEach((img) => {
       const evaluate = () => {
@@ -178,20 +189,85 @@
     });
   }
 
+  function normalizeSearchText(value) {
+    return String(value || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim();
+  }
+
+  function initTeamFilters() {
+    const searchInput = document.getElementById("teamSearch");
+    const sectionFilter = document.getElementById("teamSectionFilter");
+    const emptyState = document.getElementById("teamFilterEmpty");
+    const sections = Array.from(document.querySelectorAll(".team-section"));
+
+    if (!searchInput || !sectionFilter || !sections.length) {
+      return;
+    }
+
+    const cards = Array.from(document.querySelectorAll(".person-feature"));
+    if (!cards.length) {
+      return;
+    }
+
+    cards.forEach((card) => {
+      const section = card.closest(".team-section");
+      const sectionId = section?.id || "";
+      card.dataset.section = sectionId;
+      card.dataset.searchText = normalizeSearchText(card.textContent);
+    });
+
+    const applyFilters = () => {
+      const term = normalizeSearchText(searchInput.value);
+      const selectedSection = sectionFilter.value;
+      let visibleCards = 0;
+
+      sections.forEach((section) => {
+        const sectionCards = Array.from(section.querySelectorAll(".person-feature"));
+        let sectionVisible = 0;
+
+        sectionCards.forEach((card) => {
+          const matchesSection = selectedSection === "all" || card.dataset.section === selectedSection;
+          const matchesTerm = !term || card.dataset.searchText.includes(term);
+          const isVisible = matchesSection && matchesTerm;
+
+          card.hidden = !isVisible;
+          if (isVisible) {
+            sectionVisible += 1;
+            visibleCards += 1;
+          }
+        });
+
+        section.hidden = sectionVisible === 0;
+      });
+
+      if (emptyState) {
+        emptyState.hidden = visibleCards !== 0;
+      }
+    };
+
+    searchInput.addEventListener("input", applyFilters);
+    sectionFilter.addEventListener("change", applyFilters);
+    applyFilters();
+  }
+
   function renderHomepageCard(person) {
     const anchorKey = personKeyFromName(person.name);
     const aboutHref = anchorKey ? `Our_Team.html#${anchorKey}` : "Our_Team.html";
     const imageStyle = getImageStyle(person);
+    const homepageType = person.homepageType || person.type;
 
     return `
-      <div class="equipment-card">
+      <div class="profile-card">
         <div>
           <h3 class="card-title">${escapeHtml(person.name)}</h3>
         </div>
         <div class="image-container">
           <img
             src="${escapeHtml(person.imageSrc)}"
-            class="equipment-img"
+            class="profile-image"
             alt="${escapeHtml(person.name)} headshot"
             ${imageStyle}
             onerror="this.src='https://via.placeholder.com/150'"
@@ -199,8 +275,8 @@
         </div>
         <div class="card-details">
           <div class="card-role">${escapeHtml(person.role)}</div>
-          <div class="card-type">${escapeHtml(person.type)}</div>
-          <div class="card-school">${escapeHtml(person.school)}</div>
+          <div class="card-type">${renderHomepageInlineMarkup(homepageType)}</div>
+          ${renderHomepageSchoolMarkup(person)}
         </div>
         <div class="action-row">
           <a href="${escapeHtml(aboutHref)}" class="action-btn about-btn">About</a>
@@ -329,6 +405,7 @@ ${quickFactsActionMarkup}
       }
 
       await Promise.all(tasks);
+      initTeamFilters();
       markLowResolutionHeadshots();
       window.addEventListener("resize", markLowResolutionHeadshots);
     } catch (error) {
