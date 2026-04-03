@@ -61,16 +61,22 @@
 
   function renderFeaturedSlide(project) {
     const link = getLinkAttributes(project.linkUrl);
+    const mobileSource = project.imageSrcMobile && project.imageSrcMobile.trim()
+      ? `<source media="(max-width: 680px)" srcset="${escapeHtml(project.imageSrcMobile)}">`
+      : "";
 
     return `
       <div class="slide slide-featured">
         <div class="slide-bg-container">
-          <img
-            src="${escapeHtml(project.imageSrc)}"
-            class="slide-bg-img"
-            alt="${escapeHtml(project.imageAlt || project.title)}"
-            onerror="this.src='https://via.placeholder.com/1600x900?text=Story+Image'"
-          >
+          <picture class="slide-bg-picture">
+            ${mobileSource}
+            <img
+              src="${escapeHtml(project.imageSrc)}"
+              class="slide-bg-img"
+              alt="${escapeHtml(project.imageAlt || project.title)}"
+              onerror="this.src='https://via.placeholder.com/1600x900?text=Story+Image'"
+            >
+          </picture>
           <div class="slide-overlay"></div>
         </div>
         <div class="slide-content">
