@@ -3,6 +3,7 @@
   const manifestCache = { value: null };
   const personCache = new Map();
   const RANDOMIZED_SECTIONS = new Set(["faculty", "postdocs", "graduate"]);
+  const ASSET_VERSION = window.RadiantSiteConfig?.assetVersion || "";
 
   function escapeHtml(value) {
     return String(value ?? "")
@@ -124,6 +125,16 @@
       .join("");
   }
 
+  function withAssetVersion(path) {
+    const trimmed = String(path || "").trim();
+    if (!trimmed || /^https?:\/\//i.test(trimmed) || trimmed.startsWith("data:") || !ASSET_VERSION) {
+      return trimmed;
+    }
+
+    const separator = trimmed.includes("?") ? "&" : "?";
+    return `${trimmed}${separator}v=${encodeURIComponent(ASSET_VERSION)}`;
+  }
+
   function getHeadshotVariantPath(imageSrc, variantName) {
     const trimmed = String(imageSrc || "").trim();
     if (!trimmed || /^https?:\/\//i.test(trimmed) || trimmed.startsWith("data:")) {
@@ -161,7 +172,7 @@
     const imageStyle = getImageStyle(person);
     const variantPath = getHeadshotVariantPath(person.imageSrc, variantName);
     const sourceMarkup = variantPath
-      ? `<source type="image/webp" srcset="${escapeHtml(variantPath)}">`
+      ? `<source type="image/webp" srcset="${escapeHtml(withAssetVersion(variantPath))}">`
       : "";
     const imageClassAttribute = imageClass ? ` class="${escapeHtml(imageClass)}"` : "";
 
@@ -169,7 +180,7 @@
       <picture class="headshot-picture headshot-picture-${escapeHtml(variantName)}">
         ${sourceMarkup}
         <img
-          src="${escapeHtml(person.imageSrc)}"
+          src="${escapeHtml(withAssetVersion(person.imageSrc))}"
           ${imageClassAttribute}
           alt="${escapeHtml(person.name)} headshot"
           width="${escapeHtml(width)}"
@@ -184,18 +195,20 @@
   }
 
   async function fetchJson(path) {
-    if (personCache.has(path)) {
-      return personCache.get(path);
+    const versionedPath = withAssetVersion(path);
+
+    if (personCache.has(versionedPath)) {
+      return personCache.get(versionedPath);
     }
 
-    const promise = fetch(path).then((response) => {
+    const promise = fetch(versionedPath).then((response) => {
       if (!response.ok) {
-        throw new Error(`Failed to load ${path}: ${response.status}`);
+        throw new Error(`Failed to load ${versionedPath}: ${response.status}`);
       }
       return response.json();
     });
 
-    personCache.set(path, promise);
+    personCache.set(versionedPath, promise);
     return promise;
   }
 
@@ -204,9 +217,10 @@
       return manifestCache.value;
     }
 
-    const response = await fetch(MANIFEST_PATH);
+    const versionedManifestPath = withAssetVersion(MANIFEST_PATH);
+    const response = await fetch(versionedManifestPath);
     if (!response.ok) {
-      throw new Error(`Failed to load ${MANIFEST_PATH}: ${response.status}`);
+      throw new Error(`Failed to load ${versionedManifestPath}: ${response.status}`);
     }
 
     manifestCache.value = await response.json();

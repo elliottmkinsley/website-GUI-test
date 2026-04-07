@@ -2,6 +2,7 @@
   const MANIFEST_PATH = "Projects/manifest.json";
   const manifestCache = { value: null };
   const projectCache = new Map();
+  const ASSET_VERSION = window.RadiantSiteConfig?.assetVersion || "";
 
   function escapeHtml(value) {
     return String(value ?? "")
@@ -22,20 +23,32 @@
     };
   }
 
-  async function fetchJson(path) {
-    if (projectCache.has(path)) {
-      return projectCache.get(path);
+  function withAssetVersion(path) {
+    const trimmed = String(path || "").trim();
+    if (!trimmed || /^https?:\/\//i.test(trimmed) || trimmed.startsWith("data:") || !ASSET_VERSION) {
+      return trimmed;
     }
 
-    const promise = fetch(path).then((response) => {
+    const separator = trimmed.includes("?") ? "&" : "?";
+    return `${trimmed}${separator}v=${encodeURIComponent(ASSET_VERSION)}`;
+  }
+
+  async function fetchJson(path) {
+    const versionedPath = withAssetVersion(path);
+
+    if (projectCache.has(versionedPath)) {
+      return projectCache.get(versionedPath);
+    }
+
+    const promise = fetch(versionedPath).then((response) => {
       if (!response.ok) {
-        throw new Error(`Failed to load ${path}: ${response.status}`);
+        throw new Error(`Failed to load ${versionedPath}: ${response.status}`);
       }
 
       return response.json();
     });
 
-    projectCache.set(path, promise);
+    projectCache.set(versionedPath, promise);
     return promise;
   }
 
@@ -44,9 +57,10 @@
       return manifestCache.value;
     }
 
-    const response = await fetch(MANIFEST_PATH);
+    const versionedManifestPath = withAssetVersion(MANIFEST_PATH);
+    const response = await fetch(versionedManifestPath);
     if (!response.ok) {
-      throw new Error(`Failed to load ${MANIFEST_PATH}: ${response.status}`);
+      throw new Error(`Failed to load ${versionedManifestPath}: ${response.status}`);
     }
 
     manifestCache.value = await response.json();
@@ -62,7 +76,7 @@
   function renderFeaturedSlide(project) {
     const link = getLinkAttributes(project.linkUrl);
     const mobileSource = project.imageSrcMobile && project.imageSrcMobile.trim()
-      ? `<source media="(max-width: 680px)" srcset="${escapeHtml(project.imageSrcMobile)}">`
+      ? `<source media="(max-width: 680px)" srcset="${escapeHtml(withAssetVersion(project.imageSrcMobile))}">`
       : "";
 
     return `
@@ -71,7 +85,7 @@
           <picture class="slide-bg-picture">
             ${mobileSource}
             <img
-              src="${escapeHtml(project.imageSrc)}"
+              src="${escapeHtml(withAssetVersion(project.imageSrc))}"
               class="slide-bg-img"
               alt="${escapeHtml(project.imageAlt || project.title)}"
               onerror="this.src='https://via.placeholder.com/1600x900?text=Story+Image'"
@@ -101,7 +115,7 @@
         <div class="project-media">
           <span class="project-badge">${escapeHtml(project.badge || "Featured Story")}</span>
           <img
-            src="${escapeHtml(project.imageSrc)}"
+            src="${escapeHtml(withAssetVersion(project.imageSrc))}"
             alt="${escapeHtml(project.imageAlt || project.title)}"
             onerror="this.src='https://via.placeholder.com/1200x800?text=Story+Image'"
           />
