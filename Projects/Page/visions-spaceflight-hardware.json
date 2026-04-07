@@ -1,7 +1,7 @@
 {
   "tag": "News",
   "title": "Welcome to the Space Cam!",
-  "description": "NAU students are designing, building, and testing a dual-wavelength camera system that could support future interplanetary NASA missions.",
+  "description": "NAU students are designing, building, and testing a dual-wavelength camera system that could support future interplanetary NASA missions. The VISIONS instrument is being developed to capture true-color imagery and surface temperature data at the same time, giving researchers a fuller picture of planetary conditions. The project also gives students hands-on experience meeting NASA's rigorous standards for flight-ready hardware.",
   "imageSrc": "Images/News/visions-spaceflight-hardware.jpg",
   "imageAlt": "People work on space technology hardware",
   "buttonLabel": "Read Full Story",

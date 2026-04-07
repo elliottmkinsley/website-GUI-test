@@ -86,6 +86,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  min-height: 100%;
 }
 
 .project-meta {
@@ -96,6 +97,9 @@
   color: var(--gray-600);
   font-size: 0.95rem;
   font-weight: 700;
+  line-height: 1.35;
+  min-height: calc(2 * 1.35em);
+  align-content: start;
 }
 
 .source-pill {
@@ -116,12 +120,23 @@
   color: var(--nau-blue);
   font-size: clamp(1.35rem, 2.2vw, 2rem);
   line-height: 1.15;
+  min-height: calc(2 * 1.15em);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .project-desc {
   margin: 0;
   color: var(--gray-700);
   max-width: 70ch;
+  line-height: 1.55;
+  min-height: calc(4 * 1.55em);
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .project-impact {
@@ -132,6 +147,12 @@
   background: color-mix(in srgb, var(--nau-blue) 4%, var(--white));
   color: var(--gray-700);
   font-size: 0.95rem;
+  line-height: 1.55;
+  min-height: calc((6 * 1.55em) + 24px);
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .project-actions {
