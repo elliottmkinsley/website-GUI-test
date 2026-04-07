@@ -365,8 +365,9 @@
 .person-title {
   margin: 0;
   color: var(--gray-700);
-  font-weight: 700;
-  font-size: 1.05rem;
+  font-weight: 800;
+  font-size: clamp(1.18rem, 1.5vw, 1.4rem);
+  line-height: 1.25;
 }
 
 .person-school {
