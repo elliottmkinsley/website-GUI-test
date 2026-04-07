@@ -21,29 +21,42 @@ function scrollGrid(amount) {
 document.addEventListener('DOMContentLoaded', async () => {
     const slugify = (value) => {
         return String(value || '')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
             .toLowerCase()
             .replace(/['"]/g, '')
             .replace(/[^a-z0-9]+/g, '-')
             .replace(/^-+|-+$/g, '');
     };
 
-    // Key format: firstName + lastInitial (e.g. "christopher-e")
-    const personKeyFromName = window.TeamData?.personKeyFromName || ((fullName) => {
+    const getMeaningfulNameParts = (fullName) => {
+        const titlePrefixes = new Set(['dr', 'prof', 'professor', 'mr', 'mrs', 'ms', 'miss']);
         const cleaned = String(fullName || '').replace(/\s+/g, ' ').trim();
-        if (!cleaned) return null;
+        if (!cleaned) return [];
 
         const parts = cleaned
             .split(' ')
-            .map(p => p.replace(/[^a-zA-Z0-9-]/g, ''))
+            .map((part) => part
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-zA-Z0-9-]/g, ''))
             .filter(Boolean);
+
+        let startIndex = 0;
+        while (startIndex < parts.length && titlePrefixes.has(parts[startIndex].toLowerCase())) {
+            startIndex += 1;
+        }
+
+        return parts.slice(startIndex);
+    };
+
+    const personKeyFromName = window.TeamData?.personKeyFromName || ((fullName) => {
+        const parts = getMeaningfulNameParts(fullName);
         if (parts.length < 2) return null;
 
         const firstName = parts[0];
         const lastName = parts[parts.length - 1];
-        const lastInitial = lastName?.[0];
-        if (!lastInitial) return null;
-
-        return `${slugify(firstName)}-${slugify(lastInitial)}`;
+        return `${slugify(firstName)}-${slugify(lastName)}`;
     });
 
     const dataRenderTasks = [];
@@ -59,29 +72,107 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Auto-assign anchor ids on Our Team page
     if (document.querySelector('.team-page')) {
-        document.querySelectorAll('.person-feature').forEach((card) => {
-            if (card.id) return;
-            const name = card.querySelector('.person-name')?.textContent;
-            const key = personKeyFromName(name);
-            if (!key) return;
-            card.id = key;
+        const legacyPersonKeysFromName = window.TeamData?.legacyPersonKeysFromName || ((fullName) => {
+            const cleaned = String(fullName || '').replace(/\s+/g, ' ').trim();
+            if (!cleaned) return [];
+
+            const parts = cleaned
+                .split(' ')
+                .map((part) => part
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .replace(/[^a-zA-Z0-9-]/g, ''))
+                .filter(Boolean);
+
+            if (parts.length < 2) return [];
+
+            const firstPart = parts[0];
+            const lastPart = parts[parts.length - 1];
+            const legacyKey = `${slugify(firstPart)}-${slugify(lastPart?.[0] || '')}`;
+            const modernKey = personKeyFromName(fullName);
+            return [legacyKey, modernKey].filter((key, index, allKeys) => key && allKeys.indexOf(key) === index);
         });
 
-        const scrollToTeamHashTarget = () => {
+        document.querySelectorAll('.person-feature').forEach((card) => {
+            const name = card.querySelector('.person-name')?.textContent;
+            const key = personKeyFromName(name);
+            const legacyKeys = legacyPersonKeysFromName(name);
+
+            if (key && !card.id) {
+                card.id = key;
+            }
+            if (key) {
+                card.dataset.personKey = key;
+            }
+            if (legacyKeys.length) {
+                card.dataset.personLegacyKeys = legacyKeys.join('|');
+            }
+        });
+
+        const resolveTeamHashTarget = (targetId) => {
+            if (!targetId) return null;
+
+            const directTarget = document.getElementById(targetId);
+            if (directTarget) return directTarget;
+
+            return Array.from(document.querySelectorAll('.person-feature')).find((card) => {
+                const aliases = (card.dataset.personLegacyKeys || '')
+                    .split('|')
+                    .map((value) => value.trim())
+                    .filter(Boolean);
+                return card.dataset.personKey === targetId || aliases.includes(targetId);
+            }) || null;
+        };
+
+        const waitForTeamImages = () => {
+            const teamImages = Array.from(document.querySelectorAll('.person-feature img'));
+            if (!teamImages.length) {
+                return Promise.resolve();
+            }
+
+            return Promise.all(teamImages.map((img) => {
+                if (img.complete) {
+                    return Promise.resolve();
+                }
+
+                return new Promise((resolve) => {
+                    img.addEventListener('load', resolve, { once: true });
+                    img.addEventListener('error', resolve, { once: true });
+                });
+            }));
+        };
+
+        const scrollTargetToTop = (target, behavior = 'auto') => {
+            if (!target) return;
+            const headerHeight = document.querySelector('.site-header')?.getBoundingClientRect().height || 0;
+            const top = target.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
+            window.scrollTo({ top: Math.max(0, Math.round(top)), behavior });
+        };
+
+        const scrollToTeamHashTarget = async (behavior = 'auto') => {
             const rawHash = window.location.hash;
             if (!rawHash || rawHash.length < 2) return;
 
             const targetId = decodeURIComponent(rawHash.slice(1));
-            const target = document.getElementById(targetId);
+            const target = resolveTeamHashTarget(targetId);
             if (!target) return;
 
-            requestAnimationFrame(() => {
-                target.scrollIntoView({ behavior: 'auto', block: 'start' });
+            await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+            scrollTargetToTop(target, behavior);
+
+            window.setTimeout(() => scrollTargetToTop(target, behavior), 180);
+            waitForTeamImages().then(() => {
+                window.setTimeout(() => scrollTargetToTop(target, behavior), 0);
             });
         };
 
+        if ('scrollRestoration' in window.history) {
+            window.history.scrollRestoration = 'manual';
+        }
+
         scrollToTeamHashTarget();
-        window.addEventListener('hashchange', scrollToTeamHashTarget);
+        window.addEventListener('load', () => scrollToTeamHashTarget());
+        window.addEventListener('hashchange', () => scrollToTeamHashTarget());
     }
 
     // -------------------------------------------------------------------------

@@ -15,29 +15,68 @@
 
   function slugify(value) {
     return String(value || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
       .toLowerCase()
       .replace(/['"]/g, "")
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "");
   }
 
-  function personKeyFromName(fullName) {
+  function getMeaningfulNameParts(fullName) {
+    const TITLE_PREFIXES = new Set(["dr", "prof", "professor", "mr", "mrs", "ms", "miss"]);
     const cleaned = String(fullName || "").replace(/\s+/g, " ").trim();
-    if (!cleaned) return null;
+    if (!cleaned) return [];
 
     const parts = cleaned
       .split(" ")
-      .map((part) => part.replace(/[^a-zA-Z0-9-]/g, ""))
+      .map((part) =>
+        part
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^a-zA-Z0-9-]/g, "")
+      )
       .filter(Boolean);
 
+    let startIndex = 0;
+    while (startIndex < parts.length && TITLE_PREFIXES.has(parts[startIndex].toLowerCase())) {
+      startIndex += 1;
+    }
+
+    return parts.slice(startIndex);
+  }
+
+  function personKeyFromName(fullName) {
+    const parts = getMeaningfulNameParts(fullName);
     if (parts.length < 2) return null;
 
     const firstName = parts[0];
     const lastName = parts[parts.length - 1];
-    const lastInitial = lastName?.[0];
-    if (!lastInitial) return null;
+    return `${slugify(firstName)}-${slugify(lastName)}`;
+  }
 
-    return `${slugify(firstName)}-${slugify(lastInitial)}`;
+  function legacyPersonKeysFromName(fullName) {
+    const cleaned = String(fullName || "").replace(/\s+/g, " ").trim();
+    if (!cleaned) return [];
+
+    const parts = cleaned
+      .split(" ")
+      .map((part) =>
+        part
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^a-zA-Z0-9-]/g, "")
+      )
+      .filter(Boolean);
+
+    if (parts.length < 2) return [];
+
+    const firstPart = parts[0];
+    const lastPart = parts[parts.length - 1];
+    const legacyKey = `${slugify(firstPart)}-${slugify(lastPart?.[0] || "")}`;
+    const modernKey = personKeyFromName(fullName);
+
+    return [legacyKey, modernKey].filter((key, index, allKeys) => key && allKeys.indexOf(key) === index);
   }
 
   function formatRoleAndType(person) {
@@ -160,8 +199,13 @@
     return shuffled;
   }
 
-  function markLowResolutionHeadshots() {
-    const images = document.querySelectorAll(".profile-image, .person-photo-frame img");
+  const LOW_RES_ENTER_SCALE = 1.08;
+  const LOW_RES_EXIT_SCALE = 1.18;
+  let lowResolutionHeadshotResizeTimer = null;
+
+  function markLowResolutionHeadshots(options = {}) {
+    const { selector = ".profile-image, .person-photo-frame img" } = options;
+    const images = document.querySelectorAll(selector);
 
     images.forEach((img) => {
       const evaluate = () => {
@@ -174,11 +218,23 @@
           return;
         }
 
-        const isLowRes =
-          naturalWidth < renderedWidth * 1.1 ||
-          naturalHeight < renderedHeight * 1.1;
+        const widthScale = naturalWidth / renderedWidth;
+        const heightScale = naturalHeight / renderedHeight;
+        const effectiveScale = Math.min(widthScale, heightScale);
+        const wasLowRes = img.dataset.lowResState === "true";
+        const enterThreshold = img.closest(".person-photo-frame")
+          ? LOW_RES_ENTER_SCALE - 0.05
+          : LOW_RES_ENTER_SCALE;
+        const exitThreshold = img.closest(".person-photo-frame")
+          ? LOW_RES_EXIT_SCALE + 0.08
+          : LOW_RES_EXIT_SCALE;
+
+        const isLowRes = wasLowRes
+          ? effectiveScale < exitThreshold
+          : effectiveScale < enterThreshold;
 
         img.classList.toggle("is-low-res", isLowRes);
+        img.dataset.lowResState = String(isLowRes);
       };
 
       if (img.complete) {
@@ -187,6 +243,13 @@
         img.addEventListener("load", evaluate, { once: true });
       }
     });
+  }
+
+  function scheduleLowResolutionHeadshotResizeCheck() {
+    window.clearTimeout(lowResolutionHeadshotResizeTimer);
+    lowResolutionHeadshotResizeTimer = window.setTimeout(() => {
+      markLowResolutionHeadshots({ selector: ".profile-image" });
+    }, 140);
   }
 
   function normalizeSearchText(value) {
@@ -288,6 +351,7 @@
   function renderTeamProfile(person) {
     const profile = getProfileAttributes(person.profileUrl);
     const anchorKey = personKeyFromName(person.name);
+    const legacyKeys = legacyPersonKeysFromName(person.name);
     const roleAndType = formatRoleAndType(person);
     const imageStyle = getImageStyle(person);
     const quickFactsActionMarkup = hasUsableProfileUrl(person.profileUrl)
@@ -301,7 +365,12 @@
       : "";
 
     return `
-      <article class="person-feature"${anchorKey ? ` id="${escapeHtml(anchorKey)}"` : ""}>
+      <article
+        class="person-feature"
+        ${anchorKey ? `id="${escapeHtml(anchorKey)}"` : ""}
+        ${anchorKey ? `data-person-key="${escapeHtml(anchorKey)}"` : ""}
+        ${legacyKeys.length ? `data-person-legacy-keys="${escapeHtml(legacyKeys.join("|"))}"` : ""}
+      >
         <div class="person-feature-inner">
           <div class="person-media">
             <div class="person-photo-frame">
@@ -407,7 +476,7 @@ ${quickFactsActionMarkup}
       await Promise.all(tasks);
       initTeamFilters();
       markLowResolutionHeadshots();
-      window.addEventListener("resize", markLowResolutionHeadshots);
+      window.addEventListener("resize", scheduleLowResolutionHeadshotResizeCheck);
     } catch (error) {
       console.error("Team data rendering failed.", error);
       renderDataLoadError();
@@ -415,6 +484,7 @@ ${quickFactsActionMarkup}
   }
 
   window.TeamData = {
+    legacyPersonKeysFromName,
     personKeyFromName,
     renderPageData,
   };

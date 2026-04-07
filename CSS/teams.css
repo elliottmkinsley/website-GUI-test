@@ -154,6 +154,7 @@
 
 /* Featured person card (single sample) */
 .person-feature {
+  --team-photo-width: 280px;
   position: relative;
   scroll-margin-top: 110px;
   background: linear-gradient(
@@ -216,11 +217,12 @@
   grid-column: 1;
   grid-row: 1 / -1;
   align-self: start;
+  justify-self: start;
   display: flex;
   align-items: center;
   justify-content: center;
   aspect-ratio: 4 / 5;
-  width: 100%;
+  width: min(100%, var(--team-photo-width));
   border-radius: var(--radius-md);
   overflow: hidden;
   border: 1px solid var(--gray-200);
@@ -466,7 +468,6 @@
   .person-photo-frame {
     grid-column: 1;
     grid-row: 1;
-    max-width: 420px;
   }
 
   .person-content {
@@ -483,6 +484,10 @@
 @media (max-width: 520px) {
   .team-page {
     padding: var(--space-2xl) 0;
+  }
+
+  .person-photo-frame {
+    justify-self: center;
   }
 
   .person-actions {
