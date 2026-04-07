@@ -758,17 +758,17 @@ ul {
 .brand-text .dept {
     font-family: var(--font-body);
     font-weight: 700;
-    font-size: 1.5rem;
+    font-size: 1.28rem;
     color: var(--nau-blue);
     /* Dark Text */
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.35px;
 }
 
 /* Nav Menu */
 .nav-menu {
     display: flex;
-    gap: 22px;
+    gap: 18px;
     align-items: center;
 }
 
@@ -780,13 +780,14 @@ ul {
 
 .nav-link {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     font-weight: 600;
     color: var(--nau-blue);
     /* Dark Text */
     text-decoration: none;
     position: relative;
     padding: 5px 0;
+    white-space: nowrap;
     transition: color 0.2s;
 }
 
@@ -1639,10 +1640,10 @@ ul {
     scroll-snap-type: none;
   }
   
-  /* Mobile: stack cards vertically */
-  @media (max-width: 768px) {
+  /* Leadership becomes a true carousel as soon as cards no longer fit comfortably */
+  @media (max-width: 1280px) {
     .card-wrapper-leadership {
-      /* Mobile: one-card-at-a-time carousel */
+      /* Tablet/mobile: horizontal carousel */
       justify-content: flex-start;
       flex-direction: row;
       align-items: stretch;
@@ -1654,10 +1655,18 @@ ul {
     }
 
     .card-wrapper-leadership > .profile-card {
+      flex: 0 0 min(300px, calc(100vw - 72px));
+      min-width: min(300px, calc(100vw - 72px));
+      max-width: min(300px, calc(100vw - 72px));
+      scroll-snap-align: center;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .card-wrapper-leadership > .profile-card {
       flex: 0 0 100%;
       min-width: 100%;
       max-width: 100%;
-      scroll-snap-align: center;
     }
   }
 
@@ -1768,6 +1777,11 @@ ul {
     justify-content: center;
     align-items: center;
     padding: 15px 0;
+}
+
+.headshot-picture,
+.image-container picture {
+    display: block;
 }
 
 .profile-image {

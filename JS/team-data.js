@@ -124,6 +124,25 @@
       .join("");
   }
 
+  function getHeadshotVariantPath(imageSrc, variantName) {
+    const trimmed = String(imageSrc || "").trim();
+    if (!trimmed || /^https?:\/\//i.test(trimmed) || trimmed.startsWith("data:")) {
+      return null;
+    }
+
+    const pathOnly = trimmed.split("?")[0];
+    const lastSlashIndex = pathOnly.lastIndexOf("/");
+    const directory = lastSlashIndex >= 0 ? pathOnly.slice(0, lastSlashIndex + 1) : "";
+    const filename = lastSlashIndex >= 0 ? pathOnly.slice(lastSlashIndex + 1) : pathOnly;
+    const baseName = filename.replace(/\.[^.]+$/, "");
+
+    if (!baseName) {
+      return null;
+    }
+
+    return `${directory}variants/${variantName}/${baseName}.webp`;
+  }
+
   function getImageStyle(person) {
     const parts = [];
 
@@ -136,6 +155,32 @@
     }
 
     return parts.length ? ` style="${parts.join("; ")}"` : "";
+  }
+
+  function renderHeadshotPicture({ person, variantName, imageClass, width, height, fallbackSrc }) {
+    const imageStyle = getImageStyle(person);
+    const variantPath = getHeadshotVariantPath(person.imageSrc, variantName);
+    const sourceMarkup = variantPath
+      ? `<source type="image/webp" srcset="${escapeHtml(variantPath)}">`
+      : "";
+    const imageClassAttribute = imageClass ? ` class="${escapeHtml(imageClass)}"` : "";
+
+    return `
+      <picture class="headshot-picture headshot-picture-${escapeHtml(variantName)}">
+        ${sourceMarkup}
+        <img
+          src="${escapeHtml(person.imageSrc)}"
+          ${imageClassAttribute}
+          alt="${escapeHtml(person.name)} headshot"
+          width="${escapeHtml(width)}"
+          height="${escapeHtml(height)}"
+          loading="lazy"
+          decoding="async"
+          ${imageStyle}
+          onerror="this.src='${escapeHtml(fallbackSrc)}'"
+        >
+      </picture>
+    `;
   }
 
   async function fetchJson(path) {
@@ -201,7 +246,10 @@
 
   const LOW_RES_ENTER_SCALE = 1.08;
   const LOW_RES_EXIT_SCALE = 1.18;
+  const TEAM_BIO_MIN_HEIGHT = 120;
+  const TEAM_BIO_MOBILE_PREVIEW_LINES = 7;
   let lowResolutionHeadshotResizeTimer = null;
+  let teamBioLayoutResizeTimer = null;
 
   function markLowResolutionHeadshots(options = {}) {
     const { selector = ".profile-image, .person-photo-frame img" } = options;
@@ -250,6 +298,111 @@
     lowResolutionHeadshotResizeTimer = window.setTimeout(() => {
       markLowResolutionHeadshots({ selector: ".profile-image" });
     }, 140);
+  }
+
+  function setTeamBioExpanded(card, expanded) {
+    const toggle = card.querySelector(".person-bio-toggle");
+    const toggleText = toggle?.querySelector(".person-bio-toggle-text");
+
+    card.classList.toggle("bio-expanded", expanded);
+
+    if (toggle) {
+      toggle.setAttribute("aria-expanded", expanded ? "true" : "false");
+    }
+
+    if (toggleText) {
+      toggleText.textContent = expanded ? "Show less" : "Show more";
+    }
+  }
+
+  function refreshTeamBioLayouts() {
+    const cards = document.querySelectorAll(".team-page .person-feature");
+    if (!cards.length) {
+      return;
+    }
+
+    const isDesktop = window.matchMedia("(min-width: 901px)").matches;
+
+    cards.forEach((card) => {
+      const photoFrame = card.querySelector(".person-photo-frame");
+      const content = card.querySelector(".person-content");
+      const bioWrap = card.querySelector(".person-bio-wrap");
+      const bio = card.querySelector(".person-bio");
+      const toggle = card.querySelector(".person-bio-toggle");
+
+      if (!photoFrame || !content || !bioWrap || !bio || !toggle) {
+        return;
+      }
+
+      const wasExpanded = card.classList.contains("bio-expanded");
+
+      card.classList.add("bio-measuring");
+      bioWrap.style.removeProperty("--collapsed-bio-height");
+      toggle.hidden = false;
+
+      const lineHeight = Number.parseFloat(window.getComputedStyle(bio).lineHeight) || 26;
+      const mobilePreviewHeight = Math.round(lineHeight * TEAM_BIO_MOBILE_PREVIEW_LINES);
+      const wrapExtraHeight = Math.max(0, Math.round(bioWrap.scrollHeight - bio.scrollHeight));
+      const contentWithoutBioHeight = Math.max(0, Math.round(content.scrollHeight - bioWrap.scrollHeight));
+      const photoHeight = Math.round(photoFrame.getBoundingClientRect().height);
+      const desktopCollapsedHeight = Math.max(
+        TEAM_BIO_MIN_HEIGHT,
+        photoHeight - contentWithoutBioHeight - wrapExtraHeight - 4
+      );
+      const collapsedHeight = isDesktop ? desktopCollapsedHeight : Math.max(TEAM_BIO_MIN_HEIGHT, mobilePreviewHeight);
+      const bioOverflows = bio.scrollHeight > collapsedHeight + 4;
+
+      bioWrap.style.setProperty("--collapsed-bio-height", `${collapsedHeight}px`);
+      card.dataset.bioExpandable = bioOverflows ? "true" : "false";
+      toggle.hidden = !bioOverflows;
+      card.classList.remove("bio-measuring");
+
+      if (bioOverflows) {
+        setTeamBioExpanded(card, wasExpanded);
+      } else {
+        setTeamBioExpanded(card, false);
+      }
+    });
+  }
+
+  function scheduleTeamBioLayoutRefresh() {
+    window.clearTimeout(teamBioLayoutResizeTimer);
+    teamBioLayoutResizeTimer = window.setTimeout(() => {
+      refreshTeamBioLayouts();
+    }, 140);
+  }
+
+  function initTeamBioToggles() {
+    const cards = document.querySelectorAll(".team-page .person-feature");
+    if (!cards.length) {
+      return;
+    }
+
+    cards.forEach((card) => {
+      const toggle = card.querySelector(".person-bio-toggle");
+      if (!toggle || toggle.dataset.bound === "true") {
+        return;
+      }
+
+      toggle.dataset.bound = "true";
+      toggle.addEventListener("click", () => {
+        const expand = !card.classList.contains("bio-expanded");
+        setTeamBioExpanded(card, expand);
+      });
+    });
+
+    document.querySelectorAll(".team-page .person-photo-frame img").forEach((img) => {
+      if (img.complete || img.dataset.bioLayoutBound === "true") {
+        return;
+      }
+
+      img.dataset.bioLayoutBound = "true";
+      const refresh = () => scheduleTeamBioLayoutRefresh();
+      img.addEventListener("load", refresh, { once: true });
+      img.addEventListener("error", refresh, { once: true });
+    });
+
+    refreshTeamBioLayouts();
   }
 
   function normalizeSearchText(value) {
@@ -319,7 +472,6 @@
   function renderHomepageCard(person) {
     const anchorKey = personKeyFromName(person.name);
     const aboutHref = anchorKey ? `Our_Team.html#${anchorKey}` : "Our_Team.html";
-    const imageStyle = getImageStyle(person);
     const homepageType = person.homepageType || person.type;
 
     return `
@@ -328,13 +480,14 @@
           <h3 class="card-title">${escapeHtml(person.name)}</h3>
         </div>
         <div class="image-container">
-          <img
-            src="${escapeHtml(person.imageSrc)}"
-            class="profile-image"
-            alt="${escapeHtml(person.name)} headshot"
-            ${imageStyle}
-            onerror="this.src='https://via.placeholder.com/150'"
-          >
+          ${renderHeadshotPicture({
+            person,
+            variantName: "card",
+            imageClass: "profile-image",
+            width: 160,
+            height: 200,
+            fallbackSrc: "https://via.placeholder.com/150"
+          })}
         </div>
         <div class="card-details">
           <div class="card-role">${escapeHtml(person.role)}</div>
@@ -352,8 +505,8 @@
     const profile = getProfileAttributes(person.profileUrl);
     const anchorKey = personKeyFromName(person.name);
     const legacyKeys = legacyPersonKeysFromName(person.name);
+    const bioId = anchorKey ? `${anchorKey}-bio` : `${slugify(person.name)}-bio`;
     const roleAndType = formatRoleAndType(person);
-    const imageStyle = getImageStyle(person);
     const quickFactsActionMarkup = hasUsableProfileUrl(person.profileUrl)
       ? `
             <div class="person-actions" aria-label="Profile actions">
@@ -374,12 +527,14 @@
         <div class="person-feature-inner">
           <div class="person-media">
             <div class="person-photo-frame">
-              <img
-                src="${escapeHtml(person.imageSrc)}"
-                alt="${escapeHtml(person.name)} headshot"
-                ${imageStyle}
-                onerror="this.src='https://via.placeholder.com/600x750?text=Headshot'"
-              />
+              ${renderHeadshotPicture({
+                person,
+                variantName: "team",
+                imageClass: "",
+                width: 280,
+                height: 350,
+                fallbackSrc: "https://via.placeholder.com/600x750?text=Headshot"
+              })}
             </div>
 
             <div class="person-quickfacts" aria-label="Quick facts">
@@ -399,7 +554,15 @@ ${quickFactsActionMarkup}
             <h3 class="person-name">${escapeHtml(person.name)}</h3>
             <p class="person-title">${escapeHtml(roleAndType)}</p>
             <p class="person-school">${escapeHtml(person.school)}</p>
-            <p class="person-bio">${escapeHtml(person.bio)}</p>
+            <div class="person-bio-wrap">
+              <p class="person-bio" id="${escapeHtml(bioId)}">${escapeHtml(person.bio)}</p>
+              <button type="button" class="person-bio-toggle" aria-controls="${escapeHtml(bioId)}" aria-expanded="false" hidden>
+                <span class="person-bio-toggle-text">Show more</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M6 9l6 6 6-6"></path>
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </article>
@@ -476,7 +639,9 @@ ${quickFactsActionMarkup}
       await Promise.all(tasks);
       initTeamFilters();
       markLowResolutionHeadshots();
+      initTeamBioToggles();
       window.addEventListener("resize", scheduleLowResolutionHeadshotResizeCheck);
+      window.addEventListener("resize", scheduleTeamBioLayoutRefresh);
     } catch (error) {
       console.error("Team data rendering failed.", error);
       renderDataLoadError();

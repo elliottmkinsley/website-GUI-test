@@ -230,6 +230,12 @@
   box-shadow: var(--shadow-md);
 }
 
+.person-photo-frame picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .person-photo-frame img {
   width: 100%;
   height: 100%;
@@ -302,6 +308,15 @@
   min-width: 0;
 }
 
+.person-bio-wrap {
+  --collapsed-bio-height: 12rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+}
+
 /* Hide pills, research tags, and Email/CV buttons */
 .team-page .role-badges,
 .team-page .person-tags,
@@ -365,6 +380,47 @@
   margin: 0;
   color: var(--gray-700);
   max-width: 88ch;
+  line-height: 1.55;
+  position: relative;
+}
+
+.person-feature[data-bio-expandable="true"]:not(.bio-expanded):not(.bio-measuring) .person-bio {
+  max-height: var(--collapsed-bio-height);
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 100%);
+}
+
+.person-bio-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--nau-blue);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.person-bio-toggle svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  transition: transform 0.2s ease;
+}
+
+.person-feature.bio-expanded .person-bio-toggle svg {
+  transform: rotate(180deg);
+}
+
+.person-bio-toggle[hidden] {
+  display: none;
 }
 
 .person-tags {

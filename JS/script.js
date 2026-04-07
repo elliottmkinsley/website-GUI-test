@@ -299,9 +299,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             const container = targetId ? document.getElementById(targetId) : null;
             if (!container || !btns.length) return;
 
-            const hasOverflow = container.scrollWidth > container.clientWidth;
+            const styles = window.getComputedStyle(container);
+            const overflowX = styles.overflowX;
+            const isScrollable = overflowX === 'auto' || overflowX === 'scroll';
+            const hasOverflow = container.scrollWidth - container.clientWidth > 1;
             btns.forEach((b) => {
-                b.style.display = hasOverflow ? '' : 'none';
+                b.style.display = isScrollable && hasOverflow ? '' : 'none';
             });
         });
     };
