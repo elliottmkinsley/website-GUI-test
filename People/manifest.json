@@ -28,7 +28,11 @@
     "People/Staff/chris-rose.json",
     "People/Staff/charles-saluski.json",
     "People/Staff/nathan-smith.json",
-    "People/Staff/elliott-kinsley.json"
+    "People/Staff/elliott-kinsley.json",
+    "People/Staff/samuel-cushman.json",
+    "People/Staff/judah-denny.json",
+    "People/Staff/emalee-mccullar.json",
+    "People/Staff/amy-wolkowinsky.json"
   ],
   "postdocs": [
     "People/Postdoctoral Scholars/ivan-garzon.json",
@@ -49,6 +53,19 @@
     "People/Graduate Students & Assistants/margaret-berestyuk.json",
     "People/Graduate Students & Assistants/margo-moceyunas.json",
     "People/Graduate Students & Assistants/michael-strane.json",
-    "People/Graduate Students & Assistants/sam-lockhart.json"
+    "People/Graduate Students & Assistants/sam-lockhart.json",
+    "People/Graduate Students & Assistants/lillian-bradford.json",
+    "People/Graduate Students & Assistants/jalyn-gearries.json",
+    "People/Graduate Students & Assistants/natalie-jones.json",
+    "People/Graduate Students & Assistants/bailey-kirsten.json",
+    "People/Graduate Students & Assistants/annika-maso.json",
+    "People/Graduate Students & Assistants/logan-ozment.json",
+    "People/Graduate Students & Assistants/jade-pratt.json",
+    "People/Graduate Students & Assistants/dillon-riggs.json",
+    "People/Graduate Students & Assistants/johnathan-tenny.json",
+    "People/Graduate Students & Assistants/rachel-fry.json",
+    "People/Graduate Students & Assistants/laura-lee.json",
+    "People/Graduate Students & Assistants/vitoria-hope.json",
+    "People/Graduate Students & Assistants/jake-miller.json"
   ]
 }

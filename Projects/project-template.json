@@ -1,0 +1,13 @@
+{
+  "tag": "Example: News, Projects, NASA...etc.",
+  "title": "SHORT CATCHY TITLE HERE",
+  "description": "SHORT DESCRIPTION HERE",
+  "imageSrc": "Images/News/empty-background.png",
+  "imageAlt": "Alternate text if the image is not displayed, short and descriptive.",
+  "buttonLabel": "Read Full Story",
+  "linkUrl": "LINK TO NEWS STORY HERE",
+  "badge": "BARDGE_HERE, EXAMPLE: Featured Story, News, Projects, NASA...etc.",
+  "source": "Source of funding here, if available.",
+  "meta": "Example1 • Example2 • Example3",
+  "impact": "How radiant is impacting this project..."
+}
