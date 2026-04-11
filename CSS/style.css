@@ -1601,7 +1601,7 @@ ul {
         width: calc(100% - 12px);
         max-width: none;
         padding: 8px 14px 10px;
-        border-radius: 0 0 16px 16px;
+        border-radius: 16px;
     }
 
     .hero-copy .slide-title {
