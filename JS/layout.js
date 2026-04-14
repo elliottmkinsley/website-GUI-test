@@ -35,8 +35,7 @@ class SiteHeader extends HTMLElement {
                     <div class="nav-item"><a href="${basePath}Our_Team.html" class="nav-link" data-path="Our_Team.html">Our Team</a></div>
                     
                     <div class="nav-item"><a href="${basePath}Projects.html" class="nav-link" data-path="Projects.html">Projects</a></div>
-                    
-                    
+                    <div class="nav-item"><a href="${basePath}Jobs.html" class="nav-link" data-path="Jobs.html">Jobs</a></div>
                     <div class="nav-item"><a href="${basePath}Contact_Us.html" class="nav-link" data-path="Contact_Us.html">Contact Us</a></div>
                     <div class="nav-item nav-item-donate"><a href="https://securelb.imodules.com/s/1898/giving19/form.aspx?sid=1898&gid=2&pgid=418&bledit=1&dids=4256" target="_blank" rel="noopener" class="btn btn-sm btn-gold donate-nav-link">Donate</a></div>
 
@@ -186,6 +185,7 @@ class SiteFooter extends HTMLElement {
                             <li><a href="${basePath}index.html">Home</a></li>
                             <li><a href="${basePath}Projects.html">Projects</a></li>
                             <li><a href="${basePath}Our_Team.html">Our Team</a></li>
+                            <li><a href="${basePath}Jobs.html">Jobs</a></li>
                             <li><a href="${basePath}Capabilities.html">Capabilities</a></li>
                         </ul>
                     </div>

@@ -66,6 +66,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (window.ProjectData?.renderPageData) {
         dataRenderTasks.push(window.ProjectData.renderPageData());
     }
+    if (window.EventsData?.renderPageData) {
+        dataRenderTasks.push(window.EventsData.renderPageData());
+    }
     if (dataRenderTasks.length) {
         await Promise.all(dataRenderTasks);
     }
