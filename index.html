@@ -17,8 +17,8 @@
         rel="stylesheet">
 
     <!-- External CSS  cng-->
-    <link rel="stylesheet" href="CSS/style.css?v=2026-04-22-6">
-    <link rel="stylesheet" href="CSS/events-home.css?v=2026-04-12-3">
+    <link rel="stylesheet" href="CSS/style.css?v=2026-04-29-2">
+    <link rel="stylesheet" href="CSS/events-home.css?v=2026-04-27-2">
 </head>
 
 
@@ -68,9 +68,7 @@
                 </a>
                 <a
                     class="hero-social-link hero-social-link-donate"
-                    href="https://securelb.imodules.com/s/1898/giving19/form.aspx?sid=1898&gid=2&pgid=418&bledit=1&dids=4256"
-                    target="_blank"
-                    rel="noopener"
+                    href="Donate.html"
                     aria-label="Donate to Radiant"
                 >
                     <span>Donate</span>
@@ -84,7 +82,6 @@
                 <div class="slide-content">
                     <div class="container">
                         <div class="hero-copy">
-                            <div class="slide-tag"><span>Welcome!</span></div>
                             <h1 class="slide-title">Radiant Center<br>For Remote Sensing</h1>
                             <p class="slide-desc">Dedicated to advancing remote sensing technology and applications.</p>
                             <a href="Our_Team.html" class="btn btn-primary">Meet Our Team</a>
@@ -245,6 +242,28 @@
             </div>
         </section>
 
+        <!-- Affiliation -->
+        <section class="carousel-section">
+            <div class="container">
+                <div class="sub-section-header">
+                    <h3>Affiliation</h3>
+                </div>
+                <div class="carousel-wrapper">
+                    <button type="button" class="nav-btn left" data-target="affiliationContainer" aria-label="Scroll affiliation cards left">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M15 18l-6-6 6-6" />
+                        </svg>
+                    </button>
+                    <button type="button" class="nav-btn right" data-target="affiliationContainer" aria-label="Scroll affiliation cards right">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M9 18l6-6-6-6" />
+                        </svg>
+                    </button>
+                    <div class="card-wrapper" id="affiliationContainer" data-about-href="Our_Team.html#affiliation"></div>
+                </div>
+            </div>
+        </section>
+
         <!-- STAFF -->
         <section class="carousel-section">
             <div class="container">
@@ -315,7 +334,19 @@
                 <header class="home-events-intro">
                     <h2 id="home-events-heading">Events</h2>
                 </header>
-                <div id="homeEventsMount" class="home-events-grid" aria-label="Recent outreach events"></div>
+                <div class="carousel-wrapper home-events-wrapper">
+                    <button type="button" class="nav-btn left" data-target="homeEventsMount" aria-label="Previous event">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M15 18l-6-6 6-6" />
+                        </svg>
+                    </button>
+                    <button type="button" class="nav-btn right" data-target="homeEventsMount" aria-label="Next event">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M9 18l6-6-6-6" />
+                        </svg>
+                    </button>
+                    <div id="homeEventsMount" class="home-events-grid" aria-label="Recent outreach events"></div>
+                </div>
             </div>
         </section>
     </main>
@@ -330,14 +361,14 @@
     -->
 
     <!-- Layout Scripts (Must load before main script) -->
-    <script src="JS/site-config.js?v=2026-04-12-3"></script>
-    <script src="JS/layout.js?v=2026-04-11-2"></script>
-    <script src="JS/team-data.js?v=2026-04-11-2"></script>
-    <script src="JS/project-data.js?v=2026-04-11-2"></script>
-    <script src="JS/events-data.js?v=2026-04-12-3"></script>
+    <script src="JS/site-config.js?v=2026-04-27-1"></script>
+    <script src="JS/layout.js?v=2026-04-29-2"></script>
+    <script src="JS/team-data.js?v=2026-04-28-6"></script>
+    <script src="JS/project-data.js?v=2026-04-28-1"></script>
+    <script src="JS/events-data.js?v=2026-04-27-1"></script>
 
     <!-- External Script -->
-    <script src="JS/script.js?v=2026-04-11-2"></script>
+    <script src="JS/script.js?v=2026-04-27-1"></script>
 </body>
 
 </html>

@@ -22,6 +22,18 @@
     "People/Core Researchers/patrick-jantz.json",
     "People/Core Researchers/scott-goetz.json"
   ],
+  "affiliation": [
+    "People/Affiliation/andrew-richardson.json",
+    "People/Affiliation/david-trilling.json",
+    "People/Affiliation/duan-biggs.json",
+    "People/Affiliation/kayeleigh-sharp.json",
+    "People/Affiliation/leszek-pawlowicz.json",
+    "People/Affiliation/ryan-porter.json",
+    "People/Affiliation/taylor-joyal.json",
+    "People/Affiliation/david-folch.json",
+    "People/Affiliation/mark-manone.json",
+    "People/Affiliation/jaime-awe.json"
+  ],
   "staff": [
     "People/Staff/jagoda-janiszewska.json",
     "People/Staff/darryl-colebank.json",

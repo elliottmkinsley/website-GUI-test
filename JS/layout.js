@@ -37,7 +37,7 @@ class SiteHeader extends HTMLElement {
                     <div class="nav-item"><a href="${basePath}Projects.html" class="nav-link" data-path="Projects.html">Projects</a></div>
                     <div class="nav-item"><a href="${basePath}Jobs.html" class="nav-link" data-path="Jobs.html">Opportunities</a></div>
                     <div class="nav-item"><a href="${basePath}Contact_Us.html" class="nav-link" data-path="Contact_Us.html">Contact Us</a></div>
-                    <div class="nav-item nav-item-donate"><a href="https://securelb.imodules.com/s/1898/giving19/form.aspx?sid=1898&gid=2&pgid=418&bledit=1&dids=4256" target="_blank" rel="noopener" class="btn btn-sm btn-gold donate-nav-link">Donate</a></div>
+                    <div class="nav-item nav-item-donate"><a href="${basePath}Donate.html" data-path="Donate.html" class="btn btn-sm btn-gold donate-nav-link">Donate</a></div>
 
                 </nav>
             </div>
@@ -62,7 +62,7 @@ class SiteHeader extends HTMLElement {
     initMobileMenu() {
         const mobileBtn = this.querySelector('.mobile-toggle');
         const navMenu = this.querySelector('.nav-menu');
-        const mobileLayout = window.matchMedia('(max-width: 1024px)');
+        const mobileLayout = window.matchMedia('(max-width: 1170px)');
 
         if (!mobileBtn || !navMenu) return;
 

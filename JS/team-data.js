@@ -2,7 +2,7 @@
   const MANIFEST_PATH = "People/manifest.json";
   const manifestCache = { value: null };
   const personCache = new Map();
-  const RANDOMIZED_SECTIONS = new Set(["faculty", "postdocs", "graduate"]);
+  const RANDOMIZED_SECTIONS = new Set(["faculty", "affiliation", "postdocs", "graduate"]);
   const ASSET_VERSION = window.RadiantSiteConfig?.assetVersion || "";
 
   function escapeHtml(value) {
@@ -427,6 +427,141 @@
       .trim();
   }
 
+  const TEAM_SECTION_PREVIEW_COUNT = 3;
+  const SECTIONS_WITHOUT_COLLAPSE = new Set(["leadership"]);
+
+  function ensureSectionCollapseButtons(sections) {
+    sections.forEach((section) => {
+      if (SECTIONS_WITHOUT_COLLAPSE.has(section.id)) return;
+      if (section.querySelector(".team-section-collapse-footer")) return;
+      const stack = section.querySelector(".person-stack");
+      if (!stack) return;
+
+      const footer = document.createElement("div");
+      footer.className = "team-section-collapse-footer";
+      footer.hidden = true;
+
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "team-section-collapse-toggle";
+      button.setAttribute("aria-expanded", "false");
+      button.innerHTML = `
+        <span class="team-section-collapse-text">Show all</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 9l6 6 6-6"></path>
+        </svg>
+      `;
+
+      button.addEventListener("click", () => {
+        const expanded = !section.classList.contains("is-expanded");
+        section.classList.toggle("is-expanded", expanded);
+        button.setAttribute("aria-expanded", String(expanded));
+        applyCollapseState(section);
+        scheduleTeamBioLayoutRefresh();
+      });
+
+      footer.appendChild(button);
+      stack.insertAdjacentElement("afterend", footer);
+    });
+  }
+
+  function applyCollapseState(section) {
+    const button = section.querySelector(".team-section-collapse-toggle");
+    const textEl = button?.querySelector(".team-section-collapse-text");
+    const visibleCards = Array.from(section.querySelectorAll(".person-feature"))
+      .filter((card) => !card.hidden);
+    const isCollapsible = section.classList.contains("is-collapsible");
+    const isExpanded = section.classList.contains("is-expanded");
+    const lastPreviewIndex = TEAM_SECTION_PREVIEW_COUNT - 1;
+
+    visibleCards.forEach((card, index) => {
+      const shouldHide = isCollapsible && !isExpanded && index >= TEAM_SECTION_PREVIEW_COUNT;
+      const shouldFade = isCollapsible && !isExpanded && index === lastPreviewIndex;
+      card.classList.toggle("is-collapse-hidden", shouldHide);
+      card.classList.toggle("is-collapse-fade", shouldFade);
+    });
+
+    if (button && textEl) {
+      const hidden = Math.max(0, visibleCards.length - TEAM_SECTION_PREVIEW_COUNT);
+      textEl.textContent = isExpanded
+        ? "Show fewer"
+        : `Show ${hidden} more`;
+    }
+  }
+
+  function findPersonCardById(targetId) {
+    if (!targetId) return null;
+
+    let target = document.getElementById(targetId);
+    if (target && target.classList.contains("person-feature")) {
+      return target;
+    }
+
+    target = Array.from(document.querySelectorAll(".person-feature[data-person-legacy-keys]"))
+      .find((card) => {
+        const keys = (card.dataset.personLegacyKeys || "").split("|").filter(Boolean);
+        return keys.includes(targetId);
+      });
+
+    return target || null;
+  }
+
+  function expandSectionForHash(options = {}) {
+    const { scroll = true } = options;
+    const rawHash = window.location.hash || "";
+    if (!rawHash || rawHash.length < 2) return;
+
+    let targetId;
+    try {
+      targetId = decodeURIComponent(rawHash.slice(1));
+    } catch (_err) {
+      targetId = rawHash.slice(1);
+    }
+
+    const target = findPersonCardById(targetId);
+    if (!target) return;
+
+    const section = target.closest(".team-section");
+    if (section && section.classList.contains("is-collapsible") && !section.classList.contains("is-expanded")) {
+      section.classList.add("is-expanded");
+      applyCollapseState(section);
+      const button = section.querySelector(".team-section-collapse-toggle");
+      if (button) {
+        button.setAttribute("aria-expanded", "true");
+      }
+      scheduleTeamBioLayoutRefresh();
+    }
+
+    if (scroll) {
+      window.requestAnimationFrame(() => {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  }
+
+  function applySectionCollapse({ activeFilters, sections }) {
+    sections.forEach((section) => {
+      const visibleCards = Array.from(section.querySelectorAll(".person-feature"))
+        .filter((card) => !card.hidden);
+      const footer = section.querySelector(".team-section-collapse-footer");
+      const collapseAllowed = !SECTIONS_WITHOUT_COLLAPSE.has(section.id);
+      const shouldCollapse =
+        collapseAllowed && !activeFilters && visibleCards.length > TEAM_SECTION_PREVIEW_COUNT;
+
+      section.classList.toggle("is-collapsible", shouldCollapse);
+
+      if (!shouldCollapse) {
+        section.classList.remove("is-expanded");
+      }
+
+      if (footer) {
+        footer.hidden = !shouldCollapse;
+      }
+
+      applyCollapseState(section);
+    });
+  }
+
   function initTeamFilters() {
     const searchInput = document.getElementById("teamSearch");
     const sectionFilter = document.getElementById("teamSectionFilter");
@@ -449,9 +584,12 @@
       card.dataset.searchText = normalizeSearchText(card.textContent);
     });
 
+    ensureSectionCollapseButtons(sections);
+
     const applyFilters = () => {
       const term = normalizeSearchText(searchInput.value);
       const selectedSection = sectionFilter.value;
+      const activeFilters = Boolean(term) || selectedSection !== "all";
       let visibleCards = 0;
 
       sections.forEach((section) => {
@@ -476,6 +614,9 @@
       if (emptyState) {
         emptyState.hidden = visibleCards !== 0;
       }
+
+      applySectionCollapse({ activeFilters, sections });
+      scheduleTeamBioLayoutRefresh();
     };
 
     searchInput.addEventListener("input", applyFilters);
@@ -594,6 +735,7 @@ ${quickFactsActionMarkup}
     const sections = [
       ["leadership", "leadershipContainer"],
       ["faculty", "facultyContainer"],
+      ["affiliation", "affiliationContainer"],
       ["staff", "staffContainer"],
       ["postdocs", "postDocContainer"],
       ["graduate", "gradContainer"],
@@ -618,6 +760,7 @@ ${quickFactsActionMarkup}
     const sections = [
       ["leadership", "leadership"],
       ["faculty", "faculty"],
+      ["affiliation", "affiliation"],
       ["staff", "staff"],
       ["postdocs", "postdocs"],
       ["graduate", "graduate"],
@@ -652,10 +795,12 @@ ${quickFactsActionMarkup}
 
       await Promise.all(tasks);
       initTeamFilters();
+      expandSectionForHash();
       markLowResolutionHeadshots();
       initTeamBioToggles();
       window.addEventListener("resize", scheduleLowResolutionHeadshotResizeCheck);
       window.addEventListener("resize", scheduleTeamBioLayoutRefresh);
+      window.addEventListener("hashchange", () => expandSectionForHash());
     } catch (error) {
       console.error("Team data rendering failed.", error);
       renderDataLoadError();

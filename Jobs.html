@@ -9,21 +9,42 @@
   <meta name="theme-color" content="#002454" />
   <title>Opportunities | NAU Radiant Center</title>
 
-  <link rel="stylesheet" href="CSS/style.css?v=2026-04-22-5" />
-  <link rel="stylesheet" href="CSS/jobs-page.css?v=2026-04-11-1" />
+  <!-- Google Fonts (must match other pages so the header brand text renders identically) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="CSS/style.css?v=2026-04-29-2" />
+  <link rel="stylesheet" href="CSS/jobs-page.css?v=2026-04-28-2" />
 </head>
 
 <body>
   <site-header></site-header>
 
   <main class="jobs-page">
-    <div class="container">
-      <header class="jobs-hero">
+    <!-- Hero -->
+    <section class="jobs-hero-section" aria-label="Careers at Radiant">
+      <div class="jobs-hero-media" aria-hidden="true">
+        <img src="Images/News/visions-spaceflight-hardware.jpg" alt="" class="jobs-hero-img">
+        <div class="jobs-hero-overlay"></div>
+      </div>
+      <div class="container jobs-hero-inner">
+        <span class="jobs-eyebrow">Opportunities</span>
         <h1>Careers at Radiant</h1>
+        <p class="jobs-lede">
+          Help build the next generation of remote sensing science. Explore open positions in
+          research, instrument engineering, and program operations.
+        </p>
+      </div>
+    </section>
+
+    <div class="container">
+      <header class="jobs-intro">
         <p>
-          Explore available positions supporting remote sensing research, instrument engineering, and program
-          operations. Each listing links to the official Northern Arizona University recruitment website, and
-          interested applicants can review open roles and submit application materials there. Please note that
+          Each listing links to the official Northern Arizona University recruitment website, where
+          interested applicants can review open roles and submit application materials. Please note that
           &lsquo;internal&rsquo; postings can only be viewed by current NAU employees.
         </p>
       </header>
@@ -40,7 +61,7 @@
   </main>
 
   <script src="JS/site-config.js?v=2026-04-10-1"></script>
-  <script src="JS/layout.js?v=2026-04-10-1"></script>
+  <script src="JS/layout.js?v=2026-04-29-2"></script>
   <script src="JS/jobs-data.js?v=2026-04-10-1"></script>
   <script src="JS/script.js?v=2026-04-10-1"></script>
 </body>

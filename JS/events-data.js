@@ -61,7 +61,7 @@
     return h && String(h).trim() ? String(h).trim() : "Event";
   }
 
-  function renderEventCard(event, index, compact) {
+  function renderEventCard(event, index) {
     const headline = eventHeadline(event);
     const summary = event.summary && String(event.summary).trim();
     const summaryHtml = summary
@@ -70,11 +70,8 @@
 
     const imgSrc = escapeHtml(withAssetVersion(event.imageSrc));
     const alt = escapeHtml(event.imageAlt || headline);
-    const sizesMulti =
-      "(max-width: 540px) 100vw, (max-width: 900px) 45vw, 280px";
-    const sizesSingle =
-      "(max-width: 640px) 100vw, (max-width: 1100px) min(94vw, 720px), min(1100px, 92vw)";
-    const sizes = compact ? sizesMulti : sizesSingle;
+    const sizes =
+      "(max-width: 640px) 100vw, (max-width: 1100px) min(94vw, 720px), min(960px, 92vw)";
     const fetchPriority = index === 0 ? "fetchpriority=\"high\"" : "";
 
     return `
@@ -110,11 +107,14 @@
         section.remove();
         return;
       }
-      const compact = events.length > 1;
-      mount.classList.toggle("home-events-grid--compact", compact);
-      mount.classList.toggle("home-events-grid--single", !compact);
+      const single = events.length === 1;
+      mount.classList.toggle("home-events-grid--single", single);
+      mount.classList.toggle("home-events-grid--carousel", !single);
       mount.dataset.eventCount = String(events.length);
-      mount.innerHTML = events.map((ev, i) => renderEventCard(ev, i, compact)).join("");
+      mount.innerHTML = events.map((ev, i) => renderEventCard(ev, i)).join("");
+
+      // Arrow visibility is computed on resize; nudge it once after async render.
+      window.dispatchEvent(new Event("resize"));
     } catch (error) {
       console.error("Events data rendering failed.", error);
       section.remove();

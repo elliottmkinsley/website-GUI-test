@@ -1,23 +1,102 @@
 /* Jobs listing — matches Radiant / NAU theme */
 
 .jobs-page {
-  padding: var(--space-3xl) 0 0;
+  padding: 0 0 0;
+  background: var(--gray-50);
 }
 
-.jobs-hero {
-  margin-bottom: var(--space-2xl);
+/* ------------------------------------------------------------------ */
+/* Hero (image + NAU-blue gradient, matches Donate/Contact)            */
+/* ------------------------------------------------------------------ */
+
+.jobs-hero-section {
+  position: relative;
+  isolation: isolate;
+  color: var(--white);
+  padding: clamp(56px, 9vh, 96px) 0 clamp(48px, 8vh, 80px);
+  min-height: clamp(320px, 48vh, 460px);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
 }
 
-.jobs-hero h1 {
-  margin-bottom: 10px;
+.jobs-hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.jobs-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.jobs-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--nau-gold) 22%, transparent) 0%, transparent 55%),
+    linear-gradient(120deg,
+      rgba(0, 36, 84, 0.88) 0%,
+      rgba(0, 36, 84, 0.72) 45%,
+      rgba(0, 36, 84, 0.55) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.35) 100%);
+}
+
+.jobs-hero-inner {
+  position: relative;
+  max-width: 760px;
+}
+
+.jobs-eyebrow {
+  display: inline-block;
+  background: var(--nau-gold);
   color: var(--nau-blue);
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  margin-bottom: 18px;
 }
 
-.jobs-hero p {
-  margin: 0;
-  color: var(--gray-600);
-  max-width: 85ch;
+.jobs-hero-section h1 {
+  color: var(--white);
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  margin: 0 0 12px;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+}
+
+.jobs-lede {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: clamp(1rem, 1.35vw, 1.15rem);
   line-height: 1.55;
+  max-width: 60ch;
+  margin: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Intro paragraph above the board                                     */
+/* ------------------------------------------------------------------ */
+
+.jobs-intro {
+  padding: clamp(36px, 5vh, 56px) 0 clamp(20px, 3vh, 32px);
+  max-width: 85ch;
+}
+
+.jobs-intro p {
+  margin: 0;
+  color: var(--gray-700);
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
 .jobs-board {

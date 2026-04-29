@@ -693,3 +693,95 @@
   }
 }
 
+/* ------------------------------------------------------------------ */
+/* Per-section collapse: show first 3 + "Show more" toggle             */
+/* Mirrors the in-card bio "Show more" pattern: fade the last preview  */
+/* card with a gradient mask, then a prominent toggle button below.    */
+/* (When search/filter is active, all matches are shown — no collapse) */
+/* ------------------------------------------------------------------ */
+
+.person-feature.is-collapse-hidden {
+  display: none !important;
+}
+
+/* Fade-out mask applied to the last preview card so the user can see
+   the section continues below — same masking technique as .person-bio. */
+.person-feature.is-collapse-fade {
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 60%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 60%, transparent 100%);
+  pointer-events: none;
+}
+
+.person-feature.is-collapse-fade > * {
+  pointer-events: auto;
+}
+
+.team-section-collapse-footer {
+  display: flex;
+  justify-content: center;
+  /* Pull the button up so it overlaps the bottom of the faded card,
+     reinforcing the "there's more below" cue. */
+  margin-top: clamp(-44px, -3vh, -28px);
+  position: relative;
+  z-index: 2;
+}
+
+.team-section-collapse-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: 999px;
+  border: 1.5px solid color-mix(in srgb, var(--nau-gold) 70%, var(--nau-blue));
+  background: linear-gradient(180deg, var(--nau-gold-light, var(--nau-gold)) 0%, var(--nau-gold) 100%);
+  color: var(--nau-blue);
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  font-size: 1.02rem;
+  cursor: pointer;
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--nau-gold) 22%, transparent),
+    0 14px 32px rgba(0, 36, 84, 0.18);
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.team-section-collapse-toggle:hover,
+.team-section-collapse-toggle:focus-visible {
+  outline: none;
+  transform: translateY(-2px);
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--nau-gold) 88%, var(--white)) 0%,
+    var(--nau-gold) 100%);
+  border-color: var(--nau-blue);
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--nau-gold) 35%, transparent),
+    0 18px 40px rgba(0, 36, 84, 0.24);
+}
+
+.team-section-collapse-toggle:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--nau-blue) 55%, transparent);
+  outline-offset: 3px;
+}
+
+.team-section-collapse-toggle svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.3s ease;
+}
+
+.team-section.is-expanded .team-section-collapse-toggle svg {
+  transform: rotate(180deg);
+}
+
+/* When expanded, lift the footer back to a normal margin (no overlap). */
+.team-section.is-expanded .team-section-collapse-footer,
+.team-section:not(.is-collapsible) .team-section-collapse-footer {
+  margin-top: clamp(14px, 2vh, 20px);
+}
+

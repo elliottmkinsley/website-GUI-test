@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Scrolls by exactly one card at a time.
     // -------------------------------------------------------------------------
     const getCarouselStep = (container) => {
-        const card = container.querySelector('.profile-card');
+        const card = container.querySelector('.profile-card') || container.firstElementChild;
         if (!card) return 350;
 
         const cardWidth = card.getBoundingClientRect().width || 350;

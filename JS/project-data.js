@@ -96,7 +96,6 @@
         <div class="slide-content">
           <div class="container">
             <div class="hero-copy">
-              <div class="slide-tag"><span>${escapeHtml(project.tag || "Featured")}</span></div>
               <h2 class="slide-title">${escapeHtml(project.title)}</h2>
               <p class="slide-desc">${escapeHtml(project.description)}</p>
               <a href="${escapeHtml(link.href)}" class="btn btn-primary"${link.extra}>${escapeHtml(project.buttonLabel || "Read Full Story")}</a>

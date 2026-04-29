@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Contact the NAU Radiant Center for Remote Sensing. Reach our team by email, visit our Flagstaff campus office, or connect with us online.">
+    <meta name="theme-color" content="#002454">
     <title>Contact Us | NAU Radiant Center</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,8 +16,8 @@
         rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="CSS/style.css?v=2026-04-22-5">
-    <link rel="stylesheet" href="CSS/contact.css?v=2026-04-10-1">
+    <link rel="stylesheet" href="CSS/style.css?v=2026-04-29-2">
+    <link rel="stylesheet" href="CSS/contact.css?v=2026-04-28-3">
 </head>
 
 <body>
@@ -22,19 +25,31 @@
     <!-- Header (Shared) -->
     <site-header></site-header>
 
-    <main>
+    <main class="contact-main">
+        <!-- Hero -->
+        <section class="contact-hero-section" aria-label="Contact us">
+            <div class="contact-hero-media" aria-hidden="true">
+                <img src="Images/News/drone-lab.jpg" alt="" class="contact-hero-img">
+                <div class="contact-hero-overlay"></div>
+            </div>
+            <div class="container contact-hero-inner">
+                <span class="contact-eyebrow">Get in touch</span>
+                <h1>Contact Us</h1>
+                <p class="contact-lede">
+                    We&rsquo;d love to hear from you. Reach our team by email, swing by NAU&rsquo;s
+                    Flagstaff campus office, or connect with us online.
+                </p>
+            </div>
+        </section>
+
+        <!-- Main content -->
         <section class="contact-page">
             <div class="container">
-                <header class="contact-hero">
-                    <h1>Contact Us</h1>
-                    <p>Contact us via email or visit us on NAU’s Flagstaff campus.</p>
-                </header>
-
                 <div class="contact-grid">
                     <!-- Contact details -->
                     <section class="contact-card" aria-label="Contact information">
                         <div class="contact-card-header">
-                            <h2>Get in touch</h2>
+                            <h2>Reach our team</h2>
                         </div>
                         <div class="contact-card-body">
                             <div class="contact-items">
@@ -63,32 +78,28 @@
                                         <div class="label">Location</div>
                                         <p class="value">Northern Arizona University</p>
                                         <div class="hint">
-                                            525 S. Beaver St., 4th Floor • Flagstaff, AZ
+                                            525 S. Beaver St., 4th Floor &bull; Flagstaff, AZ
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="contact-actions">
-                                <a class="btn btn-primary" href="mailto:radiant@nau.edu">Email Us</a>
+                                <a class="btn btn-primary contact-cta" href="mailto:radiant@nau.edu">
+                                    Email Us
+                                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M5 12h14M13 6l6 6-6 6" />
+                                    </svg>
+                                </a>
                                 <a class="btn btn-outline btn-outline-blue"
                                     href="https://maps.google.com/?q=525%20S.%20Beaver%20St.,%204th%20Floor%20Flagstaff%20AZ"
                                     target="_blank" rel="noopener">Open in Maps</a>
-                                <a class="btn btn-outline btn-outline-blue"
-                                    href="https://www.facebook.com/profile.php?id=61573354411409"
-                                    target="_blank" rel="noopener">Facebook</a>
-                                <a class="btn btn-outline btn-outline-blue"
-                                    href="https://www.linkedin.com/company/radiant-center/"
-                                    target="_blank" rel="noopener">LinkedIn</a>
-                                <a class="btn btn-outline btn-outline-blue"
-                                    href="https://directory.nau.edu/departments?id=11305"
-                                    target="_blank" rel="noopener">Radiant NAU Directory</a>
                             </div>
                         </div>
                     </section>
 
                     <!-- Map -->
-                    <section class="contact-card" aria-label="Map">
+                    <section class="contact-card contact-card-map" aria-label="Map">
                         <div class="contact-card-header">
                             <h2>Find us</h2>
                         </div>
@@ -103,13 +114,74 @@
                         </div>
                     </section>
                 </div>
+
+                <!-- Connect with us -->
+                <section class="contact-connect" aria-labelledby="connect-heading">
+                    <header class="contact-connect-header">
+                        <h2 id="connect-heading">Connect with us</h2>
+                        <p>Follow Radiant&rsquo;s research, news, and opportunities across the web.</p>
+                    </header>
+
+                    <div class="connect-grid">
+                        <a class="connect-card" href="https://www.facebook.com/profile.php?id=61573354411409"
+                            target="_blank" rel="noopener">
+                            <div class="connect-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24">
+                                    <path
+                                        d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z" />
+                                </svg>
+                            </div>
+                            <div class="connect-text">
+                                <div class="connect-label">Facebook</div>
+                                <div class="connect-hint">Day-to-day updates and event recaps.</div>
+                            </div>
+                            <svg class="connect-arrow" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M7 17 17 7M9 7h8v8" />
+                            </svg>
+                        </a>
+
+                        <a class="connect-card" href="https://www.linkedin.com/company/radiant-center/" target="_blank"
+                            rel="noopener">
+                            <div class="connect-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24">
+                                    <path
+                                        d="M6.94 8.5A1.72 1.72 0 1 1 6.93 5a1.72 1.72 0 0 1 0 3.44zM5.4 9.83h3.07V19H5.4V9.83zm4.92 0h2.94v1.25h.04c.41-.78 1.41-1.6 2.9-1.6 3.1 0 3.67 2.04 3.67 4.7V19H16.8v-4.25c0-1.01-.02-2.31-1.41-2.31-1.41 0-1.63 1.1-1.63 2.24V19h-3.44V9.83z" />
+                                </svg>
+                            </div>
+                            <div class="connect-text">
+                                <div class="connect-label">LinkedIn</div>
+                                <div class="connect-hint">Research highlights and hiring announcements.</div>
+                            </div>
+                            <svg class="connect-arrow" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M7 17 17 7M9 7h8v8" />
+                            </svg>
+                        </a>
+
+                        <a class="connect-card" href="https://directory.nau.edu/departments?id=11305" target="_blank"
+                            rel="noopener">
+                            <div class="connect-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 3 2 8.5 12 14l9-4.95V17h2V8.5L12 3zm0 12.18-7-3.85V13l7 3.85L19 13v-1.67l-7 3.85zM5 17.18V19c0 1.1 3.13 2 7 2s7-.9 7-2v-1.82l-7 3.85-7-3.85z" />
+                                </svg>
+                            </div>
+                            <div class="connect-text">
+                                <div class="connect-label">NAU Directory</div>
+                                <div class="connect-hint">Find Radiant in the official NAU listing.</div>
+                            </div>
+                            <svg class="connect-arrow" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M7 17 17 7M9 7h8v8" />
+                            </svg>
+                        </a>
+                    </div>
+                </section>
             </div>
         </section>
     </main>
 
     <!-- Shared Script -->
     <script src="JS/site-config.js?v=2026-04-10-1"></script>
-    <script src="JS/layout.js?v=2026-04-10-1"></script>
+    <script src="JS/layout.js?v=2026-04-29-2"></script>
     <script src="JS/script.js?v=2026-04-10-1"></script>
 
 </body>

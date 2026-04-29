@@ -87,6 +87,13 @@ html {
     /* Native smooth scroll for anchor links */
     font-size: 16px;
     /* Base 1rem = 16px. Ensure user preference is respected. */
+    /* Always reserve gutter for the vertical scrollbar so layout
+       (esp. the sticky header) stays identical across pages,
+       whether or not content currently overflows. The explicit
+       overflow-y is required to make <html> a true scroll container
+       so scrollbar-gutter: stable actually engages. */
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
 }
 
 body {
@@ -719,6 +726,9 @@ ul {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    /* Minimum breathing room between brand and nav so they never
+       collide even if the available width is tight. */
+    gap: clamp(16px, 2.5vw, 40px);
 }
 
 .brand-logo {
@@ -758,11 +768,15 @@ ul {
 .brand-text .dept {
     font-family: var(--font-body);
     font-weight: 700;
-    font-size: 1.28rem;
+    font-size: 0.9rem;
     color: var(--nau-blue);
     /* Dark Text */
     text-transform: uppercase;
     letter-spacing: 0.35px;
+    /* Keep the brand title on a single line at desktop sizes so it
+       reads consistently across pages, regardless of whether a page
+       happens to render a vertical scrollbar. */
+    white-space: nowrap;
 }
 
 /* Nav Menu */
@@ -856,7 +870,9 @@ ul {
 }
 
 /* Mobile Responsive */
-@media (max-width: 1024px) {
+/* Switch to hamburger before the brand title would collide with the nav links.
+   With a smaller brand title we can keep the full nav visible until ~1170px. */
+@media (max-width: 1170px) {
     .main-nav-container {
         position: relative;
     }
@@ -889,10 +905,6 @@ ul {
 
     .brand-divider {
         display: none;
-    }
-
-    .brand-text .dept {
-        font-size: 0.9rem;
     }
 
     .nav-menu .nav-link {
@@ -1238,7 +1250,7 @@ ul {
     }
 
     .slide-content {
-        justify-content: flex-start;
+        justify-content: flex-end;
         padding-top: 64px;
         padding-bottom: 110px;
     }
@@ -1254,27 +1266,35 @@ ul {
 
     .slide-content .container {
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
     }
 
     .hero-copy {
-        display: block;
-        width: min(88vw, 720px);
-        max-width: calc(100% - 32px);
-        padding: 14px 20px 18px;
-        border-radius: 24px;
+        /* Shrink the blue box to wrap snugly around the actual title +
+           description rather than always reserving 88vw. The max-width
+           still caps long lines, and inline-block lets the box hug
+           content on slides with short copy. */
+        display: inline-block;
+        width: auto;
+        max-width: min(88vw, 420px);
+        padding: 12px 16px 14px;
+        border-radius: 20px;
         background: rgba(0, 36, 84, 0.52);
-        text-align: center;
+        text-align: left;
     }
 
     .hero-copy .slide-title {
-        max-width: 16ch;
-        margin-inline: auto;
+        /* Let the title use the same width budget as the description so
+           it flows horizontally rather than stacking into a tall narrow
+           column. Keep titles short in the JSON (≈5–7 words) and they
+           land nicely on 2–3 lines. */
+        max-width: 28ch;
+        margin-inline: 0;
     }
 
     .hero-copy .slide-desc {
-        max-width: 50ch;
-        margin-inline: auto;
+        max-width: 28ch;
+        margin-inline: 0;
     }
 
     .slide-title {
@@ -1286,10 +1306,9 @@ ul {
         font-size: 1.05rem;
         line-height: 1.5;
         margin-bottom: 16px;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
+        /* No line clamp here — descriptions are already 1–2 short
+           sentences in the JSON, so let them flow naturally inside the
+           tight blue box instead of being truncated mid-sentence. */
     }
 
     .hero-copy .btn {

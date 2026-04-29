@@ -1,0 +1,10 @@
+{
+  "name": "Dr Leszek Pawlowicz",
+  "role": "Assistant Research Professor (NCF)",
+  "school": "Department of Anthropology",
+  "affiliation": "Northern Arizona University",
+  "focus": "Machine learning in archaeology • 3D photogrammetry • Southwest archaeology",
+  "bio": "Dr. Leszek Pawlowicz is an Assistant Research Professor in the Department of Anthropology at Northern Arizona University, where he applies digital and computational methods to archaeological problems. He holds a Ph.D. in Materials Science from MIT, and his research interests span Southwest archaeology, scientific visualization, 3D photogrammetry, and machine learning in archaeology. In long-running collaboration with Dr. Chris Downum, he has developed deep-learning approaches for decorated ceramic typology—most notably a Convolutional Neural Network classifier for Tusayan White Ware sherds from Northeast Arizona, published in the Journal of Archaeological Science (2021). His broader publication record includes work on documenting lithic artifacts with reflectance transformation imaging, 3D photogrammetric model generation and comparison, and analyses of Paleoindian occupation sites on the Colorado Plateau.",
+  "profileUrl": "https://directory.nau.edu/?person=lmp348",
+  "imageSrc": "Images/People/blank-headshot.png"
+}

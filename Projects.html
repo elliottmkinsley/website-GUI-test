@@ -8,30 +8,45 @@
   <meta name="theme-color" content="#002454" />
   <title>Projects | NAU Radiant Center</title>
 
-  <link rel="stylesheet" href="CSS/style.css?v=2026-04-22-5" />
-  <link rel="stylesheet" href="CSS/projects.css?v=2026-04-10-1" />
+  <!-- Google Fonts (must match other pages so the header brand text renders identically) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="CSS/style.css?v=2026-04-29-2" />
+  <link rel="stylesheet" href="CSS/projects.css?v=2026-04-28-3" />
 </head>
 
 <body>
   <site-header></site-header>
 
   <main class="projects-page">
-    <div class="container">
-      <header class="projects-hero">
-        <h1>Projects &amp; Impact</h1>
-        <p>
-          Radiant researchers spearhead projects spanning lunar exploration, water security, wildfire intelligence, and conservation efforts, to name a few.  We link remote sensing research to actionable results, ultimately guiding knowledge transfer and multi-faceted decision making.
+    <!-- Hero -->
+    <section class="projects-hero-section" aria-label="Projects and impact">
+      <div class="projects-hero-media" aria-hidden="true">
+        <img src="Images/News/Grand_Canyon_Hidden_Water.jpg" alt="" class="projects-hero-img">
+        <div class="projects-hero-overlay"></div>
+      </div>
+      <div class="container projects-hero-inner">
+        <span class="projects-eyebrow">Projects &amp; Impact</span>
+        <h1>Science that travels from sensor to society.</h1>
+        <p class="projects-lede">
+          Radiant researchers spearhead projects spanning lunar exploration, water security, wildfire intelligence, and conservation efforts, to name a few. We link remote sensing research to actionable results, ultimately guiding knowledge transfer and multi-faceted decision making.
         </p>
-      </header>
+      </div>
+    </section>
 
+    <div class="container">
       <section class="project-grid" id="projectPageGrid" aria-label="Featured stories"></section>
     </div>
   </main>
 
   <!-- No footer (by preference on other pages) -->
   <script src="JS/site-config.js?v=2026-04-10-1"></script>
-  <script src="JS/layout.js?v=2026-04-10-1"></script>
-  <script src="JS/project-data.js?v=2026-04-10-1"></script>
+  <script src="JS/layout.js?v=2026-04-29-2"></script>
+  <script src="JS/project-data.js?v=2026-04-28-1"></script>
   <script src="JS/script.js?v=2026-04-10-1"></script>
 </body>
 
