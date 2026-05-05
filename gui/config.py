@@ -56,7 +56,7 @@ KEYRING_TOKEN_KEY: Final[str] = "github-oauth-token"
 # overridden at runtime via the env var ``RADIANT_GUI_SMB_PATH`` for
 # users with a non-standard mount setup.
 NAU_SMB_PATHS: Final[dict[str, str]] = {
-    "win32": r"\\arashres.ucc.nau.edu\Web\radiant.nau.edu",
+    "win32": r"\\arshares.ucc.nau.edu\Web\radiant.nau.edu",
     "darwin": "/Volumes/radiant.nau.edu",
     "linux": "/www/radiant.nau.edu",
 }
