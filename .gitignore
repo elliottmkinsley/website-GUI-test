@@ -1,0 +1,28 @@
+# Python (added by the gui/ desktop app)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment files (the gui's optional .env override)
+.env
+.env.local
+gui/.env
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Publish probe (the gui writes this to test the SMB share)
+.radiant_publish_test
