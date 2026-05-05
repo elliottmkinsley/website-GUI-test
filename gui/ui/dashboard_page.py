@@ -8,6 +8,7 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QPushButton,
+    QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
@@ -93,7 +94,7 @@ class DashboardPage(QWidget):
         btn = QPushButton(f"{title}\n0 entries\n{sub}")
         btn.setObjectName("Tile")
         btn.setMinimumHeight(140)
-        btn.setSizePolicy(btn.sizePolicy().horizontalPolicy(), btn.sizePolicy().Expanding)
+        btn.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
         return btn
 
     def set_user(self, username: str) -> None:
