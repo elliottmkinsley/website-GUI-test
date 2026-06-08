@@ -18,7 +18,7 @@ from typing import Any
 import requests
 from PySide6.QtCore import QThread, Signal
 
-from gui.config import GITHUB_OAUTH_CLIENT_ID, GITHUB_OAUTH_SCOPE
+from gui.config import GITHUB_OAUTH_SCOPE, resolve_github_client_id
 
 log = logging.getLogger(__name__)
 
@@ -54,14 +54,16 @@ class DeviceFlowError(RuntimeError):
 
 
 def request_device_code(
-    client_id: str = GITHUB_OAUTH_CLIENT_ID,
+    client_id: str | None = None,
     scope: str = GITHUB_OAUTH_SCOPE,
 ) -> DeviceCode:
+    if client_id is None:
+        client_id = resolve_github_client_id()
     if not client_id or client_id.startswith("Iv1.PLACEHOLDER"):
         raise DeviceFlowError(
-            "GitHub OAuth Client ID is not configured. Set "
-            "RADIANT_GUI_GITHUB_CLIENT_ID or update gui/config.py - "
-            "see gui/README.md."
+            "GitHub OAuth Client ID is not configured. Complete the "
+            "Setup screen (or set RADIANT_GUI_GITHUB_CLIENT_ID) - see "
+            "gui/README.md."
         )
     response = requests.post(
         DEVICE_CODE_URL,
@@ -75,8 +77,10 @@ def request_device_code(
 
 def _poll_once(
     device_code: str,
-    client_id: str = GITHUB_OAUTH_CLIENT_ID,
+    client_id: str | None = None,
 ) -> tuple[str | None, str | None]:
+    if client_id is None:
+        client_id = resolve_github_client_id()
     """Single token-poll round-trip.
 
     Returns ``(token, error)`` where exactly one of the two is set.

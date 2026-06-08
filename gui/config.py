@@ -21,14 +21,60 @@ from typing import Final
 # GitHub OAuth (Device Flow)
 # ---------------------------------------------------------------------------
 
-# Public Client ID for the registered GitHub OAuth App. Override with
-# the env var below for local testing of a different app. The default
-# placeholder must be replaced before the first real release - see
-# gui/README.md for the one-time registration steps.
-GITHUB_OAUTH_CLIENT_ID: Final[str] = os.environ.get(
-    "RADIANT_GUI_GITHUB_CLIENT_ID",
-    "Iv1.PLACEHOLDER_REPLACE_ME",
+# Optional shipped default - leave empty in distributed builds so the
+# first-run GUI Setup screen is the canonical way to configure the
+# Client ID. A developer can hard-code a default here for their own
+# local testing if they really want to, but the GUI Setup flow will
+# still take priority once the user enters a value (it gets stored in
+# QSettings, see ``gui/settings.py``).
+GITHUB_OAUTH_CLIENT_ID_DEFAULT: Final[str] = ""
+
+# Env-var override - lets a developer point the app at a different
+# OAuth App without touching code or the GUI. Highest priority.
+GITHUB_OAUTH_CLIENT_ID_ENV_VAR: Final[str] = "RADIANT_GUI_GITHUB_CLIENT_ID"
+
+# Substrings that signal "not really configured" - any resolved value
+# starting with one of these is treated as missing.
+_PLACEHOLDER_PREFIXES: Final[tuple[str, ...]] = (
+    "Iv1.PLACEHOLDER",
+    "REPLACE_ME",
 )
+
+
+def resolve_github_client_id() -> str:
+    """Return the active GitHub OAuth Client ID.
+
+    Resolution order (first non-empty, non-placeholder wins):
+      1. ``RADIANT_GUI_GITHUB_CLIENT_ID`` env var
+      2. Value the user entered through the GUI Setup screen
+         (persisted via ``QSettings`` in ``gui/settings.py``)
+      3. ``GITHUB_OAUTH_CLIENT_ID_DEFAULT`` from this module
+
+    Returns an empty string if nothing is configured - the caller
+    should then prompt the user (Login + Publish do this).
+    """
+    env_value = (os.environ.get(GITHUB_OAUTH_CLIENT_ID_ENV_VAR) or "").strip()
+    if env_value and not env_value.startswith(_PLACEHOLDER_PREFIXES):
+        return env_value
+    # Lazy import to avoid pulling Qt into this module's import graph
+    # for headless callers.
+    try:
+        from gui.settings import get_github_client_id
+
+        stored = get_github_client_id()
+    except Exception:  # noqa: BLE001 - QSettings/Qt unavailable
+        stored = ""
+    if stored and not stored.startswith(_PLACEHOLDER_PREFIXES):
+        return stored
+    default = (GITHUB_OAUTH_CLIENT_ID_DEFAULT or "").strip()
+    if default and not default.startswith(_PLACEHOLDER_PREFIXES):
+        return default
+    return ""
+
+
+def is_github_client_id_configured() -> bool:
+    return bool(resolve_github_client_id())
+
 
 # OAuth scope: needs full repo access so the user can push to the
 # private gh repo and the access check can read repo permissions.
