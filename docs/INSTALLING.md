@@ -107,11 +107,27 @@ When you're ready to push your changes live:
 1. Make sure the bottom-right indicator says **NAU server active**
    (green). If it shows red, see the troubleshooting section below.
 2. Click **Publish** on the dashboard.
-3. The app:
-   - Copies the website tree to the NAU file share.
-   - Snapshots the same tree as a commit on the `archive` branch
-     of `elliottmkinsley/website-GUI-test` and pushes it.
-4. The status panel reports success for both steps.
+3. The app runs three steps and reports success for each:
+   - **Step 1:** copies the website tree to the NAU file share
+     (the live website files).
+   - **Step 2:** commits and pushes the same content to the `main`
+     branch of `elliottmkinsley/website-GUI-test`. This is what
+     other GUI users see on their next workspace sync.
+   - **Step 3:** also pushes a snapshot commit to the `archive`
+     branch as a history record.
+
+### Seeing changes from other editors
+
+The app pulls the latest `main` from GitHub automatically:
+
+- Once on every launch (the **Setting up your local workspace**
+  page you saw on first launch).
+- Quietly in the background every 5 minutes while the app is open.
+- Immediately after any publish you do yourself.
+
+The bottom-right corner shows a sync indicator with text like
+**Workspace synced 3m ago**. Click the refresh button (or press
+**F5** / pick **Help > Sync workspace now**) to pull immediately.
 
 ---
 

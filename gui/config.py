@@ -90,7 +90,13 @@ GITHUB_REPO_OWNER: Final[str] = "elliottmkinsley"
 GITHUB_REPO_NAME: Final[str] = "website-GUI-test"
 GITHUB_REPO_FULL: Final[str] = f"{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}"
 
-# Branch that snapshots are pushed to on every Publish.
+# Branch GUI users clone, pull from, and commit their content edits to.
+# Every successful Publish lands here so other GUI users see the change
+# on their next sync.
+MAIN_BRANCH: Final[str] = "main"
+
+# Branch that snapshots are also pushed to on every Publish - keeps a
+# per-publish history independent of main's normal commit history.
 ARCHIVE_BRANCH: Final[str] = "archive"
 
 # keyring service identifier - all GUI tokens live under this name.

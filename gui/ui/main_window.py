@@ -37,6 +37,7 @@ from gui.auth import token_store
 from gui.auth.access_check import AccessResult, check_repo_push_access
 from gui.config import GITHUB_REPO_FULL, is_github_client_id_configured
 from gui.repo.clone import is_valid_workspace
+from gui.services.sync_manager import SyncManager
 from gui.ui.dashboard_page import DashboardPage
 from gui.ui.events_page import EventsPage
 from gui.ui.jobs_page import JobsPage
@@ -46,6 +47,7 @@ from gui.ui.projects_page import ProjectsPage
 from gui.ui.publish_page import PublishPage
 from gui.ui.setup_page import SetupPage
 from gui.ui.widgets.nau_status_indicator import NauStatusIndicator
+from gui.ui.widgets.sync_indicator import SyncIndicator
 from gui.ui.workspace_page import WorkspacePage
 from gui.workspace import default_workspace_root, get_workspace, set_workspace
 
@@ -82,9 +84,15 @@ class MainWindow(QMainWindow):
         self.setStatusBar(self._status)
         self._status.showMessage("Not signed in.")
 
-        # Bottom-right corner: live NAU share reachability indicator.
-        # ``addPermanentWidget`` anchors it to the right side of the
-        # status bar (transient ``showMessage`` text stays on the left).
+        # Bottom-right corner: workspace sync indicator + live NAU
+        # share reachability indicator. ``addPermanentWidget`` anchors
+        # them to the right side of the status bar (transient
+        # ``showMessage`` text stays on the left). The sync indicator
+        # is added first so it appears to the LEFT of the NAU one.
+        self._sync_manager = SyncManager(self)
+        self._sync_indicator = SyncIndicator(self._sync_manager, self)
+        self._status.addPermanentWidget(self._sync_indicator)
+
         self._nau_indicator = NauStatusIndicator(self)
         self._status.addPermanentWidget(self._nau_indicator)
         self._nau_indicator.start()
@@ -132,7 +140,14 @@ class MainWindow(QMainWindow):
 
         self._publish = PublishPage(self)
         self._publish.backRequested.connect(self._goto_dashboard)
+        self._publish.publishStarted.connect(self._on_publish_started)
+        self._publish.publishFinished.connect(self._on_publish_finished)
         self._stack.addWidget(self._publish)  # 8
+
+        # When the background sync actually pulls new commits, refresh
+        # the dashboard and domain pages so the user sees the change
+        # without having to navigate away and back.
+        self._sync_manager.syncFinished.connect(self._on_background_sync_finished)
 
         self._build_menu()
 
@@ -169,6 +184,12 @@ class MainWindow(QMainWindow):
         file_menu.addAction(quit_action)
 
         help_menu = bar.addMenu("&Help")
+        self._sync_now_action = QAction("Sync workspace &now", self)
+        self._sync_now_action.setShortcut("F5")
+        self._sync_now_action.triggered.connect(self._sync_manager.sync_now)
+        self._sync_now_action.setEnabled(False)
+        help_menu.addAction(self._sync_now_action)
+        help_menu.addSeparator()
         check_updates = QAction("Check for &updates...", self)
         check_updates.triggered.connect(self._open_releases_page)
         help_menu.addAction(check_updates)
@@ -191,7 +212,8 @@ class MainWindow(QMainWindow):
                 f"<b>Radiant Content GUI</b> v{APP_VERSION}<br>"
                 "Edit People, Projects, Events, and Jobs for the "
                 "Radiant Center for Remote Sensing website, then "
-                "publish to the NAU server and a GitHub archive branch."
+                "publish to the NAU server and to GitHub (main + archive). "
+                "Other users see your changes on their next workspace sync."
                 f"<br><br>Workspace: <code>{get_workspace().root}</code>"
                 f"<br>Releases: <a href='{RELEASES_URL}'>{RELEASES_URL}</a>"
             ),
@@ -248,6 +270,12 @@ class MainWindow(QMainWindow):
         self._events.refresh()
         self._jobs.refresh()
 
+        # Now that we have a healthy workspace AND a valid token,
+        # kick off the background sync so other users' publishes
+        # land here automatically.
+        self._sync_manager.start(token_provider=token_store.load_token)
+        self._sync_now_action.setEnabled(True)
+
     def _goto_dashboard(self) -> None:
         # Re-load summary in case domain pages changed something.
         self._dashboard.refresh_summary()
@@ -257,16 +285,47 @@ class MainWindow(QMainWindow):
         self._stack.setCurrentIndex(PAGE_DASHBOARD)
 
     def closeEvent(self, event) -> None:  # noqa: N802 - Qt API
+        self._sync_manager.stop()
+        self._sync_indicator.stop()
         self._nau_indicator.stop()
         super().closeEvent(event)
 
     def _sign_out(self) -> None:
+        # Stop the background sync first so it can't fire a network
+        # request with a stale token after we wipe the keyring.
+        self._sync_manager.stop()
+        self._sync_now_action.setEnabled(False)
         token_store.clear_token()
         self._access = None
         self._status.showMessage("Signed out.")
         self._sign_out_action.setEnabled(False)
         self._login.reset()
         self._stack.setCurrentIndex(PAGE_LOGIN)
+
+    # ---- publish / sync coordination --------------------------------------
+
+    def _on_publish_started(self) -> None:
+        # Block the periodic sync so it cannot race the push.
+        self._sync_manager.pause("publish")
+
+    def _on_publish_finished(self) -> None:
+        self._sync_manager.resume("publish")
+        # Refresh local refs immediately so the indicator updates and
+        # the dashboard reflects the just-pushed state.
+        self._sync_manager.sync_now()
+
+    def _on_background_sync_finished(self, result) -> None:
+        # Only refresh on-screen data when the sync actually advanced
+        # the workspace, otherwise we needlessly re-read manifests
+        # every five minutes.
+        if not getattr(result, "updated", False):
+            return
+        log.info("Background sync updated workspace; refreshing pages.")
+        self._dashboard.refresh_summary()
+        self._people.refresh()
+        self._projects.refresh()
+        self._events.refresh()
+        self._jobs.refresh()
 
     # ---- setup-page handlers ----------------------------------------------
 

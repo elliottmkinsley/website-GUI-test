@@ -4,9 +4,18 @@ A desktop app for editors of the Radiant Center for Remote Sensing
 website. It provides forms for adding, editing, deleting, and
 reordering the four data domains the site renders from JSON
 (`People/`, `Projects/`, `Events/`, `Jobs/`), then publishes the
-resulting working tree to the NAU SMB share at
-`\\arshares.ucc.nau.edu\Web\radiant.nau.edu` and snapshots the change
-to a dedicated `archive` branch on GitHub.
+resulting working tree to:
+
+1. The NAU SMB share at `\\arshares.ucc.nau.edu\Web\radiant.nau.edu`
+   (the live website files).
+2. `origin/main` on GitHub - the source of truth that every other
+   GUI user pulls from on launch and every five minutes in the
+   background.
+3. `origin/archive` on GitHub - a per-publish snapshot, kept as
+   history.
+
+When one editor publishes, every other open GUI app picks up the
+change on its next sync without anyone having to restart.
 
 ## For end users
 
@@ -76,9 +85,16 @@ pip install pytest
 python -m pytest tests/
 ```
 
-The suite covers `scripts/stamp_version.py` (round-trip, validation,
-dry-run) and the GitPython console-flash patch in
-`gui/services/git_safe.py`.
+The suite covers:
+
+- `scripts/stamp_version.py` (round-trip, validation, dry-run).
+- The GitPython console-flash patch in `gui/services/git_safe.py`.
+- The dual-push publisher in `gui/deploy/git_publisher.py` (happy
+  path, behind-remote auto-fast-forward, non-ff push retry,
+  orchestrator behaviour when the archive push fails).
+- The background-sync service in `gui/services/sync_manager.py`
+  (timer-driven pull, pause/resume reference counting, coalescing,
+  signal emission).
 
 ## Build a frozen .exe locally
 
@@ -176,8 +192,19 @@ app shows an error and refuses to continue.
 ## Workflow
 
 ```
-Login -> Dashboard -> {People, Projects, Events, Jobs} -> Publish
+Login -> Workspace bootstrap (clone or pull) -> Dashboard ->
+    {People, Projects, Events, Jobs} -> Publish
 ```
+
+The bottom-right status bar shows two indicators:
+
+- **Workspace sync**: relative time since the last successful
+  `git pull` from `origin/main`. Clicking it (or hitting **F5**)
+  forces an immediate sync. A background timer runs the pull every
+  5 minutes; the timer is paused automatically while a publish is
+  in flight so it cannot race the push.
+- **NAU server**: green when the SMB share is reachable, red with a
+  `?` button explaining what to do otherwise.
 
 Each domain page lets you:
 
@@ -202,17 +229,25 @@ After every successful save the app bumps `assetVersion` in
 
 ### Publish to website
 
-The Publish page does two things in order:
+The Publish page does three things in order:
 
 1. **Copy to the NAU share** (file-explorer drop). On failure (e.g.
    you're not on an NAU computer / you didn't mount the share yet)
    the app shows OS-specific instructions and a Retry button.
-2. **Snapshot to GitHub** by committing the current working tree to
-   the `archive` branch and pushing to `origin`.
+2. **Push to `origin/main`** - a real commit on `main` containing
+   the working tree, fast-forwarded against any concurrent
+   publishes. This is the commit that every other GUI user picks
+   up on their next workspace sync.
+3. **Snapshot to `origin/archive`** as a one-commit history of the
+   publish. This is best-effort: if it fails, the publish is still
+   considered successful because `main` (the source of truth) is
+   already up to date.
 
 `gui/`, `docs/`, `.git/`, `.vscode/`, `.venv/`, and the usual
 build/cache leftovers are excluded from the SMB copy so only the
-actual website files end up on the server.
+actual website files end up on the server. They are *not* excluded
+from the git pushes (the GUI runs from inside the same repo it
+edits, so removing them would break the workspace).
 
 ## Configuring the OAuth App Client ID
 
@@ -249,6 +284,14 @@ If your team doesn't already have an OAuth App, create one:
   mount it. You must be on an NAU computer or remote desktop.
 - **"git pull failed: uncommitted local changes"** - Resolve any
   uncommitted edits in the repo manually, then relaunch the app.
+- **"git push to main failed even after a retry"** - Another GUI
+  user landed a publish in the brief window between your two push
+  attempts. Close the Publish page, hit **F5** (or wait for the
+  next background sync) to pull the new state, then republish.
+- **Sync status shows "Sync failed - click to retry"** - The
+  background pull hit a network or git error. Click the refresh
+  button in the indicator to retry; hover for the full error
+  message.
 
 ## Conventions and constraints honored
 
