@@ -15,6 +15,7 @@
     "People/Core Researchers/haley-sapers.json",
     "People/Core Researchers/jean-francois-smekens.json",
     "People/Core Researchers/kaitlyn-davis.json",
+    "People/Core Researchers/kathleen-orndahl.json",
     "People/Core Researchers/keith-nowicki.json",
     "People/Core Researchers/kristen-bennett.json",
     "People/Core Researchers/luke-auld-thomas.json",
@@ -32,8 +33,7 @@
     "People/Affiliation/taylor-joyal.json",
     "People/Affiliation/david-folch.json",
     "People/Affiliation/mark-manone.json",
-    "People/Affiliation/jaime-awe.json",
-    "People/Affiliation/kathleen-orndahl.json"
+    "People/Affiliation/jaime-awe.json"
   ],
   "staff": [
     "People/Staff/jagoda-janiszewska.json",
@@ -45,7 +45,7 @@
     "People/Staff/samuel-cushman.json",
     "People/Staff/emalee-mccullar.json",
     "People/Staff/amy-wolkowinsky.json",
-    "People/Staff/nathaniel-bransky.json"
+    "People/Staff/test.json"
   ],
   "postdocs": [
     "People/Postdoctoral Scholars/ivan-garzon.json",

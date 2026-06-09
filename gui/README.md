@@ -44,7 +44,23 @@ pip install -r gui/requirements.txt
 python -m gui
 ```
 
-On first launch the app shows a GitHub login screen using OAuth Device
+On the very first launch the app shows a **Setup** screen that asks
+for a GitHub OAuth App Client ID. Two steps, no code editing:
+
+1. Click **Register new OAuth App on GitHub**. The form opens in your
+   browser pre-suggested with the right values (Application name,
+   Homepage URL, Authorization callback URL, **Enable Device Flow**
+   checked).
+2. Save the GitHub form, copy the **Client ID** from the resulting
+   settings page, paste it back into the Setup screen, and click
+   **Save & Continue**.
+
+The Client ID is stored in your user profile via Qt's `QSettings`
+(Windows registry, macOS plist, or Linux conf file) so subsequent
+launches go straight to the login screen. You can change the Client
+ID at any time via **File > GitHub OAuth Client ID...**.
+
+After Setup the app shows the GitHub login screen using OAuth Device
 Flow:
 
 1. The app shows you a short user code (e.g. `ABCD-1234`).
@@ -98,24 +114,32 @@ The Publish page does two things in order:
 build/cache leftovers are excluded from the SMB copy so only the
 actual website files end up on the server.
 
-## Setup the OAuth App (project owner only)
+## Configuring the OAuth App Client ID
 
-This step happens once per project, not per user.
+The recommended way is via the in-app **Setup** screen described
+above - no code editing required.
+
+Three resolution sources, checked in this order:
+
+1. `RADIANT_GUI_GITHUB_CLIENT_ID` environment variable (highest
+   priority - useful for developer overrides).
+2. Value entered in the **Setup** screen (persisted via `QSettings`).
+3. `GITHUB_OAUTH_CLIENT_ID_DEFAULT` in [`gui/config.py`](config.py)
+   (empty by default - leave it empty in distributed builds so each
+   user goes through the GUI Setup the first time).
+
+### Creating the OAuth App on GitHub (once per organization)
+
+If your team doesn't already have an OAuth App, create one:
 
 1. Go to <https://github.com/settings/applications/new>.
-2. Name the app something like "Radiant Content GUI".
-3. Homepage URL: anything (e.g. `https://radiant.nau.edu`).
-4. Authorization callback URL: anything - Device Flow does not use it.
-5. **Enable Device Flow**.
-6. Save. Copy the resulting **Client ID**.
-7. Paste it as `GITHUB_OAUTH_CLIENT_ID` in [`gui/config.py`](config.py)
-   and commit. (No secret is needed for Device Flow public clients.)
-
-For local testing without committing the change, set the env var:
-
-```bash
-export RADIANT_GUI_GITHUB_CLIENT_ID=Iv1.your_client_id_here
-```
+2. **Application name:** Radiant Content GUI.
+3. **Homepage URL:** any URL (e.g. the website's GitHub repo URL).
+4. **Authorization callback URL:** any URL - Device Flow ignores it.
+5. **Enable Device Flow** - this is the important checkbox.
+6. Click **Register application**. Copy the resulting **Client ID**
+   (under the app name on the next page). The Client ID is public-by-
+   design - no client secret is needed.
 
 ## Troubleshooting
 
