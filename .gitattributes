@@ -1,2 +1,7 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Shell scripts MUST stay LF-only so bash on macOS / Linux can run
+# them. A CRLF-terminated shebang line produces obscure errors like
+# `: command not found` or `bad interpreter`.
+*.sh text eol=lf

@@ -96,10 +96,13 @@ The suite covers:
   (timer-driven pull, pause/resume reference counting, coalescing,
   signal emission).
 
-## Build a frozen .exe locally
+## Build a frozen app locally
 
-PyInstaller is the freezer; Inno Setup wraps the result in a Windows
-installer. Both wrappers live under `packaging/`:
+PyInstaller is the freezer. The same spec
+(`packaging/radiant_content_gui.spec`) drives both OSes; per-OS
+shell wrappers live next to it.
+
+### Windows
 
 ```powershell
 # Install the build tools if you haven't already:
@@ -119,10 +122,44 @@ pwsh packaging\build_installer.ps1 -SkipVendor
 Both scripts work under PowerShell 5.1 (`powershell`) or PowerShell
 7+ (`pwsh`). CI uses `pwsh` on `windows-latest`.
 
+### macOS
+
+Requires macOS 11+ with Python 3.11+ (universal2 build - the
+official `python.org` installers and `actions/setup-python` macOS
+images both qualify; Homebrew's arm64-only Python does **not**, so
+PyInstaller would silently produce a single-arch app):
+
+```bash
+# Install the build tools if you haven't already:
+pip install "pyinstaller>=6.0"
+brew install create-dmg                 # nice drag-to-Applications layout
+
+# Produce dist/RadiantContentGUI.app
+bash packaging/build_app.sh
+
+# Verify the bundle imports cleanly
+./dist/RadiantContentGUI.app/Contents/MacOS/RadiantContentGUI --selftest
+
+# Wrap the .app into dist/RadiantContentGUI-<version>.dmg
+bash packaging/build_dmg.sh
+```
+
+If `create-dmg` is missing the DMG script falls back to plain
+`hdiutil`; the resulting DMG is functional but lacks the curated
+icon-and-Applications-shortcut layout.
+
+The app icon `.icns` is generated from the same placeholder design
+as `.ico` (`packaging/make_icns.py`). Both are checked into the
+repo so CI does not need `iconutil` or Pillow ICNS support; only
+re-run the generator scripts after replacing the placeholder
+design.
+
+### `--selftest`
+
 The `--selftest` argv flag imports every top-level GUI module and
 exits 0. It's the cheapest way to catch PyInstaller hidden-import
-misses inside the frozen environment and is also called as the
-Inno Setup post-install step.
+misses inside the frozen environment and is called from both the
+Windows Inno Setup post-install step and the macOS CI job.
 
 ## Cut a release
 
@@ -143,18 +180,36 @@ git push origin v1.2.3
 ```
 
 `.github/workflows/release.yml` is triggered by lowercase `v*` tags
-and produces a GitHub Release with `RadiantContentGUISetup.exe`
-attached. The workflow:
+and produces a GitHub Release with **both** `RadiantContentGUISetup.exe`
+(Windows) **and** `RadiantContentGUI-<version>.dmg` (macOS universal)
+attached. The workflow has two sequential jobs:
 
-1. Stamps the version into every target file.
-2. Runs the unit tests.
-3. Freezes the app with PyInstaller.
-4. Selftests the frozen `.exe`.
-5. Signs it (no-op until a code-signing cert is added).
-6. Builds the installer with Inno Setup (`/DSingleFile=1` for a
-   single-exe online installer).
-7. Computes SHA-256 and extracts this version's CHANGELOG section.
-8. Publishes the GitHub Release.
+1. `build-windows` (windows-latest):
+   1. Stamps the version into every target file.
+   2. Runs the unit tests headlessly (`QT_QPA_PLATFORM=offscreen`).
+   3. Freezes the app with PyInstaller.
+   4. Selftests the frozen `.exe`.
+   5. Signs it (no-op until a code-signing cert is added).
+   6. Builds the installer with Inno Setup (`/DSingleFile=1` for a
+      single-exe online installer).
+   7. Computes SHA-256 and extracts this version's CHANGELOG section.
+   8. Creates the GitHub Release with the Windows installer and the
+      composed release body.
+2. `build-macos` (macos-latest, `needs: build-windows`):
+   1. Re-stamps the version (fresh checkout).
+   2. Installs `create-dmg` via Homebrew.
+   3. Runs the unit tests headlessly.
+   4. Freezes a universal2 `.app` with PyInstaller.
+   5. Selftests the frozen launcher.
+   6. Wraps it in a DMG via `packaging/build_dmg.sh`.
+   7. Appends the DMG as an additional asset on the same Release.
+   8. Patches the Release body to splice in the DMG SHA-256
+      (via `scripts/insert_dmg_hash_in_body.py`).
+
+Sequential (rather than parallel matrix) keeps the release body
+authored by exactly one job, avoiding races where both would try
+to create the Release simultaneously. The Mac job costs ~10 extra
+minutes per tag.
 
 Always use **lowercase** `v` in tag names; the workflow trigger is
 case-sensitive and uppercase `V` collides with the lowercase form on

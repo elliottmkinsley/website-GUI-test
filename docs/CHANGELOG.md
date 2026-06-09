@@ -12,6 +12,31 @@ new change, append it under the appropriate sub-heading
 
 ## [Unreleased]
 
+### Added
+
+- **macOS support.** A new `RadiantContentGUI-<version>.dmg` is
+  built alongside the Windows installer on every release tag. The
+  DMG contains a universal2 `.app` that runs natively on both
+  Apple Silicon (M1/M2/M3/M4) and Intel Macs, so one download
+  covers every Mac. Minimum supported macOS version is **11 Big
+  Sur**. Install instructions for both OSes live in
+  [`docs/INSTALLING.md`](INSTALLING.md).
+- **macOS NAU share helper.** The "NAU server unreachable"
+  indicator's help text now includes the macOS-specific
+  `smb://arshares.ucc.nau.edu/Web/radiant.nau.edu` Connect-to-Server
+  URL (Cmd+K in Finder), mounting the share at
+  `/Volumes/radiant.nau.edu`.
+
+### Changed
+
+- **CI release pipeline** now builds in two sequential jobs:
+  `build-windows` (creates the Release + Windows installer) then
+  `build-macos` (appends the DMG to the same Release and splices
+  the DMG's SHA-256 into the release body). Existing tag
+  conventions are unchanged.
+
+## [0.2.1] - 2026-06-08
+
 ### Changed
 
 - **People form: blank Profile URL now defaults to the NAU
