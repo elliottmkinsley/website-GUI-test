@@ -12,6 +12,24 @@ new change, append it under the appropriate sub-heading
 
 ## [Unreleased]
 
+### Changed
+
+- **People form: blank Profile URL now defaults to the NAU
+  department directory** (`https://directory.nau.edu/departments?id=11305`)
+  so every person card on the website has at least one outbound
+  link. Editors can still type any URL or `mailto:` link to
+  override the default; only an explicitly empty field falls back.
+
+### Removed
+
+- **Image Fit and Image Position fields** are no longer shown on
+  the People edit form. They were rarely needed and added noise
+  to the most-used dialog in the app. Existing values already
+  saved on a person's JSON are preserved verbatim when the entry
+  is re-edited and re-saved - the form just hides them.
+
+## [0.2.0] - 2026-06-08
+
 ### Added
 
 - **Auto-sync workspace on launch.** Every app launch fast-forwards

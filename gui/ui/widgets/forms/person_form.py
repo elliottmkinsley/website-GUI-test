@@ -19,7 +19,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from gui.config import PEOPLE_GROUPS
+from gui.config import NAU_DIRECTORY_DEFAULT_URL, PEOPLE_GROUPS
 from gui.models.person import Person
 from gui.repo import entries
 from gui.repo.images import import_headshot, remove_headshot
@@ -43,6 +43,12 @@ class PersonForm(QWidget):
         self._editing_rel_path: str | None = None
         self._original_group_key: str | None = None
         self._original_image_src: str | None = None
+        # Image Fit / Image Position were retired from the GUI but
+        # may still exist on previously-saved JSON. We preserve them
+        # verbatim across edits so re-saving never silently strips
+        # values an editor set outside the GUI.
+        self._preserved_image_fit: str | None = None
+        self._preserved_image_position: str | None = None
         self._build()
 
     def _build(self) -> None:
@@ -105,17 +111,9 @@ class PersonForm(QWidget):
 
         self._profile_url = QLineEdit()
         self._profile_url.setPlaceholderText(
-            "https://directory.nau.edu/?person=... or mailto:name@nau.edu"
+            f"Leave blank to use {NAU_DIRECTORY_DEFAULT_URL}"
         )
         form.addRow("Profile URL", self._profile_url)
-
-        self._image_fit = QLineEdit()
-        self._image_fit.setPlaceholderText("Optional CSS object-fit (e.g. cover)")
-        form.addRow("Image Fit", self._image_fit)
-
-        self._image_position = QLineEdit()
-        self._image_position.setPlaceholderText("Optional CSS object-position (e.g. top)")
-        form.addRow("Image Position", self._image_position)
 
         body.addLayout(form, 3)
 
@@ -143,6 +141,8 @@ class PersonForm(QWidget):
         self._editing_rel_path = None
         self._original_group_key = None
         self._original_image_src = None
+        self._preserved_image_fit = None
+        self._preserved_image_position = None
         self._title_label.setText("Add Person")
         self._select_group(group_key)
         self._name.clear()
@@ -155,8 +155,6 @@ class PersonForm(QWidget):
         self._focus.clear()
         self._bio.setPlainText("")
         self._profile_url.clear()
-        self._image_fit.clear()
-        self._image_position.clear()
         self._image_picker.set_existing_image_src(None)
 
     def open_edit(self, rel_path: str, group_key: str) -> None:
@@ -164,6 +162,11 @@ class PersonForm(QWidget):
         self._editing_rel_path = rel_path
         self._original_group_key = group_key
         self._original_image_src = person.imageSrc
+        # Stash any imageFit / imagePosition that already exist on the
+        # JSON. The fields no longer appear in the form (see playbook
+        # gotcha #2 about silent data loss), so we just round-trip them.
+        self._preserved_image_fit = person.imageFit
+        self._preserved_image_position = person.imagePosition
         self._title_label.setText("Edit Person")
         self._select_group(group_key)
         self._name.setText(person.name)
@@ -176,8 +179,6 @@ class PersonForm(QWidget):
         self._focus.setText(person.focus)
         self._bio.setPlainText(person.bio)
         self._profile_url.setText(person.profileUrl or "")
-        self._image_fit.setText(person.imageFit or "")
-        self._image_position.setText(person.imagePosition or "")
         self._image_picker.set_existing_image_src(person.imageSrc)
 
     def _select_group(self, group_key: str) -> None:
@@ -222,6 +223,12 @@ class PersonForm(QWidget):
             else:
                 image_src = existing_src or ""
 
+            # Blank Profile URL falls back to the NAU directory so
+            # every person card has at least one outbound link.
+            profile_url = (
+                self._profile_url.text().strip() or NAU_DIRECTORY_DEFAULT_URL
+            )
+
             person = Person(
                 name=name,
                 role=self._role.text().strip(),
@@ -232,10 +239,10 @@ class PersonForm(QWidget):
                 affiliation=self._affiliation.text().strip(),
                 focus=self._focus.text().strip(),
                 bio=self._bio.toPlainText().strip(),
-                profileUrl=self._profile_url.text().strip() or None,
+                profileUrl=profile_url,
                 imageSrc=image_src,
-                imageFit=self._image_fit.text().strip() or None,
-                imagePosition=self._image_position.text().strip() or None,
+                imageFit=self._preserved_image_fit,
+                imagePosition=self._preserved_image_position,
             )
         except (ValueError, ValidationError) as exc:
             QMessageBox.warning(self, "Please check the form", str(exc))

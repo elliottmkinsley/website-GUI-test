@@ -103,6 +103,13 @@ ARCHIVE_BRANCH: Final[str] = "archive"
 KEYRING_SERVICE: Final[str] = "radiant-content-gui"
 KEYRING_TOKEN_KEY: Final[str] = "github-oauth-token"
 
+# Default profileUrl applied to a Person when the editor leaves the
+# Profile URL field blank. Points at the NAU department directory so
+# every person has at least one outbound link from the website.
+NAU_DIRECTORY_DEFAULT_URL: Final[str] = (
+    "https://directory.nau.edu/departments?id=11305"
+)
+
 
 # ---------------------------------------------------------------------------
 # NAU SMB share - per-OS default mount paths.
