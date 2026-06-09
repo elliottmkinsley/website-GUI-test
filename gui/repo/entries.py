@@ -13,14 +13,7 @@ from typing import Iterable
 
 from pydantic import ValidationError
 
-from gui.config import (
-    EVENTS_MANIFEST,
-    JOBS_MANIFEST,
-    PEOPLE_GROUPS,
-    PEOPLE_MANIFEST,
-    PROJECTS_MANIFEST,
-    REPO_ROOT,
-)
+from gui.config import PEOPLE_GROUPS
 from gui.models.event import Event
 from gui.models.job import Job
 from gui.models.person import Person
@@ -32,6 +25,7 @@ from gui.repo.paths import (
     repo_relative,
     slugify,
 )
+from gui.workspace import get_workspace
 
 log = logging.getLogger(__name__)
 _INDENT = 2
@@ -81,13 +75,13 @@ def people_group_folder(group_key: str) -> Path:
     """Return the absolute folder under ``People/`` for the given key."""
     for key, _label, folder in PEOPLE_GROUPS:
         if key == group_key:
-            return REPO_ROOT / "People" / folder
+            return get_workspace().root / "People" / folder
     raise KeyError(f"Unknown people group key: {group_key!r}")
 
 
 def list_people(group_key: str) -> list[tuple[str, Person]]:
     """Return ``(repo_relative_path, Person)`` pairs in manifest order."""
-    paths = manifest.get_section(PEOPLE_MANIFEST, group_key)
+    paths = manifest.get_section(get_workspace().people_manifest, group_key)
     out: list[tuple[str, Person]] = []
     for rel in paths:
         abs_path = from_repo_relative(rel)
@@ -170,15 +164,16 @@ def delete_person(
 
 
 def projects_surface_folder(surface: str) -> Path:
+    root = get_workspace().root
     if surface == "featured":
-        return REPO_ROOT / "Projects" / "Featured"
+        return root / "Projects" / "Featured"
     if surface == "page":
-        return REPO_ROOT / "Projects" / "Page"
+        return root / "Projects" / "Page"
     raise KeyError(f"Unknown project surface: {surface!r}")
 
 
 def list_projects(surface: str) -> list[tuple[str, Project]]:
-    paths = manifest.get_section(PROJECTS_MANIFEST, surface)
+    paths = manifest.get_section(get_workspace().projects_manifest, surface)
     out: list[tuple[str, Project]] = []
     for rel in paths:
         abs_path = from_repo_relative(rel)
@@ -234,11 +229,11 @@ def delete_project(
 
 
 def events_folder() -> Path:
-    return REPO_ROOT / "Events"
+    return get_workspace().root / "Events"
 
 
 def list_events() -> list[tuple[str, Event]]:
-    paths = manifest.get_section(EVENTS_MANIFEST, "homepage")
+    paths = manifest.get_section(get_workspace().events_manifest, "homepage")
     out: list[tuple[str, Event]] = []
     for rel in paths:
         abs_path = from_repo_relative(rel)
@@ -298,11 +293,11 @@ def delete_event(repo_relative_path: str, *, delete_file: bool = True) -> None:
 
 
 def jobs_folder() -> Path:
-    return REPO_ROOT / "Jobs"
+    return get_workspace().root / "Jobs"
 
 
 def list_jobs() -> list[tuple[str, Job]]:
-    paths = manifest.get_section(JOBS_MANIFEST, "jobs")
+    paths = manifest.get_section(get_workspace().jobs_manifest, "jobs")
     out: list[tuple[str, Job]] = []
     for rel in paths:
         abs_path = from_repo_relative(rel)

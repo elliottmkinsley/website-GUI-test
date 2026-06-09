@@ -35,7 +35,8 @@ from typing import Callable
 from git import GitCommandError, Repo
 from git.exc import InvalidGitRepositoryError
 
-from gui.config import ARCHIVE_BRANCH, REPO_ROOT
+from gui.config import ARCHIVE_BRANCH
+from gui.workspace import get_workspace
 
 log = logging.getLogger(__name__)
 
@@ -52,17 +53,18 @@ class PullResult:
     message: str
 
 
-def open_repo(repo_root: Path = REPO_ROOT) -> Repo:
+def open_repo(repo_root: Path | None = None) -> Repo:
+    root = repo_root if repo_root is not None else get_workspace().root
     try:
-        return Repo(repo_root)
+        return Repo(root)
     except InvalidGitRepositoryError as exc:
         raise GitPublishError(
-            f"{repo_root} is not a Git repository: {exc}"
+            f"{root} is not a Git repository: {exc}"
         ) from exc
 
 
 def pull_main(
-    repo_root: Path = REPO_ROOT, *, progress: ProgressCallback | None = None
+    repo_root: Path | None = None, *, progress: ProgressCallback | None = None
 ) -> PullResult:
     """Run a ``git pull`` on the current branch from ``origin``.
 
@@ -111,7 +113,7 @@ def _active_branch_name(repo: Repo) -> str | None:
 
 def publish_to_archive(
     *,
-    repo_root: Path = REPO_ROOT,
+    repo_root: Path | None = None,
     github_username: str | None = None,
     token: str | None = None,
     progress: ProgressCallback | None = None,

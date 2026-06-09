@@ -19,7 +19,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
-from gui.config import REPO_ROOT, SMB_IGNORE_PATTERNS, nau_smb_default_path
+from gui.config import SMB_IGNORE_PATTERNS, nau_smb_default_path
+from gui.workspace import get_workspace
 
 log = logging.getLogger(__name__)
 
@@ -36,6 +37,22 @@ class ProbeResult:
     @property
     def ok(self) -> bool:
         return self.reachable and self.writable
+
+
+def probe_reachable(target: Path | None = None) -> bool:
+    """Cheap, non-destructive reachability check for the NAU share.
+
+    Returns ``True`` if the target path exists and is a directory we
+    can stat. Does NOT perform a write test - use ``probe()`` for
+    the full reachable + writable check before publishing. Suitable
+    for periodic status-indicator polling because it never touches
+    the file system.
+    """
+    target_path = Path(target) if target else Path(nau_smb_default_path())
+    try:
+        return target_path.is_dir()
+    except OSError:
+        return False
 
 
 def probe(target: Path | None = None) -> ProbeResult:
@@ -79,7 +96,7 @@ def probe(target: Path | None = None) -> ProbeResult:
 def publish(
     target: Path | None = None,
     *,
-    repo_root: Path = REPO_ROOT,
+    repo_root: Path | None = None,
     progress: ProgressCallback | None = None,
 ) -> Path:
     """Copy the website tree onto the SMB target.
@@ -93,13 +110,14 @@ def publish(
         raise RuntimeError(result.error or "Could not reach the NAU share.")
 
     target_path = result.target
+    source_root = repo_root if repo_root is not None else get_workspace().root
     ignore = shutil.ignore_patterns(*SMB_IGNORE_PATTERNS)
 
     if progress:
         progress(f"Copying tree to {target_path} ...")
 
     shutil.copytree(
-        repo_root,
+        source_root,
         target_path,
         dirs_exist_ok=True,
         ignore=ignore,

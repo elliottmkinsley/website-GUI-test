@@ -1,0 +1,172 @@
+name: release
+
+# Triggered by lowercase v* tags (e.g. v1.0.0). Inno Setup and
+# softprops/action-gh-release require ``contents: write`` to create
+# the GitHub Release object. The workflow is intentionally a single
+# job because each step depends on the previous step's artifacts.
+#
+# Always use lowercase v in tags - the trigger is case-sensitive at
+# the workflow level even though Windows filesystems are not (see
+# playbook gotcha #4).
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Stamp script reads tag context; full history is cheap
+          # insurance against weird shallow-clone edge cases.
+          fetch-depth: 0
+
+      - name: Resolve version from tag
+        id: version
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          if (-not $tag.StartsWith('v')) {
+            throw "Tag '$tag' does not start with lowercase 'v'."
+          }
+          $version = $tag.Substring(1)
+          if ($version -notmatch '^\d+\.\d+\.\d+$') {
+            throw "Tag '$tag' is not vMAJOR.MINOR.PATCH."
+          }
+          "tag=$tag"           | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "version=$version"   | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          Write-Host "version=$version"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+          cache-dependency-path: gui/requirements.txt
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup -y --no-progress
+
+      - name: Stamp version
+        shell: pwsh
+        run: |
+          python scripts/stamp_version.py --version "${{ steps.version.outputs.version }}" --no-allow-missing
+
+      - name: Install Python dependencies
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r gui/requirements.txt
+          pip install "pyinstaller>=6.0"
+          pip install pytest
+
+      - name: Run unit tests
+        shell: pwsh
+        run: python -m pytest tests/
+
+      - name: Build frozen app
+        shell: pwsh
+        run: ./packaging/build_app.ps1 -SkipTests
+
+      - name: Selftest the frozen exe
+        shell: pwsh
+        run: ./dist/RadiantContentGUI/RadiantContentGUI.exe --selftest
+
+      - name: Sign frozen exe
+        shell: pwsh
+        env:
+          CODE_SIGN_PFX_BASE64: ${{ secrets.CODE_SIGN_PFX_BASE64 }}
+          CODE_SIGN_PASSWORD: ${{ secrets.CODE_SIGN_PASSWORD }}
+        run: ./packaging/sign_app.ps1 -Path ./dist/RadiantContentGUI/RadiantContentGUI.exe
+
+      - name: Build installer
+        shell: pwsh
+        run: |
+          ./packaging/build_installer.ps1 -SkipAppBuild -SkipVendor -AppVersion "${{ steps.version.outputs.version }}"
+
+      - name: Sign installer
+        shell: pwsh
+        env:
+          CODE_SIGN_PFX_BASE64: ${{ secrets.CODE_SIGN_PFX_BASE64 }}
+          CODE_SIGN_PASSWORD: ${{ secrets.CODE_SIGN_PASSWORD }}
+        run: ./packaging/sign_app.ps1 -Path ./dist/RadiantContentGUISetup.exe
+
+      - name: Compute SHA-256 and release body
+        id: body
+        shell: pwsh
+        run: |
+          $installer = Get-ChildItem -Path dist -Filter 'RadiantContentGUISetup*.exe' | Select-Object -First 1
+          if (-not $installer) {
+            throw 'No RadiantContentGUISetup*.exe found in dist/.'
+          }
+          $hash = (Get-FileHash -Algorithm SHA256 $installer.FullName).Hash
+
+          # Extract this version's section from CHANGELOG so the
+          # release body shows what changed. Falls back to a
+          # generic line if no entry exists.
+          $changelogPath = 'docs/CHANGELOG.md'
+          $excerpt = ''
+          if (Test-Path $changelogPath) {
+              $changelog = Get-Content -Path $changelogPath -Raw
+              $heading = '## [v${{ steps.version.outputs.version }}]'
+              $idx = $changelog.IndexOf($heading)
+              if ($idx -ge 0) {
+                  $tail = $changelog.Substring($idx)
+                  $nextHeader = [Regex]::Match($tail.Substring(2), '\n## \[')
+                  if ($nextHeader.Success) {
+                      $excerpt = $tail.Substring(0, $nextHeader.Index + 2).TrimEnd()
+                  } else {
+                      $excerpt = $tail.TrimEnd()
+                  }
+              }
+          }
+          if (-not $excerpt) {
+              $excerpt = '## Changes' + [Environment]::NewLine + 'See commit history.'
+          }
+
+          # Build the release body. Use single-quoted strings for
+          # all the static markdown so backticks render literally
+          # (playbook gotcha #1).
+          $tag = '${{ steps.version.outputs.tag }}'
+          $repoUrl = 'https://github.com/${{ github.repository }}'
+          $tagUrl = "$repoUrl/blob/$tag/docs/INSTALLING.md"
+          $body = @()
+          $body += '**Download:** `' + $installer.Name + '` below.'
+          $body += ''
+          $body += '**SHA-256:** `' + $hash + '`'
+          $body += ''
+          $body += '**Install instructions:** see [docs/INSTALLING.md](' + $tagUrl + ').'
+          $body += ''
+          $body += '---'
+          $body += ''
+          $body += $excerpt
+          $bodyText = $body -join [Environment]::NewLine
+
+          # Write to disk for action-gh-release body_path consumption.
+          $bodyText | Out-File -FilePath release_body.md -Encoding utf8 -NoNewline
+
+          "installer_path=$($installer.FullName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "sha256=$hash"                          | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: Radiant Content GUI ${{ steps.version.outputs.tag }}
+          body_path: release_body.md
+          files: dist/RadiantContentGUISetup*.exe
+          # MANDATORY: catch glob typos loudly rather than ship an
+          # empty release (playbook gotcha #7).
+          fail_on_unmatched_files: true
+          draft: false
+          prerelease: false

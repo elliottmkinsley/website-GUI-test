@@ -5,18 +5,28 @@ website. It provides forms for adding, editing, deleting, and
 reordering the four data domains the site renders from JSON
 (`People/`, `Projects/`, `Events/`, `Jobs/`), then publishes the
 resulting working tree to the NAU SMB share at
-`\\arashres.ucc.nau.edu\Web\radiant.nau.edu` and snapshots the change
+`\\arshares.ucc.nau.edu\Web\radiant.nau.edu` and snapshots the change
 to a dedicated `archive` branch on GitHub.
 
-The app is intentionally bundled inside the website repo so it always
-operates on the same files the live site renders from.
+## For end users
 
-## Requirements
+Editors do **not** need Python or Git. Download the latest installer
+from
+[the Releases page](https://github.com/elliottmkinsley/website-GUI-test/releases/latest)
+and follow [docs/INSTALLING.md](../docs/INSTALLING.md). The installed
+app auto-clones the website repo into your user-data folder on
+first launch.
 
-- Python 3.11 or newer
+The rest of this README is the **developer** guide for running from
+source and producing new installers.
+
+---
+
+## Requirements (developer)
+
+- Python 3.11 or newer (CI builds on 3.13)
 - Git installed and on `PATH`
-- A GitHub account with push access to the gating repo
-  (`elliottmkinsley/website-GUI-test`)
+- A GitHub account with push access to `elliottmkinsley/website-GUI-test`
 - For Publish: an NAU computer or remote-desktop session with the SMB
   share already mounted (the app shows you exactly how to mount it on
   Windows, macOS, and Linux when it can't reach the share)
@@ -38,11 +48,101 @@ source .venv/bin/activate
 pip install -r gui/requirements.txt
 ```
 
-## Run
+## Run from source
 
 ```bash
 python -m gui
 ```
+
+When running from source the workspace auto-detection finds the
+website checkout you cloned above (because `gui/` lives at
+`<repo>/gui/`), so the app reads and writes JSON files in place.
+For end users running the packaged `.exe`, the workspace is instead
+auto-cloned into `%APPDATA%\Radiant Center for Remote Sensing\Radiant Content GUI\workspace`
+on first launch.
+
+To point the app at a custom workspace (e.g. a throwaway test
+checkout), set `RADIANT_GUI_WORKSPACE`:
+
+```bash
+set RADIANT_GUI_WORKSPACE=C:\tmp\test-checkout
+python -m gui
+```
+
+## Run tests
+
+```bash
+pip install pytest
+python -m pytest tests/
+```
+
+The suite covers `scripts/stamp_version.py` (round-trip, validation,
+dry-run) and the GitPython console-flash patch in
+`gui/services/git_safe.py`.
+
+## Build a frozen .exe locally
+
+PyInstaller is the freezer; Inno Setup wraps the result in a Windows
+installer. Both wrappers live under `packaging/`:
+
+```powershell
+# Install the build tools if you haven't already:
+pip install "pyinstaller>=6.0"
+choco install innosetup -y  # one-time, requires admin
+
+# Produce dist\RadiantContentGUI\RadiantContentGUI.exe
+pwsh packaging\build_app.ps1            # or: powershell on Windows PowerShell 5.1
+
+# Verify the bundle imports cleanly
+.\dist\RadiantContentGUI\RadiantContentGUI.exe --selftest
+
+# Wrap the bundle into dist\RadiantContentGUISetup.exe
+pwsh packaging\build_installer.ps1 -SkipVendor
+```
+
+Both scripts work under PowerShell 5.1 (`powershell`) or PowerShell
+7+ (`pwsh`). CI uses `pwsh` on `windows-latest`.
+
+The `--selftest` argv flag imports every top-level GUI module and
+exits 0. It's the cheapest way to catch PyInstaller hidden-import
+misses inside the frozen environment and is also called as the
+Inno Setup post-install step.
+
+## Cut a release
+
+The single source of truth for the version is
+[`gui/__version__.py`](__version__.py). `scripts/stamp_version.py`
+keeps that file, `packaging/version_info.txt` (Windows VERSIONINFO),
+and `docs/CHANGELOG.md` in sync.
+
+To release `v1.2.3`:
+
+```powershell
+# Optional dry-run: see what would change without writing.
+python scripts/stamp_version.py --version v1.2.3 --dry-run --no-allow-missing
+
+# Then push the tag - CI does everything else.
+git tag v1.2.3
+git push origin v1.2.3
+```
+
+`.github/workflows/release.yml` is triggered by lowercase `v*` tags
+and produces a GitHub Release with `RadiantContentGUISetup.exe`
+attached. The workflow:
+
+1. Stamps the version into every target file.
+2. Runs the unit tests.
+3. Freezes the app with PyInstaller.
+4. Selftests the frozen `.exe`.
+5. Signs it (no-op until a code-signing cert is added).
+6. Builds the installer with Inno Setup (`/DSingleFile=1` for a
+   single-exe online installer).
+7. Computes SHA-256 and extracts this version's CHANGELOG section.
+8. Publishes the GitHub Release.
+
+Always use **lowercase** `v` in tag names; the workflow trigger is
+case-sensitive and uppercase `V` collides with the lowercase form on
+Windows filesystems.
 
 On the very first launch the app shows a **Setup** screen that asks
 for a GitHub OAuth App Client ID. Two steps, no code editing:

@@ -6,4 +6,6 @@ Events, Jobs), then publish the result to the NAU SMB share and a
 GitHub `archive` branch.
 """
 
-__version__ = "0.1.0"
+from gui.__version__ import __version__
+
+__all__ = ["__version__"]

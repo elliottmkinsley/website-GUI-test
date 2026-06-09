@@ -16,8 +16,8 @@ from pathlib import Path
 
 from bs4 import BeautifulSoup, NavigableString
 
-from gui.config import INDEX_HTML, PEOPLE_MANIFEST
 from gui.repo import manifest
+from gui.workspace import get_workspace
 
 log = logging.getLogger(__name__)
 
@@ -40,7 +40,9 @@ def _find_metric_value_for_label(soup: BeautifulSoup, label: str):
 
 
 def update_core_researchers_count(
-    *, html_path: Path = INDEX_HTML, manifest_path: Path = PEOPLE_MANIFEST
+    *,
+    html_path: Path | None = None,
+    manifest_path: Path | None = None,
 ) -> tuple[int, int] | None:
     """Sync the "Core Researchers" metric in ``index.html`` with the
     current length of the manifest's ``faculty`` array.
@@ -48,6 +50,12 @@ def update_core_researchers_count(
     Returns ``(old, new)`` if the file was modified, ``None`` if the
     counter was already correct (or could not be found).
     """
+    ws = get_workspace()
+    if html_path is None:
+        html_path = ws.index_html
+    if manifest_path is None:
+        manifest_path = ws.people_manifest
+
     if not html_path.exists():
         log.warning("index.html not found at %s; skipping counter update", html_path)
         return None

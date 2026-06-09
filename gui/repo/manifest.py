@@ -12,17 +12,28 @@ import json
 from pathlib import Path
 from typing import Iterable, Literal
 
-from gui.config import (
-    EVENTS_MANIFEST,
-    JOBS_MANIFEST,
-    PEOPLE_MANIFEST,
-    PROJECTS_MANIFEST,
-)
+from gui.workspace import get_workspace
 
 PeopleKey = Literal["leadership", "faculty", "affiliation", "staff", "postdocs", "graduate"]
 ProjectKey = Literal["featured", "page"]
 EventsKey = Literal["homepage"]
 JobsKey = Literal["jobs"]
+
+
+def _people_manifest() -> Path:
+    return get_workspace().people_manifest
+
+
+def _projects_manifest() -> Path:
+    return get_workspace().projects_manifest
+
+
+def _events_manifest() -> Path:
+    return get_workspace().events_manifest
+
+
+def _jobs_manifest() -> Path:
+    return get_workspace().jobs_manifest
 
 _INDENT = 2
 
@@ -50,19 +61,19 @@ def _save(path: Path, data: dict[str, list[str]]) -> None:
 
 
 def load_people() -> dict[str, list[str]]:
-    return _load(PEOPLE_MANIFEST)
+    return _load(_people_manifest())
 
 
 def load_projects() -> dict[str, list[str]]:
-    return _load(PROJECTS_MANIFEST)
+    return _load(_projects_manifest())
 
 
 def load_events() -> dict[str, list[str]]:
-    return _load(EVENTS_MANIFEST)
+    return _load(_events_manifest())
 
 
 def load_jobs() -> dict[str, list[str]]:
-    return _load(JOBS_MANIFEST)
+    return _load(_jobs_manifest())
 
 
 # ---------------------------------------------------------------------------
@@ -118,48 +129,48 @@ def get_section(manifest_path: Path, section: str) -> list[str]:
 
 
 def add_person(group: PeopleKey, repo_relative_path: str) -> None:
-    add_path(PEOPLE_MANIFEST, group, repo_relative_path)
+    add_path(_people_manifest(), group, repo_relative_path)
 
 
 def remove_person(group: PeopleKey, repo_relative_path: str) -> bool:
-    return remove_path(PEOPLE_MANIFEST, group, repo_relative_path)
+    return remove_path(_people_manifest(), group, repo_relative_path)
 
 
 def reorder_people(group: PeopleKey, paths: Iterable[str]) -> None:
-    replace_section(PEOPLE_MANIFEST, group, paths)
+    replace_section(_people_manifest(), group, paths)
 
 
 def add_project(surface: ProjectKey, repo_relative_path: str) -> None:
-    add_path(PROJECTS_MANIFEST, surface, repo_relative_path)
+    add_path(_projects_manifest(), surface, repo_relative_path)
 
 
 def remove_project(surface: ProjectKey, repo_relative_path: str) -> bool:
-    return remove_path(PROJECTS_MANIFEST, surface, repo_relative_path)
+    return remove_path(_projects_manifest(), surface, repo_relative_path)
 
 
 def reorder_projects(surface: ProjectKey, paths: Iterable[str]) -> None:
-    replace_section(PROJECTS_MANIFEST, surface, paths)
+    replace_section(_projects_manifest(), surface, paths)
 
 
 def add_event(repo_relative_path: str) -> None:
-    add_path(EVENTS_MANIFEST, "homepage", repo_relative_path)
+    add_path(_events_manifest(), "homepage", repo_relative_path)
 
 
 def remove_event(repo_relative_path: str) -> bool:
-    return remove_path(EVENTS_MANIFEST, "homepage", repo_relative_path)
+    return remove_path(_events_manifest(), "homepage", repo_relative_path)
 
 
 def reorder_events(paths: Iterable[str]) -> None:
-    replace_section(EVENTS_MANIFEST, "homepage", paths)
+    replace_section(_events_manifest(), "homepage", paths)
 
 
 def add_job(repo_relative_path: str) -> None:
-    add_path(JOBS_MANIFEST, "jobs", repo_relative_path)
+    add_path(_jobs_manifest(), "jobs", repo_relative_path)
 
 
 def remove_job(repo_relative_path: str) -> bool:
-    return remove_path(JOBS_MANIFEST, "jobs", repo_relative_path)
+    return remove_path(_jobs_manifest(), "jobs", repo_relative_path)
 
 
 def reorder_jobs(paths: Iterable[str]) -> None:
-    replace_section(JOBS_MANIFEST, "jobs", paths)
+    replace_section(_jobs_manifest(), "jobs", paths)

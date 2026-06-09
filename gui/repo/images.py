@@ -26,18 +26,13 @@ from pathlib import Path
 from PIL import Image, ImageOps
 
 from gui.config import (
-    IMAGES_EVENTS,
-    IMAGES_NEWS,
-    IMAGES_PEOPLE,
-    IMAGES_PEOPLE_VARIANTS_CARD,
-    IMAGES_PEOPLE_VARIANTS_TEAM,
-    REPO_ROOT,
     WEBP_CARD_QUALITY,
     WEBP_CARD_SIZE,
     WEBP_TEAM_QUALITY,
     WEBP_TEAM_SIZE,
 )
 from gui.repo.paths import filesafe_basename, repo_relative
+from gui.workspace import get_workspace
 
 log = logging.getLogger(__name__)
 
@@ -171,8 +166,10 @@ def import_headshot(
         cleaned = filesafe_basename(person_name)
         basename = cleaned or "headshot"
 
-    IMAGES_PEOPLE.mkdir(parents=True, exist_ok=True)
-    dest = IMAGES_PEOPLE / f"{basename}{source.suffix.lower()}"
+    ws = get_workspace()
+    images_people = ws.images_people
+    images_people.mkdir(parents=True, exist_ok=True)
+    dest = images_people / f"{basename}{source.suffix.lower()}"
 
     # If the user re-imports the same source path that is already at
     # the destination, do nothing (preserve the existing file).
@@ -182,7 +179,7 @@ def import_headshot(
         # Same basename + same suffix: overwrite (it's an update).
         # Same basename + different suffix: drop any siblings sharing
         # the basename so the repo doesn't end up with duplicates.
-        for old in IMAGES_PEOPLE.glob(f"{basename}.*"):
+        for old in images_people.glob(f"{basename}.*"):
             if old.is_file() and old != dest:
                 try:
                     old.unlink()
@@ -192,8 +189,8 @@ def import_headshot(
 
     # Generate variants from the *destination* image, not the source,
     # so the variants always match what's on disk for the website.
-    card_target = IMAGES_PEOPLE_VARIANTS_CARD / f"{basename}.webp"
-    team_target = IMAGES_PEOPLE_VARIANTS_TEAM / f"{basename}.webp"
+    card_target = ws.images_people_variants_card / f"{basename}.webp"
+    team_target = ws.images_people_variants_team / f"{basename}.webp"
 
     card_variant: Path | None = None
     team_variant: Path | None = None
@@ -221,7 +218,8 @@ def import_headshot(
 
 def remove_headshot(image_repo_relative: str) -> None:
     """Delete a headshot and both of its WebP variants if present."""
-    base = REPO_ROOT / image_repo_relative
+    ws = get_workspace()
+    base = ws.root / image_repo_relative
     if not base.exists():
         return
     basename = base.stem
@@ -231,8 +229,8 @@ def remove_headshot(image_repo_relative: str) -> None:
         except OSError as exc:
             log.warning("Could not delete base headshot %s: %s", base, exc)
     for variant in (
-        IMAGES_PEOPLE_VARIANTS_CARD / f"{basename}.webp",
-        IMAGES_PEOPLE_VARIANTS_TEAM / f"{basename}.webp",
+        ws.images_people_variants_card / f"{basename}.webp",
+        ws.images_people_variants_team / f"{basename}.webp",
     ):
         if variant.exists():
             try:
@@ -248,12 +246,12 @@ def remove_headshot(image_repo_relative: str) -> None:
 
 def import_project_image(source: Path, *, slug: str) -> ImageImportResult:
     """Copy ``source`` into ``Images/News/`` named ``<slug>.<ext>``."""
-    return _import_simple(source, slug=slug, dest_folder=IMAGES_NEWS)
+    return _import_simple(source, slug=slug, dest_folder=get_workspace().images_news)
 
 
 def import_event_image(source: Path, *, slug: str) -> ImageImportResult:
     """Copy ``source`` into ``Images/Events/`` named ``<slug>.<ext>``."""
-    return _import_simple(source, slug=slug, dest_folder=IMAGES_EVENTS)
+    return _import_simple(source, slug=slug, dest_folder=get_workspace().images_events)
 
 
 def _import_simple(

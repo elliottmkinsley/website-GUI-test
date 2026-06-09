@@ -14,18 +14,18 @@ import re
 import unicodedata
 from pathlib import Path, PurePosixPath
 
-from gui.config import REPO_ROOT
+from gui.workspace import get_workspace
 
 
 def repo_relative(path: Path) -> str:
     """Return ``path`` as a forward-slash, repo-relative string."""
-    return PurePosixPath(path.relative_to(REPO_ROOT)).as_posix()
+    return PurePosixPath(path.relative_to(get_workspace().root)).as_posix()
 
 
 def from_repo_relative(rel: str) -> Path:
     """Resolve a repo-relative POSIX string to an absolute ``Path``."""
     parts = PurePosixPath(rel).parts
-    return REPO_ROOT.joinpath(*parts)
+    return get_workspace().root.joinpath(*parts)
 
 
 _SLUG_DIACRITIC_RE = re.compile(r"[^a-z0-9]+")

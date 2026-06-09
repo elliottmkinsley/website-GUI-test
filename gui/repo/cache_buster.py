@@ -16,7 +16,7 @@ import re
 from datetime import date
 from pathlib import Path
 
-from gui.config import SITE_CONFIG_JS
+from gui.workspace import get_workspace
 
 log = logging.getLogger(__name__)
 
@@ -40,9 +40,11 @@ def _next_version(current: str | None) -> str:
     return f"{today}-1"
 
 
-def bump_asset_version(path: Path = SITE_CONFIG_JS) -> tuple[str, str] | None:
+def bump_asset_version(path: Path | None = None) -> tuple[str, str] | None:
     """Bump ``assetVersion`` in-place. Returns ``(old, new)`` or ``None``
     if no change was made (e.g. file missing)."""
+    if path is None:
+        path = get_workspace().site_config_js
     if not path.exists():
         log.warning("site-config.js not found at %s; skipping bump", path)
         return None

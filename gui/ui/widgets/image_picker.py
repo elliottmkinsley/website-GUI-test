@@ -31,7 +31,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from gui.config import REPO_ROOT
+from gui.workspace import get_workspace
 
 
 class ImagePicker(QWidget):
@@ -112,7 +112,7 @@ class ImagePicker(QWidget):
     # -------------------------------------------------------------- handlers
 
     def _pick(self) -> None:
-        starting = str(REPO_ROOT)
+        starting = str(get_workspace().root)
         path_str, _ = QFileDialog.getOpenFileName(
             self,
             "Choose image",
@@ -140,7 +140,7 @@ class ImagePicker(QWidget):
             pix = QPixmap(str(self._selected_path))
             caption = f"New: {self._selected_path.name}"
         elif self._existing_repo_relative:
-            abs_path = REPO_ROOT / self._existing_repo_relative
+            abs_path = get_workspace().root / self._existing_repo_relative
             if abs_path.exists():
                 pix = QPixmap(str(abs_path))
             caption = f"Current: {self._existing_repo_relative}"

@@ -1,6 +1,6 @@
 """Static configuration for the Radiant Content GUI.
 
-Anything that must be customized per-deployment lives here. Only the
+Anything that must be customised per-deployment lives here. Only the
 GitHub OAuth Client ID is allowed to be overridden via the
 ``RADIANT_GUI_GITHUB_CLIENT_ID`` env var so that a developer can swap
 in their own OAuth App during testing without editing this file.
@@ -8,13 +8,17 @@ in their own OAuth App during testing without editing this file.
 Per the plan, the Client ID is for a *public* GitHub OAuth App with
 Device Flow enabled, so embedding it in source is fine; there is no
 client secret involved.
+
+Filesystem paths for the website working tree are NOT defined here.
+They depend on whether the GUI is running from a developer source
+checkout or a packaged ``.exe``, so they are resolved at runtime via
+:mod:`gui.workspace` (see ``get_workspace()``).
 """
 
 from __future__ import annotations
 
 import os
 import sys
-from pathlib import Path
 from typing import Final
 
 # ---------------------------------------------------------------------------
@@ -145,21 +149,8 @@ def nau_smb_instructions() -> str:
 
 
 # ---------------------------------------------------------------------------
-# Paths inside the working repo.
+# Domain configuration that has nothing to do with the workspace path.
 # ---------------------------------------------------------------------------
-
-# When the GUI is run with ``python -m gui`` from the repo root, the
-# repo root resolves to the parent directory of this file's package.
-# The plan calls for the GUI living *inside* the website repo, so this
-# is the canonical way to get the working tree.
-GUI_PACKAGE_DIR: Final[Path] = Path(__file__).resolve().parent
-REPO_ROOT: Final[Path] = GUI_PACKAGE_DIR.parent
-
-# The four manifests.
-PEOPLE_MANIFEST: Final[Path] = REPO_ROOT / "People" / "manifest.json"
-PROJECTS_MANIFEST: Final[Path] = REPO_ROOT / "Projects" / "manifest.json"
-EVENTS_MANIFEST: Final[Path] = REPO_ROOT / "Events" / "manifest.json"
-JOBS_MANIFEST: Final[Path] = REPO_ROOT / "Jobs" / "manifest.json"
 
 # The People sub-folders (six groups) mapped to their manifest keys.
 # Order here matches the order shown in the GUI's section dropdown.
@@ -172,17 +163,6 @@ PEOPLE_GROUPS: Final[list[tuple[str, str, str]]] = [
     ("postdocs", "Postdoctoral Scholars", "Postdoctoral Scholars"),
     ("graduate", "Graduate Students & Assistants", "Graduate Students & Assistants"),
 ]
-
-# Image folders.
-IMAGES_PEOPLE: Final[Path] = REPO_ROOT / "Images" / "People"
-IMAGES_PEOPLE_VARIANTS_CARD: Final[Path] = IMAGES_PEOPLE / "variants" / "card"
-IMAGES_PEOPLE_VARIANTS_TEAM: Final[Path] = IMAGES_PEOPLE / "variants" / "team"
-IMAGES_NEWS: Final[Path] = REPO_ROOT / "Images" / "News"
-IMAGES_EVENTS: Final[Path] = REPO_ROOT / "Images" / "Events"
-
-# Asset version + counter targets.
-SITE_CONFIG_JS: Final[Path] = REPO_ROOT / "JS" / "site-config.js"
-INDEX_HTML: Final[Path] = REPO_ROOT / "index.html"
 
 # WebP variant target dimensions per docs/guides/create-image-variants.md.
 WEBP_CARD_SIZE: Final[tuple[int, int]] = (360, 420)
