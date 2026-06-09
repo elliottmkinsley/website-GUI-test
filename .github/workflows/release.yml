@@ -68,10 +68,17 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r gui/requirements.txt
           pip install "pyinstaller>=6.0"
-          pip install pytest
+          # pytest-qt provides the qtbot fixture for sync_manager tests;
+          # pytest-mock is implicitly handy for other fixtures.
+          pip install pytest pytest-qt pytest-mock
 
       - name: Run unit tests
         shell: pwsh
+        # ``offscreen`` keeps PySide6 happy on headless runners without
+        # a window manager. The tests don't render pixels, only create
+        # QObject + QApplication instances and run signals/timers.
+        env:
+          QT_QPA_PLATFORM: offscreen
         run: python -m pytest tests/
 
       - name: Build frozen app
