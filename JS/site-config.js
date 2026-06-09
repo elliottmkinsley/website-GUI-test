@@ -1,3 +1,3 @@
 window.RadiantSiteConfig = Object.freeze({
-  assetVersion: "2026-06-08-2"
+  assetVersion: "2026-06-08-3"
 });
